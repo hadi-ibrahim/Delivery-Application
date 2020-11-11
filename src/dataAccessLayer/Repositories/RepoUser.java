@@ -20,8 +20,9 @@ public class RepoUser {
         con = ConnectionManager.getConnection();
     }
 
-    private User extractUserFromResultSet(ResultSet resultSet) throws SQLException {
-        User user = new User();
+    private User extractUserFromResultSet(ResultSet resultSet) {
+        try {
+    	User user = new User();
         user.setId(resultSet.getInt("id"));
         user.setFirstname(resultSet.getString("firstName"));
         user.setLastname(resultSet.getString("lastName"));
@@ -31,30 +32,18 @@ public class RepoUser {
         user.setRole(resultSet.getString("role"));
         user.setPhone(resultSet.getString("phone"));
         user.setStatus(resultSet.getString("status"));
-
         return user;
-    }
-
-    public User login(String username, String password) {
-    	User user = null;
-    	try {
-            ps = con.prepareStatement("SELECT * FROM USER WHERE email=? AND password =?");
-            ps.setString(1,username);
-            ps.setNString(2, password);
-            rs=ps.executeQuery();
-            if(rs.next())
-            	user= extractUserFromResultSet(rs);
-            return user;
-    	} catch(SQLException e) {
-    		return null;
-    	}
+        }catch(SQLException e) {
+        	e.printStackTrace();
+        }
+        return null;
     }
     
-    public User Get(int id) {
+    public User Get(String email) {
         User user = null;
         try {
-            ps = con.prepareStatement("SELECT * FROM user WHERE id=?");
-            ps.setInt(1, id);
+            ps = con.prepareStatement("SELECT * FROM user WHERE email=?");
+            ps.setString(1, email);
             if (rs.next()) {
                 user = extractUserFromResultSet(rs);
             }
@@ -80,7 +69,7 @@ public class RepoUser {
 
     public boolean Create(User user) {
         try {
-            ps = con.prepareStatement("INSERT INTO user(firstName,lastName,age,email,password,role,phone) VALUE(?,?,?,?,?,?,?);");
+            ps = con.prepareStatement("INSERT INTO user(id,firstName,lastName,age,email,password,role,phone) VALUE(NULL,?,?,?,?,?,?,?);");
             ps.setString(1, user.getFirstname());
             ps.setString(2, user.getLastname());
             ps.setInt(3, user.getAge());
@@ -99,7 +88,7 @@ public class RepoUser {
 
     public boolean Update(User user) {
         try {
-            ps = con.prepareStatement("UPDATE user SET username=?, password=?, age=? WHERE id=?");
+            ps = con.prepareStatement("UPDATE user SET firstName=?,lastName=?, age=?, email=?, password=?, role=?, phone=?, status=?,location=POINT(?,?) WHERE id=?");
             ps.setString(1, user.getFirstname());
             ps.setString(2, user.getLastname());
             ps.setInt(3, user.getAge());
@@ -107,6 +96,11 @@ public class RepoUser {
             ps.setString(5, user.getPassword());
             ps.setString(6, user.getRole());
             ps.setString(7,user.getPhone());
+            ps.setString(8, user.getStatus());
+            ps.setDouble(9, user.getLocation().getX());
+            ps.setDouble(10,user.getLocation().getY());
+            ps.setInt(11, user.getId());
+            
             
             System.out.println(ps.executeUpdate());
         } catch (SQLException ex) {
@@ -116,10 +110,11 @@ public class RepoUser {
         return true;
     }
 
-    public boolean Delete(int id) {
+    //TODO to adjust to soft delete
+    public boolean Delete(String email) {
         try {
-            ps = con.prepareStatement("DELETE FROM user WHERE id=?");
-            ps.setInt(1, id);
+            ps = con.prepareStatement("DELETE FROM user WHERE email=?");
+            ps.setString(1, email);
             System.out.println(ps.executeUpdate() + " records deleted");
         } catch (SQLException ex) {
             System.out.println(ex);
@@ -127,8 +122,8 @@ public class RepoUser {
         }
         return true;
     }
-
-    public boolean Destroy() throws SQLException {
+    
+    public boolean Destroy() {
     	ArrayList  <AutoCloseable> components = new ArrayList<AutoCloseable>(); 
     	components.add((AutoCloseable) ps);
     	components.add((AutoCloseable) rs);
