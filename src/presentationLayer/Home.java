@@ -19,6 +19,7 @@ import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -34,8 +35,7 @@ public class Home extends JFrame {
 	private JPanel signUpPanel = new JPanel();
 	private JPanel signInPanel = new JPanel();
 
-	
-	int xx,xy;
+
 	private JPasswordField ageField;
 	private JPasswordField phoneNumberField;
 	private boolean signUpFrameActive =true;
@@ -71,6 +71,24 @@ public class Home extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		contentPane.addMouseMotionListener(new MouseMotionListener() {
+            int lastX, lastY;
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                int x = e.getXOnScreen(), y = e.getYOnScreen();
+
+                setLocation(getLocationOnScreen().x + x - lastX, getLocationOnScreen().y + y - lastY);
+                lastX = x;
+                lastY = y;
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                lastX = e.getXOnScreen();
+                lastY = e.getYOnScreen();
+            }
+        });
 		
 
 
@@ -164,23 +182,6 @@ public class Home extends JFrame {
 		
 		JLabel label = new JLabel("");
 		
-		label.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				
-				 xx = e.getX();
-			     xy = e.getY();
-			}
-		});
-		label.addMouseMotionListener(new MouseMotionAdapter() {
-			@Override
-			public void mouseDragged(MouseEvent arg0) {
-				
-				int x = arg0.getXOnScreen();
-	            int y = arg0.getYOnScreen();
-	            Home.this.setLocation(x - xx, y - xy);  
-			}
-		});
 		label.setBounds(20, 54, 345, 344);
 		label.setVerticalAlignment(SwingConstants.TOP);
 		label.setIcon(new ImageIcon(Home.class.getResource("/presentationLayer/images/food-restaurant.png")));
