@@ -1,5 +1,6 @@
 package dataAccessLayer.Repositories;
 
+import java.awt.Point;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,14 +25,17 @@ public class RepoUser {
         try {
     	User user = new User();
         user.setId(resultSet.getInt("id"));
+        user.setEmail(resultSet.getString("email"));
         user.setFirstname(resultSet.getString("firstName"));
         user.setLastname(resultSet.getString("lastName"));
         user.setAge(resultSet.getInt("age"));
-        user.setEmail(resultSet.getString("username"));
         user.setPassword(resultSet.getString("password"));
         user.setRole(resultSet.getString("role"));
         user.setPhone(resultSet.getString("phone"));
         user.setStatus(resultSet.getString("status"));
+        Point point = (Point)resultSet.getObject("location");
+        user.setLocation(point);
+        
         return user;
         }catch(SQLException e) {
         	e.printStackTrace();
@@ -39,11 +43,11 @@ public class RepoUser {
         return null;
     }
     
-    public User Get(String email) {
+    public User Get(int id) {
         User user = null;
         try {
-            ps = con.prepareStatement("SELECT * FROM user WHERE email=?");
-            ps.setString(1, email);
+            ps = con.prepareStatement("SELECT * FROM user WHERE id=?");
+            ps.setInt(1, id);
             if (rs.next()) {
                 user = extractUserFromResultSet(rs);
             }
@@ -111,10 +115,10 @@ public class RepoUser {
     }
 
     //TODO to adjust to soft delete
-    public boolean Delete(String email) {
+    public boolean Delete(int id) {
         try {
-            ps = con.prepareStatement("DELETE FROM user WHERE email=?");
-            ps.setString(1, email);
+            ps = con.prepareStatement("DELETE FROM user WHERE id=?");
+            ps.setInt(1, id);
             System.out.println(ps.executeUpdate() + " records deleted");
         } catch (SQLException ex) {
             System.out.println(ex);

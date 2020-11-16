@@ -1,6 +1,6 @@
 package dataAccessLayer.DTO;
 
-import java.awt.geom.Point2D;
+import java.awt.Point;
 
 public class User {
 	private int id;
@@ -12,7 +12,7 @@ public class User {
 	private String role;
 	private String phone;
 	private String status;
-	private Point2D location;
+	private Point location;
 
 	public int getId() {
 		return id;
@@ -86,11 +86,11 @@ public class User {
 		this.status = status;
 	}
 
-	public Point2D getLocation() {
+	public Point getLocation() {
 		return location;
 	}
 
-	public void setLocation(Point2D location) {
+	public void setLocation(Point location) {
 		this.location = location;
 	}
 }
