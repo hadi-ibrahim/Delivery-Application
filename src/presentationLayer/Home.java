@@ -25,14 +25,14 @@ import java.awt.event.ActionEvent;
 public class Home extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField firstNameField;
+	private JTextField emailField;
 	private JPasswordField passwordField;
-	private JPasswordField passwordField_1;
+	private JPasswordField lastNameField;
 	
 	int xx,xy;
-	private JPasswordField passwordField_2;
-	private JPasswordField passwordField_3;
+	private JPasswordField ageField;
+	private JPasswordField phoneNumberField;
 
 	/**
 	 * Launch the application.
@@ -51,9 +51,7 @@ public class Home extends JFrame {
 		});
 	}
 	
-	
-	// going to borrow code from a gist to move frame.
-	
+		
 
 	/**
 	 * Create the frame.
@@ -112,55 +110,6 @@ public class Home extends JFrame {
 		lblSlogan.setBounds(89, 434, 185, 38);
 		panel.add(lblSlogan);
 		
-		Button button = new Button("Sign Up");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		button.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		button.setForeground(Color.WHITE);
-		button.setBackground(new Color(241, 57, 83));
-		button.setBounds(400, 505, 283, 36);
-		contentPane.add(button);
-		
-		textField = new JTextField();
-		textField.setBounds(400, 81, 283, 36);
-		contentPane.add(textField);
-		textField.setColumns(10);
-		
-		JLabel lblFirstname = new JLabel("First name");
-		lblFirstname.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		lblFirstname.setBounds(400, 54, 114, 27);
-		contentPane.add(lblFirstname);
-		
-		JLabel lblEmail = new JLabel("Email");
-		lblEmail.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		lblEmail.setBounds(400, 343, 54, 27);
-		contentPane.add(lblEmail);
-		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(400, 370, 283, 36);
-		contentPane.add(textField_1);
-		
-		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(400, 417, 96, 27);
-		lblPassword.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		contentPane.add(lblPassword);
-		
-		JLabel lblLastName = new JLabel("Last Name");
-		lblLastName.setBounds(400, 128, 133, 27);
-		lblLastName.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		contentPane.add(lblLastName);
-		
-		passwordField = new JPasswordField();
-		passwordField.setBounds(400, 442, 283, 36);
-		contentPane.add(passwordField);
-		
-		passwordField_1 = new JPasswordField();
-		passwordField_1.setBounds(400, 153, 283, 36);
-		contentPane.add(passwordField_1);
-		
 		JLabel lbl_close = new JLabel("X");
 		lbl_close.addMouseListener(new MouseAdapter() {
 			@Override
@@ -175,22 +124,82 @@ public class Home extends JFrame {
 		lbl_close.setBounds(703, 0, 37, 27);
 		contentPane.add(lbl_close);
 		
+		JPanel signUpPanel = new JPanel();
+		signUpPanel.setBackground(Color.WHITE);
+		signUpPanel.setBounds(365, 0, 362, 567);
+		contentPane.add(signUpPanel);
+		signUpPanel.setLayout(null);
+		
+		Button signUpBtn = new Button("Sign Up");
+		signUpBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		signUpBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		signUpBtn.setForeground(Color.WHITE);
+		signUpBtn.setBackground(new Color(241, 57, 83));
+		signUpBtn.setBounds(35, 505, 283, 36);
+		signUpPanel.add(signUpBtn);
+		
+		firstNameField = new JTextField();
+		firstNameField.setBounds(35, 81, 283, 36);
+		signUpPanel.add(firstNameField);
+		firstNameField.setColumns(10);
+		
+		JLabel lblFirstname = new JLabel("First name");
+		lblFirstname.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		lblFirstname.setBounds(35, 54, 114, 27);
+		signUpPanel.add(lblFirstname);
+		
+		
+		JLabel lblEmail = new JLabel("Email");
+		lblEmail.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		lblEmail.setBounds(35, 343, 54, 27);
+		signUpPanel.add(lblEmail);
+		
+		emailField = new JTextField();
+		emailField.setColumns(10);
+		emailField.setBounds(35, 370, 283, 36);
+		signUpPanel.add(emailField);
+		
+		JLabel lblPassword = new JLabel("Password");
+		lblPassword.setBounds(35, 417, 96, 27);
+		lblPassword.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		signUpPanel.add(lblPassword);
+		
+		JLabel lblLastName = new JLabel("Last Name");
+		lblLastName.setBounds(35, 128, 133, 27);
+		lblLastName.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		signUpPanel.add(lblLastName);
+		
+		passwordField = new JPasswordField();
+		passwordField.setBounds(35, 442, 283, 36);
+		signUpPanel.add(passwordField);
+		
+		lastNameField = new JPasswordField();
+		lastNameField.setBounds(35, 153, 283, 36);
+		signUpPanel.add(lastNameField);
+		
 		JLabel lblAge = new JLabel("Age");
 		lblAge.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		lblAge.setBounds(400, 200, 96, 27);
-		contentPane.add(lblAge);
+		lblAge.setBounds(35, 200, 96, 27);
+		signUpPanel.add(lblAge);
 		
-		JLabel lblPhoneNumber_1 = new JLabel("Phone Number");
-		lblPhoneNumber_1.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		lblPhoneNumber_1.setBounds(400, 271, 133, 27);
-		contentPane.add(lblPhoneNumber_1);
+		JLabel lblPhoneNumber = new JLabel("Phone Number");
+		lblPhoneNumber.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		lblPhoneNumber.setBounds(35, 271, 133, 27);
+		signUpPanel.add(lblPhoneNumber);
 		
-		passwordField_2 = new JPasswordField();
-		passwordField_2.setBounds(400, 225, 283, 36);
-		contentPane.add(passwordField_2);
+		ageField = new JPasswordField();
+		ageField.setBounds(35, 225, 283, 36);
+		signUpPanel.add(ageField);
 		
-		passwordField_3 = new JPasswordField();
-		passwordField_3.setBounds(400, 296, 283, 36);
-		contentPane.add(passwordField_3);
+		phoneNumberField = new JPasswordField();
+		phoneNumberField.setBounds(35, 296, 283, 36);
+		signUpPanel.add(phoneNumberField);
+
+		
+		
+
 	}
 }
