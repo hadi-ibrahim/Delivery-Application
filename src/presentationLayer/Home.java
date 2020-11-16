@@ -24,15 +24,21 @@ import java.awt.event.ActionEvent;
 
 public class Home extends JFrame {
 
+	private JLabel lblSignUp = new JLabel("Sign Up");
+	private JLabel lblSignIn = new JLabel("Sign In");
 	private JPanel contentPane;
 	private JTextField firstNameField;
-	private JTextField emailField;
-	private JPasswordField passwordField;
+	private JTextField emailFieldSignUp;
+	private JPasswordField passwordFieldSignUp;
 	private JPasswordField lastNameField;
+	private JPanel signUpPanel = new JPanel();
+	private JPanel signInPanel = new JPanel();
+
 	
 	int xx,xy;
 	private JPasswordField ageField;
 	private JPasswordField phoneNumberField;
+	private boolean signUpFrameActive =true;
 
 	/**
 	 * Launch the application.
@@ -59,16 +65,86 @@ public class Home extends JFrame {
 	public Home() {
 		setBackground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 741, 606);
+		setBounds(100, 100, 764, 632);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+
+
+		lblSignUp.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblSignUp.setForeground(new Color(241, 57, 83));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				if(!signUpFrameActive)
+					lblSignUp.setForeground(Color.BLACK);
+				else lblSignUp.setForeground(new Color(255, 0, 51));
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				lblSignUp.setForeground(new Color(255, 0, 51));
+				signUpFrameActive = true;
+				lblSignIn.setForeground(Color.BLACK);
+				togglePanels();
+			}
+		});
+		lblSignIn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblSignIn.setForeground(new Color(241, 57, 83));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				if(signUpFrameActive)
+					lblSignIn.setForeground(Color.BLACK);
+				else lblSignIn.setForeground(new Color(255, 0, 51));
+
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				lblSignIn.setForeground(new Color(255, 0, 51));
+				signUpFrameActive = false;
+				lblSignUp.setForeground(Color.BLACK);
+				togglePanels();
+			}
+		});
+		
+		JLabel lbl_close = new JLabel("\u00D7");
+		lbl_close.setBounds(730, 0, 37, 27);
+		contentPane.add(lbl_close);
+		lbl_close.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {		
+				System.exit(0);
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lbl_close.setForeground(new Color(255, 0, 51));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lbl_close.setForeground(new Color(241, 57, 83));
+			}
+		});
+		lbl_close.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_close.setForeground(new Color(241, 57, 83));
+		lbl_close.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblSignIn.setBounds(465, 22, 64, 38);
+		lblSignIn.setFont(new Font("Gabriola", Font.PLAIN, 22));
+		contentPane.add(lblSignIn);
+		lblSignUp.setForeground(new Color(255, 0, 51));
+		lblSignUp.setBounds(585, 22, 64, 38);
+		lblSignUp.setFont(new Font("Gabriola", Font.PLAIN, 22));
+		contentPane.add(lblSignUp);
+		
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.PINK);
-		panel.setBounds(0, 0, 365, 638);
+		panel.setBounds(0, 0, 365, 650);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
@@ -78,6 +154,13 @@ public class Home extends JFrame {
 		lblTitle.setForeground(new Color(240, 248, 255));
 		lblTitle.setBounds(89, 366, 178, 52);
 		panel.add(lblTitle);
+		
+		JLabel lblSlogan = new JLabel("Never have a bad meal");
+		lblSlogan.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSlogan.setForeground(new Color(240, 248, 255));
+		lblSlogan.setFont(new Font("Gabriola", Font.PLAIN, 22));
+		lblSlogan.setBounds(89, 434, 185, 38);
+		panel.add(lblSlogan);
 		
 		JLabel label = new JLabel("");
 		
@@ -98,108 +181,148 @@ public class Home extends JFrame {
 	            Home.this.setLocation(x - xx, y - xy);  
 			}
 		});
-		label.setBounds(10, 55, 345, 344);
+		label.setBounds(20, 54, 345, 344);
 		label.setVerticalAlignment(SwingConstants.TOP);
 		label.setIcon(new ImageIcon(Home.class.getResource("/presentationLayer/images/food-restaurant.png")));
 		panel.add(label);
+		signInPanel.setBackground(Color.WHITE);
+		signInPanel.setLayout(null);
 		
-		JLabel lblSlogan = new JLabel("Never have a bad meal");
-		lblSlogan.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSlogan.setForeground(new Color(240, 248, 255));
-		lblSlogan.setFont(new Font("Gabriola", Font.PLAIN, 22));
-		lblSlogan.setBounds(89, 434, 185, 38);
-		panel.add(lblSlogan);
+		JLabel lblEmailSignIn = new JLabel("Email");
+		lblEmailSignIn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		lblEmailSignIn.setBounds(51, 131, 114, 27);
+		signInPanel.add(lblEmailSignIn);
 		
-		JLabel lbl_close = new JLabel("X");
-		lbl_close.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				
-				System.exit(0);
-			}
-		});
-		lbl_close.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_close.setForeground(new Color(241, 57, 83));
-		lbl_close.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lbl_close.setBounds(703, 0, 37, 27);
-		contentPane.add(lbl_close);
+		JTextField emailFieldSignIn = new JTextField();
+		emailFieldSignIn.setColumns(10);
+		emailFieldSignIn.setBounds(51, 169, 283, 36);
+		signInPanel.add(emailFieldSignIn);
 		
-		JPanel signUpPanel = new JPanel();
+		JLabel lblPasswordSignIn = new JLabel("Password");
+		lblPasswordSignIn.setBounds(51, 251, 67, 27);
+		lblPasswordSignIn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		signInPanel.add(lblPasswordSignIn);
+		
+		JPasswordField passwordFieldSignIn = new JPasswordField();
+		passwordFieldSignIn.setBounds(51, 289, 283, 36);
+		signInPanel.add(passwordFieldSignIn);
+		
+		signInPanel.setBounds(365, 0, 383, 600);
+		contentPane.add(signInPanel);
+		signInPanel.setVisible(false);
+		
 		signUpPanel.setBackground(Color.WHITE);
-		signUpPanel.setBounds(365, 0, 362, 567);
+		signUpPanel.setBounds(365, 0, 383, 600);
 		contentPane.add(signUpPanel);
 		signUpPanel.setLayout(null);
 		
 		Button signUpBtn = new Button("Sign Up");
-		signUpBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		signUpBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				signUpBtn.setBackground(new Color(255, 0, 51));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				signUpBtn.setBackground(new Color(241, 57, 83));
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO add signUp call here
+				
 			}
 		});
+		
 		signUpBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		signUpBtn.setForeground(Color.WHITE);
 		signUpBtn.setBackground(new Color(241, 57, 83));
-		signUpBtn.setBounds(35, 505, 283, 36);
+		signUpBtn.setBounds(51, 554, 283, 36);
 		signUpPanel.add(signUpBtn);
 		
+		Button signInBtn = new Button("Sign In");
+		signInBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				signInBtn.setBackground(new Color(255, 0, 51));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				signInBtn.setBackground(new Color(241, 57, 83));
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO add signIn call here
+				
+			}
+		});
+		
+		signInBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		signInBtn.setForeground(Color.WHITE);
+		signInBtn.setBackground(new Color(241, 57, 83));
+		signInBtn.setBounds(51, 400, 283, 36);
+		signInPanel.add(signInBtn);
+		
 		firstNameField = new JTextField();
-		firstNameField.setBounds(35, 81, 283, 36);
+		firstNameField.setBounds(51, 130, 283, 36);
 		signUpPanel.add(firstNameField);
 		firstNameField.setColumns(10);
 		
 		JLabel lblFirstname = new JLabel("First name");
 		lblFirstname.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		lblFirstname.setBounds(35, 54, 114, 27);
+		lblFirstname.setBounds(51, 103, 114, 27);
 		signUpPanel.add(lblFirstname);
 		
 		
-		JLabel lblEmail = new JLabel("Email");
-		lblEmail.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		lblEmail.setBounds(35, 343, 54, 27);
-		signUpPanel.add(lblEmail);
+		JLabel lblEmailSignUp = new JLabel("Email");
+		lblEmailSignUp.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		lblEmailSignUp.setBounds(51, 392, 54, 27);
+		signUpPanel.add(lblEmailSignUp);
 		
-		emailField = new JTextField();
-		emailField.setColumns(10);
-		emailField.setBounds(35, 370, 283, 36);
-		signUpPanel.add(emailField);
+		emailFieldSignUp = new JTextField();
+		emailFieldSignUp.setColumns(10);
+		emailFieldSignUp.setBounds(51, 419, 283, 36);
+		signUpPanel.add(emailFieldSignUp);
 		
-		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(35, 417, 96, 27);
-		lblPassword.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		signUpPanel.add(lblPassword);
+		JLabel lblPasswordSignUp = new JLabel("Password");
+		lblPasswordSignUp.setBounds(51, 466, 96, 27);
+		lblPasswordSignUp.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		signUpPanel.add(lblPasswordSignUp);
 		
 		JLabel lblLastName = new JLabel("Last Name");
-		lblLastName.setBounds(35, 128, 133, 27);
+		lblLastName.setBounds(51, 177, 133, 27);
 		lblLastName.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		signUpPanel.add(lblLastName);
 		
-		passwordField = new JPasswordField();
-		passwordField.setBounds(35, 442, 283, 36);
-		signUpPanel.add(passwordField);
+		passwordFieldSignUp = new JPasswordField();
+		passwordFieldSignUp.setBounds(51, 491, 283, 36);
+		signUpPanel.add(passwordFieldSignUp);
 		
 		lastNameField = new JPasswordField();
-		lastNameField.setBounds(35, 153, 283, 36);
+		lastNameField.setBounds(51, 202, 283, 36);
 		signUpPanel.add(lastNameField);
 		
 		JLabel lblAge = new JLabel("Age");
 		lblAge.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		lblAge.setBounds(35, 200, 96, 27);
+		lblAge.setBounds(51, 249, 96, 27);
 		signUpPanel.add(lblAge);
 		
 		JLabel lblPhoneNumber = new JLabel("Phone Number");
 		lblPhoneNumber.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		lblPhoneNumber.setBounds(35, 271, 133, 27);
+		lblPhoneNumber.setBounds(51, 320, 133, 27);
 		signUpPanel.add(lblPhoneNumber);
 		
 		ageField = new JPasswordField();
-		ageField.setBounds(35, 225, 283, 36);
+		ageField.setBounds(51, 274, 283, 36);
 		signUpPanel.add(ageField);
 		
 		phoneNumberField = new JPasswordField();
-		phoneNumberField.setBounds(35, 296, 283, 36);
+		phoneNumberField.setBounds(51, 345, 283, 36);
 		signUpPanel.add(phoneNumberField);
 
-		
-		
-
+	}
+	
+	private void togglePanels( ) {
+		signUpPanel.setVisible(signUpFrameActive);
+		signInPanel.setVisible(!signUpFrameActive);
 	}
 }
