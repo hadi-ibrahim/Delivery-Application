@@ -6,6 +6,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import DTO.User;
+import businessLogicLayer.Registration;
+
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Button;
@@ -32,13 +36,15 @@ public class Home extends JFrame {
 	private JTextField firstNameField;
 	private JTextField emailFieldSignUp;
 	private JPasswordField passwordFieldSignUp;
-	private JPasswordField lastNameField;
+	private JTextField emailFieldSignIn;
+	private JPasswordField passwordFieldSignIn;
+	private JTextField lastNameField;
 	private JPanel signUpPanel = new JPanel();
 	private JPanel signInPanel = new JPanel();
+	private Registration registration = new Registration();
 
-
-	private JPasswordField ageField;
-	private JPasswordField phoneNumberField;
+	private JTextField ageField;
+	private JTextField phoneNumberField;
 	private boolean signUpFrameActive =true;
 
 	/**
@@ -211,7 +217,7 @@ public class Home extends JFrame {
 		lblEmailSignIn.setBounds(51, 131, 114, 27);
 		signInPanel.add(lblEmailSignIn);
 		
-		JTextField emailFieldSignIn = new JTextField();
+		emailFieldSignIn = new JTextField();
 		emailFieldSignIn.setColumns(10);
 		emailFieldSignIn.setBounds(51, 169, 283, 36);
 		signInPanel.add(emailFieldSignIn);
@@ -221,7 +227,7 @@ public class Home extends JFrame {
 		lblPasswordSignIn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		signInPanel.add(lblPasswordSignIn);
 		
-		JPasswordField passwordFieldSignIn = new JPasswordField();
+		passwordFieldSignIn = new JPasswordField();
 		passwordFieldSignIn.setBounds(51, 289, 283, 36);
 		signInPanel.add(passwordFieldSignIn);
 		
@@ -250,8 +256,7 @@ public class Home extends JFrame {
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
-				// TODO add signUp call here
-				
+				signUp();
 			}
 		});
 		
@@ -277,8 +282,7 @@ public class Home extends JFrame {
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
-				// TODO add signIn call here
-				
+				signIn();
 			}
 		});
 		
@@ -323,7 +327,7 @@ public class Home extends JFrame {
 		passwordFieldSignUp.setBounds(51, 491, 283, 36);
 		signUpPanel.add(passwordFieldSignUp);
 		
-		lastNameField = new JPasswordField();
+		lastNameField = new JTextField();
 		lastNameField.setBounds(51, 202, 283, 36);
 		signUpPanel.add(lastNameField);
 		
@@ -337,11 +341,11 @@ public class Home extends JFrame {
 		lblPhoneNumber.setBounds(51, 320, 133, 27);
 		signUpPanel.add(lblPhoneNumber);
 		
-		ageField = new JPasswordField();
+		ageField = new JTextField();
 		ageField.setBounds(51, 274, 283, 36);
 		signUpPanel.add(ageField);
 		
-		phoneNumberField = new JPasswordField();
+		phoneNumberField = new JTextField();
 		phoneNumberField.setBounds(51, 345, 283, 36);
 		signUpPanel.add(phoneNumberField);
 
@@ -359,5 +363,39 @@ public class Home extends JFrame {
 	private void setCursorAsNormal() {
         Cursor cursor = new Cursor(Cursor.DEFAULT_CURSOR);
         this.setCursor(cursor);
+	}
+	
+	private void signUp() {
+		User user = new User ();
+		try {
+		user.setFirstname(this.firstNameField.getText());
+		user.setLastname(lastNameField.getText());
+		user.setAge(Integer.parseInt(ageField.getText()));
+		user.setPhone(this.phoneNumberField.getText());
+		user.setEmail(this.emailFieldSignUp.getText());
+		user.setPassword(this.passwordFieldSignUp.getText());
+		user= registration.signUp(user);
+		if (user!= null) {
+			System.out.println("signup successful! ");
+		}
+		else System.out.println("unable to signup");
+		} catch (Exception e ) {
+			System.out.println("unable to signup. make sure of values");
+		}
+	}
+	private void signIn() {
+		User user ;
+		String password, email;
+		try {
+		email= this.emailFieldSignIn.getText();
+		password= this.passwordFieldSignIn.getText();
+		user= registration.signIn(email, password);
+		if (user!= null) {
+			System.out.println("sign in successful! ");
+		}
+		else System.out.println("unable to sign in");
+		} catch (Exception e ) {
+			System.out.println("unable to sign in. make sure of values");
+		}
 	}
 }
