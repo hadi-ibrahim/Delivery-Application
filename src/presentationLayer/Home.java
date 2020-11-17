@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Button;
 import java.awt.SystemColor;
 import javax.swing.JTextField;
@@ -96,12 +97,14 @@ public class Home extends JFrame {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				lblSignUp.setForeground(new Color(241, 57, 83));
+				setCursorAsPointer();
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
 				if(!signUpFrameActive)
 					lblSignUp.setForeground(Color.BLACK);
 				else lblSignUp.setForeground(new Color(255, 0, 51));
+				setCursorAsNormal();
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -115,12 +118,15 @@ public class Home extends JFrame {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				lblSignIn.setForeground(new Color(241, 57, 83));
+				setCursorAsPointer();
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
 				if(signUpFrameActive)
 					lblSignIn.setForeground(Color.BLACK);
 				else lblSignIn.setForeground(new Color(255, 0, 51));
+				setCursorAsNormal();
+
 
 			}
 			@Override
@@ -143,10 +149,14 @@ public class Home extends JFrame {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				lbl_close.setForeground(new Color(255, 0, 51));
+				setCursorAsPointer();
+
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
 				lbl_close.setForeground(new Color(241, 57, 83));
+				setCursorAsNormal();
+
 			}
 		});
 		lbl_close.setHorizontalAlignment(SwingConstants.CENTER);
@@ -229,10 +239,14 @@ public class Home extends JFrame {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				signUpBtn.setBackground(new Color(255, 0, 51));
+				setCursorAsPointer();
+
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
 				signUpBtn.setBackground(new Color(241, 57, 83));
+				setCursorAsNormal();
+
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -252,10 +266,14 @@ public class Home extends JFrame {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				signInBtn.setBackground(new Color(255, 0, 51));
+				setCursorAsPointer();
+
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
 				signInBtn.setBackground(new Color(241, 57, 83));
+				setCursorAsNormal();
+
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -332,5 +350,14 @@ public class Home extends JFrame {
 	private void togglePanels( ) {
 		signUpPanel.setVisible(signUpFrameActive);
 		signInPanel.setVisible(!signUpFrameActive);
+	}
+	
+	private void setCursorAsPointer() {
+        Cursor cursor = new Cursor(Cursor.HAND_CURSOR);
+        this.setCursor(cursor);
+	}
+	private void setCursorAsNormal() {
+        Cursor cursor = new Cursor(Cursor.DEFAULT_CURSOR);
+        this.setCursor(cursor);
 	}
 }
