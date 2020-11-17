@@ -1,10 +1,10 @@
-package dataAccessLayer.DTO;
+package DTO;
 
 import java.util.ArrayList;
 
 public class Item {
 	private int id;
-	private ArrayList<WarehouseItemInformation> availability = new ArrayList<WarehouseItemInformation>();
+	private ArrayList<WarehouseItem> availability = new ArrayList<WarehouseItem>();
 	private String description;
 	private String category;
 	private double price;
@@ -26,11 +26,11 @@ public class Item {
 		this.id = id;
 	}
 
-	public ArrayList<WarehouseItemInformation> getAvailability() {
+	public ArrayList<WarehouseItem> getAvailability() {
 		return availability;
 	}
 
-	public void setAvailability(ArrayList<WarehouseItemInformation> availability) {
+	public void setAvailability(ArrayList<WarehouseItem> availability) {
 		this.availability = availability;
 	}
 

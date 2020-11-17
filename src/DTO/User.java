@@ -1,4 +1,4 @@
-package dataAccessLayer.DTO;
+package DTO;
 
 import java.awt.Point;
 

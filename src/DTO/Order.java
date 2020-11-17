@@ -1,16 +1,29 @@
-package dataAccessLayer.DTO;
+package DTO;
 
+import java.awt.Point;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Order {
 	private int id;
 	private int idCustomer;
 	private int idStaff;
 	private int idDriver;
-	private LocalDateTime startDate;
-	private LocalDateTime endDate;
+	private Timestamp startDate;
+	private Timestamp endDate;
 	private String status;
 	private double totalAmount;
+	private Point locationDestination;
+	private ArrayList<OrderedWarehouseItem> orderedItems = new ArrayList<OrderedWarehouseItem>();
+
+	public ArrayList<OrderedWarehouseItem> getOrderedItems() {
+		return orderedItems;
+	}
+
+	public void setOrderedItems(ArrayList<OrderedWarehouseItem> orderedItems) {
+		this.orderedItems = orderedItems;
+	}
 
 	public int getId() {
 		return id;
@@ -44,19 +57,19 @@ public class Order {
 		this.idDriver = idDriver;
 	}
 
-	public LocalDateTime getStartDate() {
+	public Timestamp getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(LocalDateTime startDate) {
+	public void setStartDate(Timestamp startDate) {
 		this.startDate = startDate;
 	}
 
-	public LocalDateTime getEndDate() {
+	public Timestamp getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(LocalDateTime endDate) {
+	public void setEndDate(Timestamp endDate) {
 		this.endDate = endDate;
 	}
 
@@ -74,5 +87,13 @@ public class Order {
 
 	public void setTotalAmount(double totalAmount) {
 		this.totalAmount = totalAmount;
+	}
+
+	public Point getLocationDestination() {
+		return locationDestination;
+	}
+
+	public void setLocationDestination(Point locationDestination) {
+		this.locationDestination = locationDestination;
 	}
 }

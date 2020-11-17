@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import dataAccessLayer.DTO.User;
+import DTO.User;
 import dataAccessLayer.Helpers.ConnectionManager;
 
 public class RepoUser {
@@ -127,6 +127,28 @@ public class RepoUser {
         return true;
     }
     
+    public boolean setAvailable(int idDriver) {
+    	try {
+    	 ps = con.prepareStatement("UPDATE user SET status=? WHERE id=?");
+    	 ps.setString(1, "Available");
+    	 ps.setInt(2, idDriver);
+    	 return true;
+    	}catch(SQLException e) {
+    		return false;
+    	}
+		
+	}
+    public boolean setBusy(int idDriver) {
+    	try {
+    	 ps = con.prepareStatement("UPDATE user SET status=? WHERE id=?");
+    	 ps.setString(1, "Busy");
+    	 ps.setInt(2, idDriver);
+    	 return true;
+    	}catch(SQLException e) {
+    		return false;
+    	}
+		
+	}
     public boolean Destroy() {
     	ArrayList  <AutoCloseable> components = new ArrayList<AutoCloseable>(); 
     	components.add((AutoCloseable) ps);
@@ -162,4 +184,6 @@ public class RepoUser {
    			System.out.println(e.getMessage());
    		}
     }
+
+	
 }

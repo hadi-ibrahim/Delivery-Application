@@ -1,9 +1,18 @@
-package dataAccessLayer.DTO;
+package DTO;
 
-public class WarehouseItemInformation {
+public class OrderedWarehouseItem {
+	private int idOrder;
 	private int idWarehouse;
 	private int idItem;
 	private int quantity;
+
+	public int getIdOrder() {
+		return idOrder;
+	}
+
+	public void setIdOrder(int idOrder) {
+		this.idOrder = idOrder;
+	}
 
 	public int getIdWarehouse() {
 		return idWarehouse;
@@ -28,4 +37,5 @@ public class WarehouseItemInformation {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
+
 }
