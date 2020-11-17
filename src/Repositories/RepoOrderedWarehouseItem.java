@@ -1,4 +1,4 @@
-package dataAccessLayer.Repositories;
+package Repositories;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import DTO.Item;
 import DTO.Order;
 import DTO.OrderedWarehouseItem;
+import DTO.Warehouse;
 import DTO.WarehouseItem;
-import dataAccessLayer.Helpers.ConnectionManager;
+import Helpers.ConnectionManager;
 
 public class RepoOrderedWarehouseItem {
 	Connection con = null;
@@ -25,7 +26,7 @@ public class RepoOrderedWarehouseItem {
 		con = ConnectionManager.getConnection();
 	}
 
-	private OrderedWarehouseItem extractRepoOrderedWarehouseItem(ResultSet resultSet) throws SQLException {
+	private OrderedWarehouseItem extractOrderedWarehouseItemFromResultSet(ResultSet resultSet) throws SQLException {
 		OrderedWarehouseItem orderedItem = new OrderedWarehouseItem();
 		orderedItem.setIdWarehouse(resultSet.getInt("idWarehouse"));
 		orderedItem.setIdItem(resultSet.getInt("idItem"));
@@ -41,7 +42,7 @@ public class RepoOrderedWarehouseItem {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery("Select * From orderedWarehouseItem where idOrder =" + idOrder);
 			while (rs.next()) {
-				itemsOrdered.add(extractRepoOrderedWarehouseItem(rs));
+				itemsOrdered.add(extractOrderedWarehouseItemFromResultSet(rs));
 			}
 		} catch (SQLException ex) {
 			System.out.println(ex);
@@ -56,15 +57,15 @@ public class RepoOrderedWarehouseItem {
 	}
 
 
-	public boolean orderItem(int idOrder, int idItem, int idWarehouse, int quantity) {
+	public boolean orderItem(OrderedWarehouseItem orderedItem) {
 
-		if (repoWarehouseItem.orderItemFromWarehouse(idItem, idWarehouse, quantity)) {
+		if (repoWarehouseItem.orderItemFromWarehouse(new WarehouseItem(orderedItem.getIdWarehouse(),orderedItem.getIdItem(),orderedItem.getQuantity()))) {
 			try {
 				ps = con.prepareStatement("INSERT INTO orderedWarehouseItem(idOrder,idItem,idWarehouse,orderedQuantity) Values(?,?,?,?)");
-				ps.setInt(1, idOrder);
-				ps.setInt(2, idItem);
-				ps.setInt(3, idWarehouse);
-				ps.setInt(4, quantity);
+				ps.setInt(1, orderedItem.getIdOrder());
+				ps.setInt(2, orderedItem.getIdItem());
+				ps.setInt(3, orderedItem.getIdWarehouse());
+				ps.setInt(4, orderedItem.getQuantity());
 				System.out.println(ps.executeUpdate() + " records added");
 				return true;
 			}catch (SQLException ex) {
@@ -74,10 +75,10 @@ public class RepoOrderedWarehouseItem {
 		return false;
 	}
 
-	public boolean cancelOrder(int idOrder) {
-		repoOrder.cancelOrder(idOrder);
-		for(OrderedWarehouseItem item : this.getOrderedItems(idOrder)) {
-		repoWarehouseItem.addStockByWarehouse(item.getIdWarehouse(), item.getIdItem(), item.getQuantity());
+	public boolean cancelOrder(Order order) {
+		repoOrder.cancelOrder(order);
+		for(OrderedWarehouseItem item : this.getOrderedItems(order.getId())) {
+		repoWarehouseItem.addStockByWarehouse(new WarehouseItem(item.getIdWarehouse(),item.getIdItem(),item.getQuantity()));
 		}
 		return true;
 	}

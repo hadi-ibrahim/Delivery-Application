@@ -1,4 +1,4 @@
-package dataAccessLayer.Repositories;
+package Repositories;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import DTO.Item;
 import DTO.WarehouseItem;
-import dataAccessLayer.Helpers.ConnectionManager;
+import Helpers.ConnectionManager;
 
 public class RepoWarehouseItem {
 	Connection con = null;
@@ -51,11 +51,11 @@ public class RepoWarehouseItem {
 			item.setAvailability(this.getAvailability(item.getId()));
 		}
 	}
-	private boolean exists(int idWarehouse, int idItem) {
+	private boolean exists(WarehouseItem warehouseItem) {
 		try {
 			ps = con.prepareStatement("SELECT * FROM warehouseItem WHERE idItem=? AND idWarehouse=?");
-			ps.setInt(1, idItem);
-			ps.setInt(2, idWarehouse);
+			ps.setInt(1, warehouseItem.getIdItem());
+			ps.setInt(2, warehouseItem.getIdWarehouse());
 			if (rs.next()) {
 				return true;
 			}
@@ -66,12 +66,12 @@ public class RepoWarehouseItem {
 		return false;
 	}
 
-	public boolean addStockGlobally(int idItem, int quantity) {
+	public boolean addStockGlobally(WarehouseItem warehouseItem) {
 		try {
 			ps = con.prepareStatement(
 					"Update warehouseItem SET itemquantity=itemquantity+? where idItem =? AND isDisabled=0");
-			ps.setInt(1, quantity);
-			ps.setInt(2, idItem);
+			ps.setInt(1, warehouseItem.getQuantity());
+			ps.setInt(2, warehouseItem.getIdItem());
 			System.out.println(ps.executeUpdate() + " records updated");
 			return true;
 		} catch (SQLException ex) {
@@ -80,13 +80,13 @@ public class RepoWarehouseItem {
 		}
 	}
 
-	public boolean addStockByWarehouse(int idWarehouse, int idItem, int quantity) {
+	public boolean addStockByWarehouse(WarehouseItem warehouseItem) {
 		try {
 			ps = con.prepareStatement(
 					"Update warehouseItem SET itemquantity=itemquantity+? where idItem =? AND idWarehouse =? AND isDisabled=0");
-			ps.setInt(1, quantity);
-			ps.setInt(2, idItem);
-			ps.setInt(3, idWarehouse);
+			ps.setInt(1, warehouseItem.getQuantity());
+			ps.setInt(2, warehouseItem.getIdItem());
+			ps.setInt(3, warehouseItem.getIdWarehouse());
 			System.out.println(ps.executeUpdate() + " records restored");
 		} catch (SQLException ex) {
 			System.out.println(ex);
@@ -95,14 +95,14 @@ public class RepoWarehouseItem {
 		return true;
 	}
 
-	public boolean addItemToWarehouse(int idWarehouse, int idItem, int quantity) {
+	public boolean addItemToWarehouse(WarehouseItem warehouseItem) {
 		try {
-			if (repoItem.exists(idItem) && repoWarehouse.exists(idWarehouse) && !this.exists(idWarehouse, idItem)) {
+			if (repoItem.exists(warehouseItem.getIdItem()) && repoWarehouse.exists(warehouseItem.getIdWarehouse()) && !this.exists(warehouseItem)) {
 				ps = con.prepareStatement(
 						"INSERT INTO warehouseItem(idWarehouse,idItem,itemQuantity,isDisabled) VALUES(?,?,?,0");
-				ps.setInt(1, idWarehouse);
-				ps.setInt(2, idItem);
-				ps.setInt(3, quantity);
+				ps.setInt(1, warehouseItem.getIdWarehouse());
+				ps.setInt(2, warehouseItem.getIdItem());
+				ps.setInt(3, warehouseItem.getQuantity());
 				System.out.println(ps.executeUpdate() + " records updated");
 				return true;
 			}
@@ -113,14 +113,14 @@ public class RepoWarehouseItem {
 		}
 	}
 
-	public boolean orderItemFromWarehouse(int idItem, int idWarehouse, int quantity) {
+	public boolean orderItemFromWarehouse(WarehouseItem warehouseItem) {
 		try {
-			if (enoughQuantity(idItem, idWarehouse, quantity)) {
+			if (enoughQuantity(warehouseItem)) {
 				ps = con.prepareStatement(
 						"Update warehouseItem SET itemQuantity=itemQuantity-? where idWarehouse =? AND idItem=?");
-				ps.setInt(1, quantity);
-				ps.setInt(2, idWarehouse);
-				ps.setInt(3, idItem);
+				ps.setInt(1, warehouseItem.getQuantity());
+				ps.setInt(2, warehouseItem.getIdWarehouse());
+				ps.setInt(3, warehouseItem.getIdItem());
 				System.out.println(ps.executeUpdate() + " records restored");
 				return true;
 			}
@@ -130,15 +130,15 @@ public class RepoWarehouseItem {
 		return false;
 	}
 
-	public boolean enoughQuantity(int idItem, int idWarehouse, int quantity) {
+	public boolean enoughQuantity(WarehouseItem warehouseItem) {
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select itemQuantity from warehouseItem where idWarehouse =" + idWarehouse
-					+ " AND idItem=" + idItem);
+			rs = stmt.executeQuery("Select itemQuantity from warehouseItem where idWarehouse =" + warehouseItem.getIdWarehouse()
+					+ " AND idItem=" + warehouseItem.getIdItem());
 			if (rs.next()) {
 				WarehouseItem whItemInfo = new WarehouseItem();
 				whItemInfo = extractWarehouseItemFromResultSet(rs);
-				if (whItemInfo.getQuantity() >= quantity)
+				if (whItemInfo.getQuantity() >= warehouseItem.getQuantity())
 					return true;
 			}
 			System.out.println(ps.executeUpdate() + " records restored");
@@ -160,11 +160,11 @@ public class RepoWarehouseItem {
 		}
 		return true;
 	}
-	public boolean deleteItemByWarehouse(int idItem,int idWarehouse) {
+	public boolean deleteItemByWarehouse(WarehouseItem warehouseItem) {
 		try {
 			ps = con.prepareStatement("Update warehouseItem SET isDisabled=1 where idItem =? AND idWarehouse=?");
-			ps.setInt(1, idItem);
-			ps.setInt(2, idWarehouse);
+			ps.setInt(1, warehouseItem.getIdItem());
+			ps.setInt(2, warehouseItem.getIdWarehouse());
 			System.out.println(ps.executeUpdate() + " records deleted");
 		} catch (SQLException ex) {
 			return false;
@@ -193,11 +193,11 @@ public class RepoWarehouseItem {
 		return true;
 		
 	}
-	public boolean restoreItemByWarehouse(int idItem, int idWarehouse) {
+	public boolean restoreItemByWarehouse(WarehouseItem warehouseItem) {
 		try {
 			ps = con.prepareStatement("Update warehouseItem SET isDisabled=0 where idItem =? AND idWarehouse=?");
-			ps.setInt(1, idItem);
-			ps.setInt(2, idWarehouse);
+			ps.setInt(1, warehouseItem.getIdItem());
+			ps.setInt(2, warehouseItem.getIdWarehouse());
 			System.out.println(ps.executeUpdate() + " records deleted");
 		} catch (SQLException ex) {
 			return false;
