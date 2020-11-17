@@ -168,16 +168,16 @@ public class Home extends JFrame {
 		
 		JLabel lblTitle = new JLabel("Delivery App");
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitle.setFont(new Font("Brush Script MT", Font.ITALIC, 32));
+		lblTitle.setFont(new Font("Brush Script MT", Font.ITALIC, 42));
 		lblTitle.setForeground(new Color(240, 248, 255));
-		lblTitle.setBounds(89, 366, 178, 52);
+		lblTitle.setBounds(70, 365, 224, 52);
 		panel.add(lblTitle);
 		
-		JLabel lblSlogan = new JLabel("Never have a bad meal");
+		JLabel lblSlogan = new JLabel("We put the \"good\"");
 		lblSlogan.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSlogan.setForeground(new Color(240, 248, 255));
-		lblSlogan.setFont(new Font("Gabriola", Font.PLAIN, 22));
-		lblSlogan.setBounds(89, 434, 185, 38);
+		lblSlogan.setFont(new Font("Gabriola", Font.PLAIN, 26));
+		lblSlogan.setBounds(86, 461, 185, 53);
 		panel.add(lblSlogan);
 		
 		JLabel label = new JLabel("");
@@ -186,6 +186,13 @@ public class Home extends JFrame {
 		label.setVerticalAlignment(SwingConstants.TOP);
 		label.setIcon(new ImageIcon(Home.class.getResource("/presentationLayer/images/food-restaurant.png")));
 		panel.add(label);
+		
+		JLabel lblInGoodsDelivery = new JLabel("in goods delivery");
+		lblInGoodsDelivery.setHorizontalAlignment(SwingConstants.CENTER);
+		lblInGoodsDelivery.setForeground(new Color(240, 248, 255));
+		lblInGoodsDelivery.setFont(new Font("Gabriola", Font.PLAIN, 26));
+		lblInGoodsDelivery.setBounds(87, 494, 185, 53);
+		panel.add(lblInGoodsDelivery);
 		signInPanel.setBackground(Color.WHITE);
 		signInPanel.setLayout(null);
 		
