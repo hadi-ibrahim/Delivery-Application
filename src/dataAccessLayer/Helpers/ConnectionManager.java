@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionManager {
-	private static final String ConnectionString = "jdbc:mysql://localhost/deliveryapp?user=oop&password=2";
+	private static final String ConnectionString = "jdbc:mysql://localhost/deliveryApp?user=oop&password=2";
 	private static int NumberOfOpenedConnection = 0;
 	private static Connection con = null;
 

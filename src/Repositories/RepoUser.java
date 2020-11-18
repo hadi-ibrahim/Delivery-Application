@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import DTO.User;
 import Helpers.ConnectionManager;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class RepoUser {
     Connection con = null;
@@ -78,7 +79,7 @@ public class RepoUser {
             ps.setString(2, user.getLastname());
             ps.setInt(3, user.getAge());
             ps.setString(4, user.getEmail());
-            ps.setString(5, user.getPassword());
+            ps.setString(5, BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray()));
             ps.setString(6, user.getRole());
             ps.setString(7,user.getPhone());
 
@@ -206,10 +207,19 @@ public class RepoUser {
    		}
     }
 
-	public User Login(String email, String password) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public User Login(String email, String password) {
+    	try {
+            ps = con.prepareStatement("SELECT * FROM USER WHERE email=?");
+            ps.setString(1,email);
+            rs=ps.executeQuery();
+            if(!rs.next()) return null;
+            if (BCrypt.verifyer().verify(password.toCharArray(), rs.getString("password")).verified)
+                return extractUserFromResultSet(rs);
+    	} catch(SQLException ex) {
+    		System.out.println(ex);    
+    	}
+    	return null;
+    }
 
 	
 }
