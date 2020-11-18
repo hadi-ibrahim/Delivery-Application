@@ -1,4 +1,4 @@
-package dataAccessLayer.Repositories;
+package Repositories;
 
 import java.awt.Point;
 import java.sql.Connection;
@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import DTO.User;
-import dataAccessLayer.Helpers.ConnectionManager;
+import Helpers.ConnectionManager;
 
 public class RepoUser {
     Connection con = null;
@@ -35,7 +35,7 @@ public class RepoUser {
         user.setStatus(resultSet.getString("status"));
         Point point = (Point)resultSet.getObject("location");
         user.setLocation(point);
-        
+        user.setIsDeleted(resultSet.getInt("isDeleted"));
         return user;
         }catch(SQLException e) {
         	e.printStackTrace();
@@ -73,7 +73,7 @@ public class RepoUser {
 
     public boolean Create(User user) {
         try {
-            ps = con.prepareStatement("INSERT INTO user(id,firstName,lastName,age,email,password,role,phone) VALUE(NULL,?,?,?,?,?,?,?);");
+            ps = con.prepareStatement("INSERT INTO user(id,firstName,lastName,age,email,password,role,phone,isDeleted) VALUE(NULL,?,?,?,?,?,?,?,0);");
             ps.setString(1, user.getFirstname());
             ps.setString(2, user.getLastname());
             ps.setInt(3, user.getAge());
@@ -89,36 +89,57 @@ public class RepoUser {
         }
         return true;
     }
-
-    public boolean Update(User user) {
-        try {
-            ps = con.prepareStatement("UPDATE user SET firstName=?,lastName=?, age=?, email=?, password=?, role=?, phone=?, status=?,location=POINT(?,?) WHERE id=?");
-            ps.setString(1, user.getFirstname());
-            ps.setString(2, user.getLastname());
-            ps.setInt(3, user.getAge());
-            ps.setString(4, user.getEmail());
-            ps.setString(5, user.getPassword());
-            ps.setString(6, user.getRole());
-            ps.setString(7,user.getPhone());
-            ps.setString(8, user.getStatus());
-            ps.setDouble(9, user.getLocation().getX());
-            ps.setDouble(10,user.getLocation().getY());
-            ps.setInt(11, user.getId());
-            
-            
-            System.out.println(ps.executeUpdate());
-        } catch (SQLException ex) {
-            System.out.println(ex);
-            return false;
-        }
-        return true;
-    }
+    
+    public boolean UpdateUser(User user) {
+    	 try {
+             ps = con.prepareStatement("UPDATE user SET firstName=?,lastName=?, age=?, email=?, password=?, role=?, phone=?,isDeleted=? WHERE id=?");
+             ps.setString(1, user.getFirstname());
+             ps.setString(2, user.getLastname());
+             ps.setInt(3, user.getAge());
+             ps.setString(4, user.getEmail());
+             ps.setString(5, user.getPassword());
+             ps.setString(6, user.getRole());
+             ps.setString(7,user.getPhone());
+             ps.setInt(8, user.getIsDeleted());
+             ps.setInt(9, user.getId());
+             System.out.println(ps.executeUpdate());
+         } catch (SQLException ex) {
+             System.out.println(ex);
+             return false;
+         }
+         return true;
+     }
+    public boolean UpdateDriver(User user) {
+    	 try {
+             ps = con.prepareStatement("UPDATE user SET firstName=?,lastName=?, age=?, email=?, password=?, role=?, phone=?, status=?,location=POINT(?,?),isDeleted=? WHERE id=?");
+             ps.setString(1, user.getFirstname());
+             ps.setString(2, user.getLastname());
+             ps.setInt(3, user.getAge());
+             ps.setString(4, user.getEmail());
+             ps.setString(5, user.getPassword());
+             ps.setString(6, user.getRole());
+             ps.setString(7,user.getPhone());
+             ps.setString(8, user.getStatus());
+             ps.setDouble(9, user.getLocation().getX());
+             ps.setDouble(10,user.getLocation().getY());
+             ps.setInt(11, user.getIsDeleted());
+             ps.setInt(12, user.getId());
+             
+             
+             System.out.println(ps.executeUpdate());
+         } catch (SQLException ex) {
+             System.out.println(ex);
+             return false;
+         }
+         return true;
+     }
+    
 
     //TODO to adjust to soft delete
-    public boolean Delete(int id) {
+    public boolean Delete(User user) {
         try {
-            ps = con.prepareStatement("DELETE FROM user WHERE id=?");
-            ps.setInt(1, id);
+            ps = con.prepareStatement("Update user set isDeleted=1 WHERE id=?");
+            ps.setInt(1, user.getId());
             System.out.println(ps.executeUpdate() + " records deleted");
         } catch (SQLException ex) {
             System.out.println(ex);
@@ -184,6 +205,11 @@ public class RepoUser {
    			System.out.println(e.getMessage());
    		}
     }
+
+	public User Login(String email, String password) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	
 }

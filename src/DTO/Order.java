@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class Order {
 	private int id;
 	private int idCustomer;
-	private int idStaff;
 	private int idDriver;
 	private Timestamp startDate;
 	private Timestamp endDate;
@@ -39,14 +38,6 @@ public class Order {
 
 	public void setIdCustomer(int idCustomer) {
 		this.idCustomer = idCustomer;
-	}
-
-	public int getIdStaff() {
-		return idStaff;
-	}
-
-	public void setIdStaff(int idStaff) {
-		this.idStaff = idStaff;
 	}
 
 	public int getIdDriver() {

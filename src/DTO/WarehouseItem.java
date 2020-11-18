@@ -5,7 +5,17 @@ public class WarehouseItem {
 	private int idItem;
 	private int quantity;
 	private int isDisabled;
-	
+
+	public WarehouseItem() {
+
+	}
+
+	public WarehouseItem(int idWarehouse, int idItem, int quantity) {
+		this.idWarehouse = idWarehouse;
+		this.idItem = idItem;
+		this.quantity = quantity;
+	}
+
 	public int getIsDisabled() {
 		return isDisabled;
 	}

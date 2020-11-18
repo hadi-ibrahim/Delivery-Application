@@ -1,7 +1,7 @@
 package businessLogicLayer;
 
 import DTO.User;
-import dataAccessLayer.Repositories.RepoUser;
+import Repositories.RepoUser;
 
 public class Registration {
 	private RepoUser repoUser = new RepoUser();

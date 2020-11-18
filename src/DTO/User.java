@@ -1,6 +1,7 @@
 package DTO;
 
 import java.awt.Point;
+import java.util.ArrayList;
 
 public class User {
 	private int id;
@@ -13,6 +14,8 @@ public class User {
 	private String phone;
 	private String status;
 	private Point location;
+	private int isDeleted;
+	private ArrayList<UserSavedAddress> userAddresses;
 
 	public int getId() {
 		return id;
@@ -92,5 +95,21 @@ public class User {
 
 	public void setLocation(Point location) {
 		this.location = location;
+	}
+
+	public int getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(int isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	public ArrayList<UserSavedAddress> getUserAddresses() {
+		return userAddresses;
+	}
+
+	public void setUserAddresses(ArrayList<UserSavedAddress> userAddresses) {
+		this.userAddresses = userAddresses;
 	}
 }

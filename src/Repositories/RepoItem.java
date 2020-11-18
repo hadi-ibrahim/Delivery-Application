@@ -1,4 +1,4 @@
-package dataAccessLayer.Repositories;
+package Repositories;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,42 +7,43 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import DTO.Warehouse;
-import dataAccessLayer.Helpers.ConnectionManager;
+import DTO.Item;
+import Helpers.ConnectionManager;
 
-public class RepoWarehouse {
-
+public class RepoItem {
 	Connection con = null;
 	Statement stmt = null;
 	ResultSet rs = null;
 	PreparedStatement ps = null;
 
 
-	public RepoWarehouse() {
+	public RepoItem() {
 		con = ConnectionManager.getConnection();
 	}
 
-	private Warehouse extractWarehouseFromResultSet(ResultSet resultSet) {
+	private Item extractItemFromResultSet(ResultSet resultSet) {
 		try {
-			Warehouse warehouse = new Warehouse();
-			warehouse.setId(resultSet.getInt("id"));
-			warehouse.setIdAddress(resultSet.getInt("idAddress"));
-			warehouse.setIsDeleted(resultSet.getInt("isDeleted"));
-			return warehouse;
+			Item item = new Item();
+			item.setId(resultSet.getInt("id"));
+			item.setPrice(resultSet.getDouble("price"));
+			item.setCategory(resultSet.getString("category"));
+			item.setDescription(resultSet.getString("description"));
+			item.setIsDeleted(resultSet.getInt("isDeleted"));
+			return item;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public Warehouse get(int id) {
-		Warehouse warehouse = null;
+	public Item get(int id) {
+		Item item = null;
 		try {
-			ps = con.prepareStatement("SELECT * FROM warehouse WHERE id=?");
+			ps = con.prepareStatement("SELECT * FROM item WHERE id=?");
 			ps.setInt(1, id);
 			if (rs.next()) {
-				warehouse = extractWarehouseFromResultSet(rs);
-				return warehouse;
+				item = extractItemFromResultSet(rs);
+				return item;
 			}
 		} catch (SQLException ex) {
 			System.out.println(ex);
@@ -52,23 +53,23 @@ public class RepoWarehouse {
 	}
 	
 	
-	public ArrayList<Warehouse> getAll() {
-		ArrayList<Warehouse> LstOfWarehouse = new ArrayList<Warehouse>();
+	public ArrayList<Item> getAll() {
+		ArrayList<Item> LstOfItems = new ArrayList<Item>();
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From warehouse");
+			rs = stmt.executeQuery("Select * From item");
 			while (rs.next()) {
-				LstOfWarehouse.add(extractWarehouseFromResultSet(rs));
+				LstOfItems.add(extractItemFromResultSet(rs));
 			}
 		} catch (SQLException ex) {
 			System.out.println(ex);
 		}
-		return LstOfWarehouse;
+		return LstOfItems;
 	}
 	
 	public boolean exists(int id) {
 		try {
-			ps = con.prepareStatement("SELECT * FROM warehouse WHERE id=?");
+			ps = con.prepareStatement("SELECT * FROM item WHERE id=?");
 			ps.setInt(1, id);
 			if (rs.next()) {
 				return true;
@@ -81,10 +82,12 @@ public class RepoWarehouse {
 		
 	}
 	
-	public boolean create(Warehouse warehouse) {
+	public boolean create(Item item) {
 		try {
-			ps = con.prepareStatement("INSERT INTO warehouse(id,idAddress,isDeleted) Values(Null,?,0)");
-			ps.setInt(1, warehouse.getIdAddress());
+			ps = con.prepareStatement("INSERT INTO item(id,price,description,category,isDeleted) Values(Null,?,?,?,0)");
+			ps.setDouble(1, item.getPrice());
+			ps.setString(2, item.getDescription());
+			ps.setString(3, item.getCategory());
 			System.out.println(ps.executeUpdate() + " record(s) created");
 
 		} catch (SQLException ex) {
@@ -94,12 +97,15 @@ public class RepoWarehouse {
 		return true;
 	}
 
-	public boolean update(Warehouse warehouse) {
+	public boolean update(Item item) {
 		try {
-			ps = con.prepareStatement("UPDATE warehouse SET idAddress=?,isDeleted=? WHERE id=?");
-			ps.setInt(1, warehouse.getIdAddress());
-			ps.setInt(2, warehouse.getIsDeleted());
-			ps.setInt(3, warehouse.getId());
+			ps = con.prepareStatement("UPDATE item SET price=?,description=?, category=?, isDeleted=? WHERE id=?");
+			ps.setDouble(1, item.getPrice());
+			ps.setString(2, item.getDescription());
+			ps.setString(3, item.getCategory());
+			ps.setInt(4, item.getIsDeleted());
+			ps.setInt(5, item.getId());
+
 			System.out.println(ps.executeUpdate());
 		} catch (SQLException ex) {
 			System.out.println(ex);
@@ -110,7 +116,7 @@ public class RepoWarehouse {
 
 	public boolean delete(int id) {
 		try {
-			ps = con.prepareStatement("Update warehouse set isDeleted=1 WHERE id=?");
+			ps = con.prepareStatement("Update item set isDeleted=1 WHERE id=?");
 			ps.setInt(1, id);
 			System.out.println(ps.executeUpdate() + " records deleted");
 			return true;
@@ -123,7 +129,7 @@ public class RepoWarehouse {
 
 	public boolean restore(int id) {
 		try {
-			ps = con.prepareStatement("Update warehouse set isDeleted=0 WHERE id=?");
+			ps = con.prepareStatement("Update item set isDeleted=0 WHERE id=?");
 			ps.setInt(1, id);
 			System.out.println(ps.executeUpdate() + " records restored");
 		} catch (SQLException ex) {
@@ -133,7 +139,7 @@ public class RepoWarehouse {
 		return true;
 
 	}
-	
+
 	public boolean destroy() {
 		ArrayList<AutoCloseable> components = new ArrayList<AutoCloseable>();
 		components.add((AutoCloseable) ps);
@@ -169,5 +175,4 @@ public class RepoWarehouse {
 			System.out.println(e.getMessage());
 		}
 	}
-
 }
