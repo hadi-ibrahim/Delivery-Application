@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import DTO.User;
 import Helpers.ConnectionManager;
+import Helpers.SessionHelper;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class RepoUser {
@@ -31,9 +32,9 @@ public class RepoUser {
         user.setLastname(resultSet.getString("lastName"));
         user.setAge(resultSet.getInt("age"));
         user.setPassword(resultSet.getString("password"));
-        user.setRole(resultSet.getString("role"));
+        user.setIdRole(resultSet.getInt("idRole"));
         user.setPhone(resultSet.getString("phone"));
-        user.setStatus(resultSet.getString("status"));
+        user.setIdStatus(resultSet.getInt("IdStatus"));
         Point point = (Point)resultSet.getObject("location");
         user.setLocation(point);
         user.setIsDeleted(resultSet.getInt("isDeleted"));
@@ -74,14 +75,13 @@ public class RepoUser {
 
     public boolean Create(User user) {
         try {
-            ps = con.prepareStatement("INSERT INTO user(id,firstName,lastName,age,email,password,role,phone,isDeleted) VALUE(NULL,?,?,?,?,?,?,?,0);");
+            ps = con.prepareStatement("INSERT INTO user(id,firstName,lastName,age,email,password,idRole,phone,isDeleted) VALUE(NULL,?,?,?,?,?,1,?,0);");
             ps.setString(1, user.getFirstname());
             ps.setString(2, user.getLastname());
             ps.setInt(3, user.getAge());
             ps.setString(4, user.getEmail());
             ps.setString(5, BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray()));
-            ps.setString(6, user.getRole());
-            ps.setString(7,user.getPhone());
+            ps.setString(6,user.getPhone());
 
             System.out.println(ps.executeUpdate() + " record(s) created");
         } catch (SQLException ex) {
@@ -93,13 +93,13 @@ public class RepoUser {
     
     public boolean UpdateUser(User user) {
     	 try {
-             ps = con.prepareStatement("UPDATE user SET firstName=?,lastName=?, age=?, email=?, password=?, role=?, phone=?,isDeleted=? WHERE id=?");
+             ps = con.prepareStatement("UPDATE user SET firstName=?,lastName=?, age=?, email=?, password=?, idRole=?, phone=?,isDeleted=? WHERE id=?");
              ps.setString(1, user.getFirstname());
              ps.setString(2, user.getLastname());
              ps.setInt(3, user.getAge());
              ps.setString(4, user.getEmail());
              ps.setString(5, user.getPassword());
-             ps.setString(6, user.getRole());
+             ps.setInt(6, user.getIdRole());
              ps.setString(7,user.getPhone());
              ps.setInt(8, user.getIsDeleted());
              ps.setInt(9, user.getId());
@@ -112,15 +112,15 @@ public class RepoUser {
      }
     public boolean UpdateDriver(User user) {
     	 try {
-             ps = con.prepareStatement("UPDATE user SET firstName=?,lastName=?, age=?, email=?, password=?, role=?, phone=?, status=?,location=POINT(?,?),isDeleted=? WHERE id=?");
+             ps = con.prepareStatement("UPDATE user SET firstName=?,lastName=?, age=?, email=?, password=?, idRole=?, phone=?, IdStatus=?,location=POINT(?,?),isDeleted=? WHERE id=?");
              ps.setString(1, user.getFirstname());
              ps.setString(2, user.getLastname());
              ps.setInt(3, user.getAge());
              ps.setString(4, user.getEmail());
              ps.setString(5, user.getPassword());
-             ps.setString(6, user.getRole());
+             ps.setInt(6, user.getIdRole());
              ps.setString(7,user.getPhone());
-             ps.setString(8, user.getStatus());
+             ps.setInt(8, user.getIdStatus());
              ps.setDouble(9, user.getLocation().getX());
              ps.setDouble(10,user.getLocation().getY());
              ps.setInt(11, user.getIsDeleted());
@@ -151,7 +151,7 @@ public class RepoUser {
     
     public boolean setAvailable(int idDriver) {
     	try {
-    	 ps = con.prepareStatement("UPDATE user SET status=? WHERE id=?");
+    	 ps = con.prepareStatement("UPDATE user SET IdStatus=? WHERE id=?");
     	 ps.setString(1, "Available");
     	 ps.setInt(2, idDriver);
     	 return true;
@@ -162,7 +162,7 @@ public class RepoUser {
 	}
     public boolean setBusy(int idDriver) {
     	try {
-    	 ps = con.prepareStatement("UPDATE user SET status=? WHERE id=?");
+    	 ps = con.prepareStatement("UPDATE user SET IdStatus=? WHERE id=?");
     	 ps.setString(1, "Busy");
     	 ps.setInt(2, idDriver);
     	 return true;
@@ -209,6 +209,7 @@ public class RepoUser {
 
     public User Login(String email, String password) {
     	try {
+    		
             ps = con.prepareStatement("SELECT * FROM USER WHERE email=?");
             ps.setString(1,email);
             rs=ps.executeQuery();
@@ -220,6 +221,5 @@ public class RepoUser {
     	}
     	return null;
     }
-
 	
 }

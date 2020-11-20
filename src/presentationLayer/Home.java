@@ -283,6 +283,8 @@ public class Home extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				signIn();
+				test frame = new test();
+				frame.setVisible(true);
 			}
 		});
 		

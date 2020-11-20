@@ -10,9 +10,9 @@ public class User {
 	private int age;
 	private String email;
 	private String password;
-	private String role;
+	private int idRole;
 	private String phone;
-	private String status;
+	private int idStatus;
 	private Point location;
 	private int isDeleted;
 	private ArrayList<UserSavedAddress> userAddresses;
@@ -65,12 +65,12 @@ public class User {
 		this.password = password;
 	}
 
-	public String getRole() {
-		return role;
+	public int getIdRole() {
+		return idRole;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setIdRole(int IdRole) {
+		this.idRole = IdRole;
 	}
 
 	public String getPhone() {
@@ -81,12 +81,12 @@ public class User {
 		this.phone = phone;
 	}
 
-	public String getStatus() {
-		return status;
+	public int getIdStatus() {
+		return idStatus;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setIdStatus(int idStatus) {
+		this.idStatus = idStatus;
 	}
 
 	public Point getLocation() {
