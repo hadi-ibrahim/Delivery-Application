@@ -8,218 +8,187 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import DTO.DriverStatus;
+import DTO.Location;
+import DTO.Role;
 import DTO.User;
 import Helpers.ConnectionManager;
 import Helpers.SessionHelper;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class RepoUser {
-    Connection con = null;
-    Statement stmt = null;
-    ResultSet rs = null;
-    PreparedStatement ps = null;
+	Connection con = null;
+	Statement stmt = null;
+	ResultSet rs = null;
+	PreparedStatement ps = null;
 
-    public RepoUser() {
-        con = ConnectionManager.getConnection();
-    }
-
-    private User extractUserFromResultSet(ResultSet resultSet) {
-        try {
-    	User user = new User();
-        user.setId(resultSet.getInt("id"));
-        user.setEmail(resultSet.getString("email"));
-        user.setFirstname(resultSet.getString("firstName"));
-        user.setLastname(resultSet.getString("lastName"));
-        user.setAge(resultSet.getInt("age"));
-        user.setPassword(resultSet.getString("password"));
-        user.setIdRole(resultSet.getInt("idRole"));
-        user.setPhone(resultSet.getString("phone"));
-        user.setIdStatus(resultSet.getInt("IdStatus"));
-        Point point = (Point)resultSet.getObject("location");
-        user.setLocation(point);
-        user.setIsDeleted(resultSet.getInt("isDeleted"));
-        return user;
-        }catch(SQLException e) {
-        	e.printStackTrace();
-        }
-        return null;
-    }
-    
-    public User Get(int id) {
-        User user = null;
-        try {
-            ps = con.prepareStatement("SELECT * FROM user WHERE id=?");
-            ps.setInt(1, id);
-            if (rs.next()) {
-                user = extractUserFromResultSet(rs);
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex);
-        }
-        return user;
-    }
-
-    public ArrayList<User> GetAll() {
-        ArrayList<User> LstOfUsers = new ArrayList<User>();
-        try {
-            stmt = con.createStatement();
-            rs = stmt.executeQuery("Select * From user");
-            while (rs.next()) {
-                LstOfUsers.add(extractUserFromResultSet(rs));
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex);
-        }
-        return LstOfUsers;
-    }
-
-    public boolean Create(User user) {
-        try {
-            ps = con.prepareStatement("INSERT INTO user(id,firstName,lastName,age,email,password,idRole,phone,isDeleted) VALUE(NULL,?,?,?,?,?,1,?,0);");
-            ps.setString(1, user.getFirstname());
-            ps.setString(2, user.getLastname());
-            ps.setInt(3, user.getAge());
-            ps.setString(4, user.getEmail());
-            ps.setString(5, BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray()));
-            ps.setString(6,user.getPhone());
-
-            System.out.println(ps.executeUpdate() + " record(s) created");
-        } catch (SQLException ex) {
-            System.out.println(ex);
-            return false;
-        }
-        return true;
-    }
-    
-    public boolean UpdateUser(User user) {
-    	 try {
-             ps = con.prepareStatement("UPDATE user SET firstName=?,lastName=?, age=?, email=?, password=?, idRole=?, phone=?,isDeleted=? WHERE id=?");
-             ps.setString(1, user.getFirstname());
-             ps.setString(2, user.getLastname());
-             ps.setInt(3, user.getAge());
-             ps.setString(4, user.getEmail());
-             ps.setString(5, user.getPassword());
-             ps.setInt(6, user.getIdRole());
-             ps.setString(7,user.getPhone());
-             ps.setInt(8, user.getIsDeleted());
-             ps.setInt(9, user.getId());
-             System.out.println(ps.executeUpdate());
-         } catch (SQLException ex) {
-             System.out.println(ex);
-             return false;
-         }
-         return true;
-     }
-    public boolean UpdateDriver(User user) {
-    	 try {
-             ps = con.prepareStatement("UPDATE user SET firstName=?,lastName=?, age=?, email=?, password=?, idRole=?, phone=?, IdStatus=?,location=POINT(?,?),isDeleted=? WHERE id=?");
-             ps.setString(1, user.getFirstname());
-             ps.setString(2, user.getLastname());
-             ps.setInt(3, user.getAge());
-             ps.setString(4, user.getEmail());
-             ps.setString(5, user.getPassword());
-             ps.setInt(6, user.getIdRole());
-             ps.setString(7,user.getPhone());
-             ps.setInt(8, user.getIdStatus());
-             ps.setDouble(9, user.getLocation().getX());
-             ps.setDouble(10,user.getLocation().getY());
-             ps.setInt(11, user.getIsDeleted());
-             ps.setInt(12, user.getId());
-             
-             
-             System.out.println(ps.executeUpdate());
-         } catch (SQLException ex) {
-             System.out.println(ex);
-             return false;
-         }
-         return true;
-     }
-    
-
-    //TODO to adjust to soft delete
-    public boolean Delete(User user) {
-        try {
-            ps = con.prepareStatement("Update user set isDeleted=1 WHERE id=?");
-            ps.setInt(1, user.getId());
-            System.out.println(ps.executeUpdate() + " records deleted");
-        } catch (SQLException ex) {
-            System.out.println(ex);
-            return false;
-        }
-        return true;
-    }
-    
-    public boolean setAvailable(int idDriver) {
-    	try {
-    	 ps = con.prepareStatement("UPDATE user SET IdStatus=? WHERE id=?");
-    	 ps.setString(1, "Available");
-    	 ps.setInt(2, idDriver);
-    	 return true;
-    	}catch(SQLException e) {
-    		return false;
-    	}
-		
+	public RepoUser() {
+		con = ConnectionManager.getConnection();
 	}
-    public boolean setBusy(int idDriver) {
-    	try {
-    	 ps = con.prepareStatement("UPDATE user SET IdStatus=? WHERE id=?");
-    	 ps.setString(1, "Busy");
-    	 ps.setInt(2, idDriver);
-    	 return true;
-    	}catch(SQLException e) {
-    		return false;
-    	}
-		
+
+	private User extractUserFromResultSet(ResultSet resultSet) {
+		try {
+			User user = new User();
+			user.setId(resultSet.getInt("id"));
+			user.setEmail(resultSet.getString("email"));
+			user.setFirstname(resultSet.getString("firstName"));
+			user.setLastname(resultSet.getString("lastName"));
+			user.setAge(resultSet.getInt("age"));
+			user.setPassword(resultSet.getString("password"));
+			user.setRole(resultSet.getString("role"));
+			user.setPhone(resultSet.getString("phone"));
+			System.out.println(resultSet.getString("driverStatus"));
+			if (resultSet.getString("driverStatus") != null)
+				user.setDriverStatus(resultSet.getString("driverStatus"));
+			user.setLocation(new Location(resultSet.getDouble("longitude"), resultSet.getDouble("latitude")));
+			user.setIsDeleted(resultSet.getInt("isDeleted"));
+			return user;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
-    public boolean Destroy() {
-    	ArrayList  <AutoCloseable> components = new ArrayList<AutoCloseable>(); 
-    	components.add((AutoCloseable) ps);
-    	components.add((AutoCloseable) rs);
-    	components.add((AutoCloseable) con);
-    	components.add((AutoCloseable) stmt);
-    	closeComponents(components);
 
-        if (ConnectionManager.IsConnectionOpened()) 
-            ConnectionManager.Close();
+	public User Get(int id) {
+		User user = null;
+		try {
+			ps = con.prepareStatement("SELECT * FROM user WHERE id=?");
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				user = extractUserFromResultSet(rs);
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return user;
+	}
 
-        try {
-            this.finalize();
-        } catch (Throwable ex) {
-            System.out.println(ex);
-            return false;
-        }
+	public ArrayList<User> GetAll() {
+		ArrayList<User> LstOfUsers = new ArrayList<User>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From user");
+			while (rs.next()) {
+				LstOfUsers.add(extractUserFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return LstOfUsers;
+	}
 
-        return true;
-    }
-        
-    public void closeComponents(ArrayList<AutoCloseable> components) {
-    	for (AutoCloseable component :components) {
-    		closeComponent(component);
-    	}
-    }
-    
-    public void closeComponent(AutoCloseable component){
-   		try {
-   			if(component!=null)
-   				component.close();
-   		} catch (Exception e) {
-   			System.out.println(e.getMessage());
-   		}
-    }
+	public boolean Create(User user) {
+		try {
+			ps = con.prepareStatement(
+					"INSERT INTO user(id,firstName,lastName,age,email,password,role,phone,isDeleted) VALUE(NULL,?,?,?,?,?,?,?,0);");
+			ps.setString(1, user.getFirstname());
+			ps.setString(2, user.getLastname());
+			ps.setInt(3, user.getAge());
+			ps.setString(4, user.getEmail());
+			ps.setString(5, BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray()));
+			ps.setString(6, Role.CUSTOMER.name());
+			ps.setString(7, user.getPhone());
 
-    public User Login(String email, String password) {
-    	try {
-    		
-            ps = con.prepareStatement("SELECT * FROM USER WHERE email=?");
-            ps.setString(1,email);
-            rs=ps.executeQuery();
-            if(!rs.next()) return null;
-            if (BCrypt.verifyer().verify(password.toCharArray(), rs.getString("password")).verified)
-                return extractUserFromResultSet(rs);
-    	} catch(SQLException ex) {
-    		System.out.println(ex);    
-    	}
-    	return null;
-    }
-	
+			System.out.println(ps.executeUpdate() + " record(s) created");
+		} catch (SQLException ex) {
+			System.out.println(ex);
+			return false;
+		}
+		return true;
+	}
+
+	public boolean Update(User user) {
+		try {
+			ps = con.prepareStatement(
+					"UPDATE user SET firstName=?,lastName=?, age=?, email=?, password=?, role=?, phone=?, driverStatus=?,longitude= ?,latitude =?,isDeleted=? WHERE id=?");
+			ps.setString(1, user.getFirstname());
+			ps.setString(2, user.getLastname());
+			ps.setInt(3, user.getAge());
+			ps.setString(4, user.getEmail());
+			ps.setString(5, user.getPassword());
+			ps.setString(6, user.getRole().name());
+			ps.setString(7, user.getPhone());
+			if (user.getDriverStatus() != null)
+				ps.setString(8, user.getDriverStatus().name());
+			else
+				ps.setString(8, null);
+			ps.setDouble(9, user.getLocation().getLongitude());
+			ps.setDouble(10, user.getLocation().getLatitude());
+			ps.setInt(11, user.getIsDeleted());
+			ps.setInt(12, user.getId());
+
+			System.out.println(ps.executeUpdate() + " row updated");
+		} catch (SQLException ex) {
+			System.out.println(ex);
+			return false;
+		}
+		return true;
+	}
+
+	// TODO to adjust to soft delete
+	public boolean Delete(User user) {
+		try {
+			ps = con.prepareStatement("Update user set isDeleted=1 WHERE id=?");
+			ps.setInt(1, user.getId());
+			System.out.println(ps.executeUpdate() + " records deleted");
+		} catch (SQLException ex) {
+			System.out.println(ex);
+			return false;
+		}
+		return true;
+	}
+
+	public boolean Destroy() {
+		ArrayList<AutoCloseable> components = new ArrayList<AutoCloseable>();
+		components.add((AutoCloseable) ps);
+		components.add((AutoCloseable) rs);
+		components.add((AutoCloseable) con);
+		components.add((AutoCloseable) stmt);
+		closeComponents(components);
+
+		if (ConnectionManager.IsConnectionOpened())
+			ConnectionManager.Close();
+
+		try {
+			this.finalize();
+		} catch (Throwable ex) {
+			System.out.println(ex);
+			return false;
+		}
+
+		return true;
+	}
+
+	public void closeComponents(ArrayList<AutoCloseable> components) {
+		for (AutoCloseable component : components) {
+			closeComponent(component);
+		}
+	}
+
+	public void closeComponent(AutoCloseable component) {
+		try {
+			if (component != null)
+				component.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public User Login(String email, String password) {
+		try {
+
+			ps = con.prepareStatement("SELECT * FROM USER WHERE email=?");
+			ps.setString(1, email);
+			rs = ps.executeQuery();
+			if (!rs.next())
+				return null;
+			if (BCrypt.verifyer().verify(password.toCharArray(), rs.getString("password")).verified)
+				return extractUserFromResultSet(rs);
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return null;
+	}
+
 }

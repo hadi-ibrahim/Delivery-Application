@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import DTO.Role;
 import DTO.User;
 import businessLogicLayer.Registration;
 
@@ -376,6 +377,7 @@ public class Home extends JFrame {
 		user.setPhone(this.phoneNumberField.getText());
 		user.setEmail(this.emailFieldSignUp.getText());
 		user.setPassword(this.passwordFieldSignUp.getText());
+		user.setRole(Role.CUSTOMER);
 		user= registration.signUp(user);
 		if (user!= null) {
 			System.out.println("signup successful! ");

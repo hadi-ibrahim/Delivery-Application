@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
+import DTO.Location;
 import DTO.Order;
 import Helpers.ConnectionManager;
 
@@ -28,9 +30,9 @@ public class RepoOrder {
 		order.setIdDriver(resultSet.getInt("idDriver"));
 		order.setStartDate(resultSet.getTimestamp("startDate"));
 		order.setEndDate(resultSet.getTimestamp("endDate"));
-		order.setStatus(resultSet.getString("status"));
+		order.setOrderStatus(resultSet.getString("status"));
 		order.setTotalAmount(resultSet.getDouble("totalAmount"));
-		order.setLocationDestination((Point) resultSet.getObject("locationDestination"));
+		order.setLocationDestination(new Location(resultSet.getDouble("longitude"), resultSet.getDouble("latitude")));
 		return order;
 
 	}
@@ -66,11 +68,12 @@ public class RepoOrder {
 	public boolean create(Order order) {
 		try {
 			ps = con.prepareStatement(
-					"Insert into order(id,idCustomer,idDriver,locationDestination,dateStart,dateEnd,status,totalAmount) VALUES(NULL,?,NULL,POINT(?,?),NOW(),NULL,'Pending',?");
+					"Insert into order(id,idCustomer,idDriver,longitude, latitude ,dateStart,dateEnd,orderStatus,totalAmount) VALUES(NULL,?,NULL,?,?,NOW(),NULL,?,?");
 			ps.setInt(1, order.getIdCustomer());
-			ps.setDouble(2, order.getLocationDestination().getX());
-			ps.setDouble(3, order.getLocationDestination().getY());
-			ps.setDouble(4, order.getTotalAmount());
+			ps.setDouble(2, order.getLocationDestination().getLongitude());
+			ps.setDouble(3, order.getLocationDestination().getLatitude());
+			ps.setString(4, order.getStatus().name());
+			ps.setDouble(5, order.getTotalAmount());
 			return true;
 		} catch (SQLException e) {
 			System.out.println(e);
@@ -78,59 +81,108 @@ public class RepoOrder {
 		}
 
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	/* to be replaced with:  
+	  user.setDriverStatus(AVAILABLE)
+	  order.setOrderStatus(CANCELED)
+	  RepoUser.update(user)
+	  RepoOrder.update(order)
+	  For the end date, create a trigger on order update
+	  => if status = canceled or status = completed, then set endDate = now()
+	  
+	  */
+	
 
-	public boolean cancelOrder(Order order) {
-		if (order.getIdDriver() > 0)
-			repoUser.setAvailable(order.getIdDriver());
-		try {
-			ps = con.prepareStatement("Update order SET status='Cancelled', endDate=Now() where idOrder=?");
-			ps.setInt(1, order.getId());
-			return true;
-		} catch (SQLException ex) {
-			System.out.println(ex);
-			return false;
-		}
-	}
+//	public boolean cancelOrder(Order order) {
+//		if (order.getIdDriver() > 0) 
+//			repoUser.setAvailable(order.getIdDriver());
+//		try {
+//			ps = con.prepareStatement("Update order SET status='Cancelled', endDate=Now() where idOrder=?");
+//			ps.setInt(1, order.getId());
+//			return true;
+//		} catch (SQLException ex) {
+//			System.out.println(ex);
+//			return false;
+//		}
+//	}
 
-	public boolean finishOrder(Order order) {
-		if (order.getIdDriver() > 0)
-			repoUser.setAvailable(order.getIdDriver());
-		try {
-			ps = con.prepareStatement("Update order SET status='finished', endDate=Now() where idOrder=?");
-			ps.setInt(1, order.getId());
-			return true;
-		} catch (SQLException ex) {
-			System.out.println(ex);
-			return false;
-		}
-	}
+	
+	
+	
+	
+	
+	
+	
+	
+	/* same as above */
+	
+//	public boolean finishOrder(Order order) {
+//		if (order.getIdDriver() > 0)
+//			repoUser.setAvailable(order.getIdDriver());
+//		try {
+//			ps = con.prepareStatement("Update order SET status='finished', endDate=Now() where idOrder=?");
+//			ps.setInt(1, order.getId());
+//			return true;
+//		} catch (SQLException ex) {
+//			System.out.println(ex);
+//			return false;
+//		}
+//	}
 
-	public boolean acceptOrder(Order order, int idDriver) {
-		repoUser.setBusy(idDriver);
-		order.setIdDriver(idDriver);
-		try {
-			ps = con.prepareStatement("Update order SET status='Pending Delivery',idDriver=? where idOrder=?");
-			ps.setInt(1, order.getIdDriver());
-			ps.setInt(2, order.getId());
-			return true;
-		} catch (SQLException ex) {
-			System.out.println(ex);
-			return false;
-		}
-	}
+	
+	
+	/* again, order.status= "Pending"
+	  driver.status = "busy"
+	  order.idDriver= driver.id
+	  RepoUser.update(driver)
+	  RepoOrder.update(Order)
+	 
+	 */
+	
+	
+//	public boolean acceptOrder(Order order, int idDriver) {
+//		repoUser.setBusy(idDriver);
+//		order.setIdDriver(idDriver);
+//		try {
+//			ps = con.prepareStatement("Update order SET status='Pending Delivery',idDriver=? where idOrder=?");
+//			ps.setInt(1, order.getIdDriver());
+//			ps.setInt(2, order.getId());
+//			return true;
+//		} catch (SQLException ex) {
+//			System.out.println(ex);
+//			return false;
+//		}
+//	}
 
-	public boolean addRouteCheckpoint(Order order) {
-		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("INSERT INTO RouteCheckpoint(id,idOrder,time,location) Values(NULL," + order.getId()+",Now()," + repoUser.Get(order.getIdDriver()).getLocation() + ")");
-			if (rs.next())
-				return true;
-		} catch (SQLException ex) {
-			System.out.println(ex);
-			return false;
-		}
-		return false;
-	}
+	
+	
+	
+	
+	
+	/* can be completely skipped with a trigger on order update 
+	  	if status is still pending THEN 
+	  	insert into routeCheckpoint(NULL, NEW.orderId, NOW(), driver's location)
+	  
+	  */
+//	public boolean addRouteCheckpoint(Order order) {
+//		try {
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery("INSERT INTO RouteCheckpoint(id,idOrder,time,location) Values(NULL," + order.getId()+",Now()," + repoUser.Get(order.getIdDriver()).getLocation() + ")");
+//			if (rs.next())
+//				return true;
+//		} catch (SQLException ex) {
+//			System.out.println(ex);
+//			return false;
+//		}
+//		return false;
+//	}
 
 	public boolean destroy() {
 		repoUser.Destroy();

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import DTO.Category;
 import DTO.Item;
 import Helpers.ConnectionManager;
 
@@ -41,6 +42,8 @@ public class RepoItem {
 		try {
 			ps = con.prepareStatement("SELECT * FROM item WHERE id=?");
 			ps.setInt(1, id);
+			rs= ps.executeQuery();
+
 			if (rs.next()) {
 				item = extractItemFromResultSet(rs);
 				return item;
@@ -84,10 +87,10 @@ public class RepoItem {
 	
 	public boolean create(Item item) {
 		try {
-			ps = con.prepareStatement("INSERT INTO item(id,price,description,category,isDeleted) Values(Null,?,?,?,0)");
+			ps = con.prepareStatement("INSERT INTO item(id,price,description,category,isDeleted) Values(NULL,?,?,?,0)");
 			ps.setDouble(1, item.getPrice());
 			ps.setString(2, item.getDescription());
-			ps.setString(3, item.getCategory());
+			ps.setString(3, item.getCategory().name());
 			System.out.println(ps.executeUpdate() + " record(s) created");
 
 		} catch (SQLException ex) {
@@ -102,7 +105,7 @@ public class RepoItem {
 			ps = con.prepareStatement("UPDATE item SET price=?,description=?, category=?, isDeleted=? WHERE id=?");
 			ps.setDouble(1, item.getPrice());
 			ps.setString(2, item.getDescription());
-			ps.setString(3, item.getCategory());
+			ps.setString(3, item.getCategory().name());
 			ps.setInt(4, item.getIsDeleted());
 			ps.setInt(5, item.getId());
 

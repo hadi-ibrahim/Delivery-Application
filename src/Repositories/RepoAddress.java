@@ -1,6 +1,9 @@
 package Repositories;
 
 import java.awt.Point;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +12,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import DTO.Address;
+import DTO.Location;
 import Helpers.ConnectionManager;
 
 public class RepoAddress {
@@ -29,7 +33,7 @@ public class RepoAddress {
 			address.setStreet(resultSet.getString("street"));
 			address.setBuilding(resultSet.getString("building"));
 			address.setFloor(resultSet.getString("floor"));
-			address.setLocation((Point) resultSet.getObject("location"));
+			address.setLocation(new Location(resultSet.getDouble("longitude"), resultSet.getDouble("latitude")));
 			return address;
 		} catch (SQLException e) {
 			System.out.println(e);
@@ -40,9 +44,9 @@ public class RepoAddress {
 
 	public Address get(int id) {
 		try {
-			stmt = con.createStatement();
-
-			rs = stmt.executeQuery("Select * From address where id=" + id);
+			ps = con.prepareStatement("SELECT * FROM address WHERE id=?");
+			ps.setInt(1, id);
+			rs= ps.executeQuery();
 			if (rs.next())
 				return extractAddressFromResultSet(rs);
 		} catch (SQLException e) {
@@ -55,13 +59,15 @@ public class RepoAddress {
 	public boolean create(Address address) {
 		try {
 			ps = con.prepareStatement(
-					"Insert into address(id,city,street,building,floor,location,isDeleted) Values(NULL,?,?,?,?,Point(?,?),0)");
+					"Insert into address(id,city,street,building,floor,longitude,latitude) Values(NULL,?,?,?,?,?,?)");
 			ps.setString(1, address.getCity());
 			ps.setString(2, address.getStreet());
 			ps.setString(3, address.getBuilding());
 			ps.setString(4, address.getFloor());
-			ps.setDouble(5, address.getLocation().getX());
-			ps.setDouble(6, address.getLocation().getY());
+			
+			ps.setDouble(5, address.getLocation().getLongitude());
+			
+			ps.setDouble(6, address.getLocation().getLatitude());
 			System.out.println(ps.executeUpdate() + " record(s) created");
 			return true;
 		} catch (SQLException e) {
@@ -73,15 +79,14 @@ public class RepoAddress {
 	public boolean update(Address address) {
 		try {
 			ps = con.prepareStatement(
-					"Update address SET city=?,street=?,building=?,floor=?,location=(?,?),isDeleted=?  where id=?");
+					"Update address SET city=?,street=?,building=?,floor=?,longitude=?, latitude=? where id=?");
 			ps.setString(1, address.getCity());
 			ps.setString(2, address.getStreet());
 			ps.setString(3, address.getBuilding());
 			ps.setString(4, address.getFloor());
-			ps.setDouble(5, address.getLocation().getX());
-			ps.setDouble(6, address.getLocation().getY());
-			ps.setInt(7, address.getIsDeleted());
-			ps.setInt(8, address.getId());
+			ps.setDouble(5, address.getLocation().getLongitude());
+			ps.setDouble(6, address.getLocation().getLatitude());
+			ps.setInt(7, address.getId());
 			System.out.println(ps.executeUpdate() + " record(s) updated");
 			return true;
 		} catch (SQLException e) {
@@ -90,18 +95,18 @@ public class RepoAddress {
 		}
 	}
 
-	public boolean Delete(Address address) {
-		try {
-			ps = con.prepareStatement("Update address SET isDeleted=1  where id=?");
-			ps.setInt(1, address.getId());
-			System.out.println(ps.executeUpdate() + " record(s) deleted");
-			return true;
-		} catch (SQLException e) {
-			System.out.println(e);
-			return false;
-		}
-
-	}
+//	public boolean Delete(Address address) {
+//		try {
+//			ps = con.prepareStatement("Update address SET isDeleted=1  where id=?");
+//			ps.setInt(1, address.getId());
+//			System.out.println(ps.executeUpdate() + " record(s) deleted");
+//			return true;
+//		} catch (SQLException e) {
+//			System.out.println(e);
+//			return false;
+//		}
+//
+//	}
 
 	public boolean destroy() {
 		ArrayList<AutoCloseable> components = new ArrayList<AutoCloseable>();
@@ -138,4 +143,5 @@ public class RepoAddress {
 			System.out.println(e.getMessage());
 		}
 	}
+	
 }

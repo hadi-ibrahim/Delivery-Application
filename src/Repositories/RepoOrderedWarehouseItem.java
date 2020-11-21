@@ -1,5 +1,5 @@
 package Repositories;
-
+/*
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -75,13 +75,19 @@ public class RepoOrderedWarehouseItem {
 		return false;
 	}
 
-	public boolean cancelOrder(Order order) {
-		repoOrder.cancelOrder(order);
-		for(OrderedWarehouseItem item : this.getOrderedItems(order.getId())) {
-		repoWarehouseItem.addStockByWarehouse(new WarehouseItem(item.getIdWarehouse(),item.getIdItem(),item.getQuantity()));
-		}
-		return true;
-	}
+	
+	
+//	public boolean cancelOrder(Order order) {
+//		repoOrder.cancelOrder(order);
+//		for(OrderedWarehouseItem item : this.getOrderedItems(order.getId())) {
+//		repoWarehouseItem.addStockByWarehouse(new WarehouseItem(item.getIdWarehouse(),item.getIdItem(),item.getQuantity()));
+//		}
+//		return true;
+//	}
+	
+	
+	
+	
 	public boolean destroy() {
 		repoWarehouseItem.destroy();
 		repoOrder.destroy();
@@ -120,3 +126,56 @@ public class RepoOrderedWarehouseItem {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TODO ! important 
+This class does not deserve a repository, as it can be replaced with simple logic and placed 
+in the business logic layer. example on RepoTester
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/

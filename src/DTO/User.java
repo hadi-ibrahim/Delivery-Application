@@ -10,10 +10,10 @@ public class User {
 	private int age;
 	private String email;
 	private String password;
-	private int idRole;
+	private Role role;
 	private String phone;
-	private int idStatus;
-	private Point location;
+	private DriverStatus driverStatus;
+	private Location location;
 	private int isDeleted;
 	private ArrayList<UserSavedAddress> userAddresses;
 
@@ -65,12 +65,16 @@ public class User {
 		this.password = password;
 	}
 
-	public int getIdRole() {
-		return idRole;
+	public Role getRole() {
+		return role;
 	}
 
-	public void setIdRole(int IdRole) {
-		this.idRole = IdRole;
+	public void setRole(Role role) {
+		this.role = role;
+	}
+	
+	public void setRole(String role) {
+		this.role = Role.valueOf(role);
 	}
 
 	public String getPhone() {
@@ -81,19 +85,23 @@ public class User {
 		this.phone = phone;
 	}
 
-	public int getIdStatus() {
-		return idStatus;
+	public DriverStatus getDriverStatus() {
+		return driverStatus;
 	}
 
-	public void setIdStatus(int idStatus) {
-		this.idStatus = idStatus;
+	public void setDriverStatus(DriverStatus driverStatus) {
+		this.driverStatus = driverStatus;
+	}
+	
+	public void setDriverStatus(String driverStatus) {
+		this.driverStatus = DriverStatus.valueOf(driverStatus);
 	}
 
-	public Point getLocation() {
+	public Location getLocation() {
 		return location;
 	}
 
-	public void setLocation(Point location) {
+	public void setLocation(Location location) {
 		this.location = location;
 	}
 

@@ -8,8 +8,8 @@ public class Address {
 	private String city;
 	private String floor;
 	private String building;
-	private Point location;
-	private int isDeleted;
+	private Location location;
+
 	public int getId() {
 		return id;
 	}
@@ -40,16 +40,12 @@ public class Address {
 	public void setBuilding(String building) {
 		this.building = building;
 	}
-	public Point getLocation() {
+	public Location getLocation() {
 		return location;
 	}
-	public void setLocation(Point location) {
+	public void setLocation(Location location) {
 		this.location = location;
+		
 	}
-	public int getIsDeleted() {
-		return isDeleted;
-	}
-	public void setIsDeleted(int isDeleted) {
-		this.isDeleted = isDeleted;
-	}
+
 }

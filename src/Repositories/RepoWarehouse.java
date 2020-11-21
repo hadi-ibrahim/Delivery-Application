@@ -1,5 +1,8 @@
 package Repositories;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,6 +30,7 @@ public class RepoWarehouse {
 			warehouse.setId(resultSet.getInt("id"));
 			warehouse.setIdAddress(resultSet.getInt("idAddress"));
 			warehouse.setIsDeleted(resultSet.getInt("isDeleted"));
+			warehouse.setName(resultSet.getString("name"));
 			return warehouse;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -39,6 +43,7 @@ public class RepoWarehouse {
 		try {
 			ps = con.prepareStatement("SELECT * FROM warehouse WHERE id=?");
 			ps.setInt(1, id);
+			rs= ps.executeQuery();
 			if (rs.next()) {
 				warehouse = extractWarehouseFromResultSet(rs);
 				return warehouse;
@@ -82,8 +87,9 @@ public class RepoWarehouse {
 	
 	public boolean create(Warehouse warehouse) {
 		try {
-			ps = con.prepareStatement("INSERT INTO warehouse(id,idAddress,isDeleted) Values(Null,?,0)");
+			ps = con.prepareStatement("INSERT INTO warehouse(id,idAddress,isDeleted, name) Values(Null,?,0,?)");
 			ps.setInt(1, warehouse.getIdAddress());
+			ps.setString(2, warehouse.getName());
 			System.out.println(ps.executeUpdate() + " record(s) created");
 
 		} catch (SQLException ex) {
@@ -95,10 +101,11 @@ public class RepoWarehouse {
 
 	public boolean update(Warehouse warehouse) {
 		try {
-			ps = con.prepareStatement("UPDATE warehouse SET idAddress=?,isDeleted=? WHERE id=?");
+			ps = con.prepareStatement("UPDATE warehouse SET idAddress=?,isDeleted=?, name =? WHERE id=?");
 			ps.setInt(1, warehouse.getIdAddress());
 			ps.setInt(2, warehouse.getIsDeleted());
-			ps.setInt(3, warehouse.getId());
+			ps.setString(3, warehouse.getName());
+			ps.setInt(4, warehouse.getId());
 			System.out.println(ps.executeUpdate());
 		} catch (SQLException ex) {
 			System.out.println(ex);
@@ -108,7 +115,7 @@ public class RepoWarehouse {
 	}
 
 	public boolean delete(int id) {
-		repoAddress.Delete(repoAddress.get(this.get(id).getIdAddress()));
+//		repoAddress.Delete(repoAddress.get(this.get(id).getIdAddress()));
 		try {
 			ps = con.prepareStatement("Update warehouse set isDeleted=1 WHERE id=?");
 			ps.setInt(1, id);
@@ -169,5 +176,6 @@ public class RepoWarehouse {
 			System.out.println(e.getMessage());
 		}
 	}
+	
 
 }

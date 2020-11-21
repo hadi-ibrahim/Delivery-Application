@@ -11,9 +11,9 @@ public class Order {
 	private int idDriver;
 	private Timestamp startDate;
 	private Timestamp endDate;
-	private String status;
+	private OrderStatus status;
 	private double totalAmount;
-	private Point locationDestination;
+	private Location locationDestination;
 	private ArrayList<OrderedWarehouseItem> orderedItems = new ArrayList<OrderedWarehouseItem>();
 
 	public ArrayList<OrderedWarehouseItem> getOrderedItems() {
@@ -64,11 +64,15 @@ public class Order {
 		this.endDate = endDate;
 	}
 
-	public String getStatus() {
+	public OrderStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setOrderStatus(String status) {
+		this.status = OrderStatus.valueOf(status);
+	}
+	
+	public void setOrderStatus(OrderStatus status) {
 		this.status = status;
 	}
 
@@ -80,11 +84,11 @@ public class Order {
 		this.totalAmount = totalAmount;
 	}
 
-	public Point getLocationDestination() {
+	public Location getLocationDestination() {
 		return locationDestination;
 	}
 
-	public void setLocationDestination(Point locationDestination) {
+	public void setLocationDestination(Location locationDestination) {
 		this.locationDestination = locationDestination;
 	}
 }
