@@ -4,5 +4,4 @@ public enum Category {
 	FOOD,
 	GROCERY,
 	WEAPONS,
-	DILDOS
 }
