@@ -7,12 +7,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import DTO.Address;
-import DTO.User;
+import DTO.IDTO;
 import DTO.UserSavedAddress;
 import Helpers.ConnectionManager;
 
-public class RepoUserSavedAddress {
+public class RepoUserSavedAddress implements IRepo {
 	Connection con;
 	PreparedStatement ps;
 	Statement stmt;
@@ -29,7 +28,6 @@ public class RepoUserSavedAddress {
 		try {
 			userSavedAddress.setIdAddress(resultSet.getInt("idAddress"));
 			userSavedAddress.setIdUser(resultSet.getInt("idUser"));
-			userSavedAddress.setIsDisabled(resultSet.getInt("isDisabled"));
 			return userSavedAddress;
 		} catch (SQLException e) {
 			System.out.println(e);
@@ -38,30 +36,45 @@ public class RepoUserSavedAddress {
 
 	}
 
-	public ArrayList<UserSavedAddress> getByUser(int idUser) {
-		ArrayList<UserSavedAddress> addresses = new ArrayList<UserSavedAddress>();
+	@Override
+	public UserSavedAddress get(int id) {
+		UserSavedAddress userAddress = null;
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From userSavedAddress where isDisabled=0 AND idUser =" + idUser);
-			while (rs.next()) {
-				addresses.add(extractUserSavedAddressFromResultSet(rs));
+			ps = con.prepareStatement("SELECT * FROM usersavedaddress WHERE id=?");
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				userAddress = extractUserSavedAddressFromResultSet(rs);
+				return userAddress;
 			}
 		} catch (SQLException ex) {
 			System.out.println(ex);
+			return null;
 		}
 		return null;
 	}
 
-	public void setByUser() {
-		for (User user : repoUser.GetAll()) {
-			user.setUserAddresses(getByUser(user.getId()));
+	@Override
+	public ArrayList<IDTO> getAll() {
+		ArrayList<IDTO> ListOfUserSavedAddresses = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From item");
+			while (rs.next()) {
+				ListOfUserSavedAddresses.add(extractUserSavedAddressFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
 		}
+		return ListOfUserSavedAddresses;
 	}
 
-	public boolean create(UserSavedAddress userSavedAddress) {
+	@Override
+	public boolean create(IDTO dto) {
+		UserSavedAddress userSavedAddress = (UserSavedAddress) dto;
 		try {
-			ps = con.prepareStatement(
-					"Insert into userSavedAddress(idUser,idAddress,isDisabled) Values(?,?,0)");
+			ps = con.prepareStatement("Insert into userSavedAddress(id,idUser,idAddress) Values(NULL,?,?)");
 			ps.setInt(1, userSavedAddress.getIdUser());
 			ps.setInt(2, userSavedAddress.getIdAddress());
 			System.out.println(ps.executeUpdate() + " record(s) created");
@@ -71,11 +84,29 @@ public class RepoUserSavedAddress {
 			return false;
 		}
 	}
-	public boolean Delete(UserSavedAddress userSavedAddress) {
+
+	@Override
+	public boolean update(IDTO dto) {
+		UserSavedAddress userSavedAddress = (UserSavedAddress) dto;
 		try {
-			ps = con.prepareStatement("Update userSavedAddress SET isDeleted=1  where idUser=? AND idAddress=?");
+			ps = con.prepareStatement("UPDATE userSavedAddress set idUser=?, idAddress=? WHERE id=?");
 			ps.setInt(1, userSavedAddress.getIdUser());
 			ps.setInt(2, userSavedAddress.getIdAddress());
+			ps.setInt(3, userSavedAddress.getId());
+
+			System.out.println(ps.executeUpdate() + " record(s) created");
+			return true;
+		} catch (SQLException e) {
+			System.out.println(e);
+			return false;
+		}
+	}
+
+	@Override
+	public boolean delete(int id) {
+		try {
+			ps = con.prepareStatement("DELETE FROM usersavedaddress where id=?");
+			ps.setInt(1, id);
 			System.out.println(ps.executeUpdate() + " record(s) deleted");
 			return true;
 		} catch (SQLException e) {
@@ -84,17 +115,9 @@ public class RepoUserSavedAddress {
 		}
 
 	}
-	public boolean deleteByUser(int userId) {
-		try {
-			ps = con.prepareStatement("Update address SET isDeleted=1  where id=?");
-			ps.setInt(1, userId);
-			System.out.println(ps.executeUpdate() + " record(s) deleted");
-			return true;
-		} catch (SQLException e) {
-			System.out.println(e);
-			return false;
-		}
-	}
+
+	@SuppressWarnings("deprecation")
+	@Override
 	public boolean destroy() {
 		ArrayList<AutoCloseable> components = new ArrayList<AutoCloseable>();
 		components.add((AutoCloseable) ps);
@@ -130,4 +153,21 @@ public class RepoUserSavedAddress {
 			System.out.println(e.getMessage());
 		}
 	}
+
+	public ArrayList<UserSavedAddress> getAllUserAddresses(int idUser) {
+		ArrayList<UserSavedAddress> addresses = new ArrayList<UserSavedAddress>();
+		try {
+			ps = con.prepareStatement("SELECT * FROM usersavedaddress WHERE idUser=?");
+			ps.setInt(1, idUser);
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				addresses.add(extractUserSavedAddressFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return null;
+	}
+
 }

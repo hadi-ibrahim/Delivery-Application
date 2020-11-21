@@ -1,9 +1,29 @@
 package DTO;
 
-public class UserSavedAddress {
+public class UserSavedAddress implements IDTO {
+	private int id;
 	private int idUser;
 	private int idAddress;
-	private int isDisabled;
+
+	public UserSavedAddress() {
+
+	}
+
+	public UserSavedAddress(int idUser, int idAddress) {
+		super();
+		this.idUser = idUser;
+		this.idAddress = idAddress;
+	}
+
+	@Override
+	public int getId() {
+		return this.id;
+	}
+
+	@Override
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public int getIdUser() {
 		return idUser;
@@ -21,11 +41,4 @@ public class UserSavedAddress {
 		this.idAddress = idAddress;
 	}
 
-	public int getIsDisabled() {
-		return isDisabled;
-	}
-
-	public void setIsDisabled(int isDisabled) {
-		this.isDisabled = isDisabled;
-	}
 }

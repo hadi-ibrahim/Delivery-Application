@@ -1,5 +1,5 @@
 package Repositories;
-/*
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,18 +7,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import DTO.Item;
-import DTO.Order;
+import DTO.IDTO;
 import DTO.OrderedWarehouseItem;
-import DTO.Warehouse;
-import DTO.WarehouseItem;
 import Helpers.ConnectionManager;
 
-public class RepoOrderedWarehouseItem {
+public class RepoOrderedWarehouseItem implements IRepo {
 	Connection con = null;
 	Statement stmt = null;
 	ResultSet rs = null;
 	PreparedStatement ps = null;
+
 	RepoWarehouseItem repoWarehouseItem = new RepoWarehouseItem();
 	RepoOrder repoOrder = new RepoOrder();
 
@@ -28,66 +26,107 @@ public class RepoOrderedWarehouseItem {
 
 	private OrderedWarehouseItem extractOrderedWarehouseItemFromResultSet(ResultSet resultSet) throws SQLException {
 		OrderedWarehouseItem orderedItem = new OrderedWarehouseItem();
-		orderedItem.setIdWarehouse(resultSet.getInt("idWarehouse"));
-		orderedItem.setIdItem(resultSet.getInt("idItem"));
-		orderedItem.setQuantity(resultSet.getInt("itemQuantity"));
+		orderedItem.setId(resultSet.getInt("id"));
+		orderedItem.setIdWarehouseItem(resultSet.getInt("idWarehouseItem"));
 		orderedItem.setIdOrder(resultSet.getInt("idOrder"));
+		orderedItem.setQuantity(resultSet.getInt("itemQuantity"));
+		orderedItem.setPricePerUnit(resultSet.getDouble("pricePerUnit"));
 		return orderedItem;
-
 	}
 
-	public ArrayList<OrderedWarehouseItem> getOrderedItems(int idOrder) {
-		ArrayList<OrderedWarehouseItem> itemsOrdered = new ArrayList<OrderedWarehouseItem>();
+	@Override
+	public OrderedWarehouseItem get(int id) {
+		try {
+			ps = con.prepareStatement("SELECT * FROM orderedwarehouseitem WHERE id=?");
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				OrderedWarehouseItem warehouse = extractOrderedWarehouseItemFromResultSet(rs);
+				return warehouse;
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+			return null;
+		}
+		return null;
+	}
+
+	@Override
+	public ArrayList<IDTO> getAll() {
+		ArrayList<IDTO> ListOfOrderedWarehouseItems = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From orderedWarehouseItem where idOrder =" + idOrder);
+			rs = stmt.executeQuery("Select * From warehouse");
 			while (rs.next()) {
-				itemsOrdered.add(extractOrderedWarehouseItemFromResultSet(rs));
+				ListOfOrderedWarehouseItems.add(extractOrderedWarehouseItemFromResultSet(rs));
 			}
 		} catch (SQLException ex) {
 			System.out.println(ex);
 		}
-		return itemsOrdered;
+		return ListOfOrderedWarehouseItems;
 	}
 
-	public void setOrderedItems() {
-		for (Order order : repoOrder.getAll()) {
-			order.setOrderedItems(this.getOrderedItems(order.getId()));
-		}
-	}
-
-
-	public boolean orderItem(OrderedWarehouseItem orderedItem) {
-
-		if (repoWarehouseItem.orderItemFromWarehouse(new WarehouseItem(orderedItem.getIdWarehouse(),orderedItem.getIdItem(),orderedItem.getQuantity()))) {
-			try {
-				ps = con.prepareStatement("INSERT INTO orderedWarehouseItem(idOrder,idItem,idWarehouse,orderedQuantity) Values(?,?,?,?)");
-				ps.setInt(1, orderedItem.getIdOrder());
-				ps.setInt(2, orderedItem.getIdItem());
-				ps.setInt(3, orderedItem.getIdWarehouse());
-				ps.setInt(4, orderedItem.getQuantity());
-				System.out.println(ps.executeUpdate() + " records added");
+	@Override
+	public boolean create(IDTO dto) {
+		OrderedWarehouseItem warehouse = (OrderedWarehouseItem) dto;
+		try {
+			ps = con.prepareStatement(
+					"INSERT INTO orderedwarehouseitem(id, idWarehouseItem, idOrder, itemQuantity, pricePerUnit) VALUES(NULL,?,?,?,?)");
+			ps.setInt(1, warehouse.getIdWarehouseItem());
+			ps.setInt(2, warehouse.getIdOrder());
+			ps.setInt(3, warehouse.getQuantity());
+			ps.setDouble(4, warehouse.getPricePerUnit());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				warehouse = extractOrderedWarehouseItemFromResultSet(rs);
 				return true;
-			}catch (SQLException ex) {
-				return false;
 			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+			return false;
 		}
 		return false;
 	}
 
-	
-	
-//	public boolean cancelOrder(Order order) {
-//		repoOrder.cancelOrder(order);
-//		for(OrderedWarehouseItem item : this.getOrderedItems(order.getId())) {
-//		repoWarehouseItem.addStockByWarehouse(new WarehouseItem(item.getIdWarehouse(),item.getIdItem(),item.getQuantity()));
-//		}
-//		return true;
-//	}
-	
-	
-	
-	
+	@Override
+	public boolean update(IDTO dto) {
+		OrderedWarehouseItem warehouse = (OrderedWarehouseItem) dto;
+		try {
+			ps = con.prepareStatement(
+					"UPDATE orderedwarehouseitem SET idWarehouseItem=?, idOrder = ?, itemQuantity=?, pricePerUnit=? WHERE id=?");
+			ps.setInt(1, warehouse.getIdWarehouseItem());
+			ps.setInt(2, warehouse.getIdOrder());
+			ps.setInt(3, warehouse.getQuantity());
+			ps.setDouble(4, warehouse.getPricePerUnit());
+			ps.setInt(5, warehouse.getId());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				warehouse = extractOrderedWarehouseItemFromResultSet(rs);
+				return true;
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+			return false;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean delete(int id) {
+		try {
+			ps = con.prepareStatement("DELETE FROM orderedwarehouseitem WHERE id=?");
+			ps.setInt(1, id);
+			System.out.println(ps.executeUpdate() + " records deleted");
+			return true;
+		} catch (SQLException ex) {
+			System.out.println(ex);
+			return false;
+		}
+
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
 	public boolean destroy() {
 		repoWarehouseItem.destroy();
 		repoOrder.destroy();
@@ -125,57 +164,19 @@ public class RepoOrderedWarehouseItem {
 			System.out.println(e.getMessage());
 		}
 	}
+
+	public ArrayList<OrderedWarehouseItem> getOrderedItemsFromOrder(int idOrder) {
+		ArrayList<OrderedWarehouseItem> itemsOrdered = new ArrayList<OrderedWarehouseItem>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From orderedWarehouseItem where idOrder =" + idOrder);
+			while (rs.next()) {
+				itemsOrdered.add(extractOrderedWarehouseItemFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return itemsOrdered;
+	}
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-TODO ! important 
-This class does not deserve a repository, as it can be replaced with simple logic and placed 
-in the business logic layer. example on RepoTester
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*/

@@ -1,6 +1,5 @@
 package Repositories;
 
-import java.awt.Point;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,11 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import DTO.IDTO;
 import DTO.Location;
 import DTO.Order;
 import Helpers.ConnectionManager;
 
-public class RepoOrder {
+public class RepoOrder implements ISoftDeletableRepo {
 	Connection con;
 	PreparedStatement ps;
 	Statement stmt;
@@ -30,13 +30,14 @@ public class RepoOrder {
 		order.setIdDriver(resultSet.getInt("idDriver"));
 		order.setStartDate(resultSet.getTimestamp("startDate"));
 		order.setEndDate(resultSet.getTimestamp("endDate"));
-		order.setOrderStatus(resultSet.getString("status"));
+		order.setOrderStatus(resultSet.getString("orderStatus"));
 		order.setTotalAmount(resultSet.getDouble("totalAmount"));
 		order.setLocationDestination(new Location(resultSet.getDouble("longitude"), resultSet.getDouble("latitude")));
 		return order;
 
 	}
 
+	@Override
 	public Order get(int id) {
 		try {
 			stmt = con.createStatement();
@@ -50,8 +51,9 @@ public class RepoOrder {
 		return null;
 	}
 
-	public ArrayList<Order> getAll() {
-		ArrayList<Order> orders = new ArrayList<Order>();
+	@Override
+	public ArrayList<IDTO> getAll() {
+		ArrayList<IDTO> orders = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery("Select * From order");
@@ -65,7 +67,9 @@ public class RepoOrder {
 
 	}
 
-	public boolean create(Order order) {
+	@Override
+	public boolean create(IDTO dto) {
+		Order order = (Order) dto;
 		try {
 			ps = con.prepareStatement(
 					"Insert into order(id,idCustomer,idDriver,longitude, latitude ,dateStart,dateEnd,orderStatus,totalAmount) VALUES(NULL,?,NULL,?,?,NOW(),NULL,?,?");
@@ -74,6 +78,7 @@ public class RepoOrder {
 			ps.setDouble(3, order.getLocationDestination().getLatitude());
 			ps.setString(4, order.getStatus().name());
 			ps.setDouble(5, order.getTotalAmount());
+			System.out.println(ps.executeUpdate() + " record(s) created");
 			return true;
 		} catch (SQLException e) {
 			System.out.println(e);
@@ -81,111 +86,60 @@ public class RepoOrder {
 		}
 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	/* to be replaced with:  
-	  user.setDriverStatus(AVAILABLE)
-	  order.setOrderStatus(CANCELED)
-	  RepoUser.update(user)
-	  RepoOrder.update(order)
-	  For the end date, create a trigger on order update
-	  => if status = canceled or status = completed, then set endDate = now()
-	  
-	  */
-	
 
-//	public boolean cancelOrder(Order order) {
-//		if (order.getIdDriver() > 0) 
-//			repoUser.setAvailable(order.getIdDriver());
-//		try {
-//			ps = con.prepareStatement("Update order SET status='Cancelled', endDate=Now() where idOrder=?");
-//			ps.setInt(1, order.getId());
-//			return true;
-//		} catch (SQLException ex) {
-//			System.out.println(ex);
-//			return false;
-//		}
-//	}
+	@Override
+	public boolean update(IDTO dto) {
+		Order order = (Order) dto;
+		try {
+			ps = con.prepareStatement(
+					"UPDATE order SET idDriver = ? ,longitude= ?, latitude=? ,orderStatus = ?,totalAmount=? WHERE id =?");
+			ps.setInt(1, order.getIdDriver());
+			ps.setDouble(2, order.getLocationDestination().getLongitude());
+			ps.setDouble(3, order.getLocationDestination().getLatitude());
+			ps.setString(4, order.getStatus().name());
+			ps.setDouble(5, order.getTotalAmount());
+			ps.setInt(6, order.getId());
+			System.out.println(ps.executeUpdate() + " record(s) created");
+			return true;
+		} catch (SQLException e) {
+			System.out.println(e);
+			return false;
+		}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	/* same as above */
-	
-//	public boolean finishOrder(Order order) {
-//		if (order.getIdDriver() > 0)
-//			repoUser.setAvailable(order.getIdDriver());
-//		try {
-//			ps = con.prepareStatement("Update order SET status='finished', endDate=Now() where idOrder=?");
-//			ps.setInt(1, order.getId());
-//			return true;
-//		} catch (SQLException ex) {
-//			System.out.println(ex);
-//			return false;
-//		}
-//	}
+	}
 
-	
-	
-	/* again, order.status= "Pending"
-	  driver.status = "busy"
-	  order.idDriver= driver.id
-	  RepoUser.update(driver)
-	  RepoOrder.update(Order)
-	 
-	 */
-	
-	
-//	public boolean acceptOrder(Order order, int idDriver) {
-//		repoUser.setBusy(idDriver);
-//		order.setIdDriver(idDriver);
-//		try {
-//			ps = con.prepareStatement("Update order SET status='Pending Delivery',idDriver=? where idOrder=?");
-//			ps.setInt(1, order.getIdDriver());
-//			ps.setInt(2, order.getId());
-//			return true;
-//		} catch (SQLException ex) {
-//			System.out.println(ex);
-//			return false;
-//		}
-//	}
+	@Override
+	public boolean delete(int id) {
+		try {
+			ps = con.prepareStatement("Update order set isDeleted=1 WHERE id=?");
+			ps.setInt(1, id);
+			System.out.println(ps.executeUpdate() + " records deleted");
+			return true;
+		} catch (SQLException ex) {
+			System.out.println(ex);
+			return false;
+		}
 
-	
-	
-	
-	
-	
-	/* can be completely skipped with a trigger on order update 
-	  	if status is still pending THEN 
-	  	insert into routeCheckpoint(NULL, NEW.orderId, NOW(), driver's location)
-	  
-	  */
-//	public boolean addRouteCheckpoint(Order order) {
-//		try {
-//			stmt = con.createStatement();
-//			rs = stmt.executeQuery("INSERT INTO RouteCheckpoint(id,idOrder,time,location) Values(NULL," + order.getId()+",Now()," + repoUser.Get(order.getIdDriver()).getLocation() + ")");
-//			if (rs.next())
-//				return true;
-//		} catch (SQLException ex) {
-//			System.out.println(ex);
-//			return false;
-//		}
-//		return false;
-//	}
+	}
 
+	@Override
+	public boolean restore(int id) {
+		try {
+			ps = con.prepareStatement("Update order set isDeleted=0 WHERE id=?");
+			ps.setInt(1, id);
+			System.out.println(ps.executeUpdate() + " records restored");
+		} catch (SQLException ex) {
+			System.out.println(ex);
+			return false;
+		}
+		return true;
+
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
 	public boolean destroy() {
-		repoUser.Destroy();
+		repoUser.destroy();
 		ArrayList<AutoCloseable> components = new ArrayList<AutoCloseable>();
 		components.add((AutoCloseable) ps);
 		components.add((AutoCloseable) rs);

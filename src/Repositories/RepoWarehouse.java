@@ -1,8 +1,5 @@
 package Repositories;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,16 +7,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import DTO.IDTO;
 import DTO.Warehouse;
 import Helpers.ConnectionManager;
 
-public class RepoWarehouse {
+public class RepoWarehouse implements ISoftDeletableRepo {
 
 	Connection con = null;
 	Statement stmt = null;
 	ResultSet rs = null;
 	PreparedStatement ps = null;
 	RepoAddress repoAddress = new RepoAddress();
+
 	public RepoWarehouse() {
 		con = ConnectionManager.getConnection();
 	}
@@ -38,12 +37,13 @@ public class RepoWarehouse {
 		}
 	}
 
+	@Override
 	public Warehouse get(int id) {
 		Warehouse warehouse = null;
 		try {
 			ps = con.prepareStatement("SELECT * FROM warehouse WHERE id=?");
 			ps.setInt(1, id);
-			rs= ps.executeQuery();
+			rs = ps.executeQuery();
 			if (rs.next()) {
 				warehouse = extractWarehouseFromResultSet(rs);
 				return warehouse;
@@ -54,10 +54,10 @@ public class RepoWarehouse {
 		}
 		return null;
 	}
-	
-	
-	public ArrayList<Warehouse> getAll() {
-		ArrayList<Warehouse> LstOfWarehouse = new ArrayList<Warehouse>();
+
+	@Override
+	public ArrayList<IDTO> getAll() {
+		ArrayList<IDTO> LstOfWarehouse = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery("Select * From warehouse");
@@ -69,23 +69,10 @@ public class RepoWarehouse {
 		}
 		return LstOfWarehouse;
 	}
-	
-	public boolean exists(int id) {
-		try {
-			ps = con.prepareStatement("SELECT * FROM warehouse WHERE id=?");
-			ps.setInt(1, id);
-			if (rs.next()) {
-				return true;
-			}
-		} catch (SQLException ex) {
-			System.out.println(ex);
-			return false;
-		}
-		return false;
-		
-	}
-	
-	public boolean create(Warehouse warehouse) {
+
+	@Override
+	public boolean create(IDTO dto) {
+		Warehouse warehouse = (Warehouse) dto;
 		try {
 			ps = con.prepareStatement("INSERT INTO warehouse(id,idAddress,isDeleted, name) Values(Null,?,0,?)");
 			ps.setInt(1, warehouse.getIdAddress());
@@ -99,7 +86,9 @@ public class RepoWarehouse {
 		return true;
 	}
 
-	public boolean update(Warehouse warehouse) {
+	@Override
+	public boolean update(IDTO dto) {
+		Warehouse warehouse = (Warehouse) dto;
 		try {
 			ps = con.prepareStatement("UPDATE warehouse SET idAddress=?,isDeleted=?, name =? WHERE id=?");
 			ps.setInt(1, warehouse.getIdAddress());
@@ -114,8 +103,8 @@ public class RepoWarehouse {
 		return true;
 	}
 
+	@Override
 	public boolean delete(int id) {
-//		repoAddress.Delete(repoAddress.get(this.get(id).getIdAddress()));
 		try {
 			ps = con.prepareStatement("Update warehouse set isDeleted=1 WHERE id=?");
 			ps.setInt(1, id);
@@ -125,9 +114,10 @@ public class RepoWarehouse {
 			System.out.println(ex);
 			return false;
 		}
-		
+
 	}
 
+	@Override
 	public boolean restore(int id) {
 		try {
 			ps = con.prepareStatement("Update warehouse set isDeleted=0 WHERE id=?");
@@ -140,7 +130,9 @@ public class RepoWarehouse {
 		return true;
 
 	}
-	
+
+	@SuppressWarnings("deprecation")
+	@Override
 	public boolean destroy() {
 		ArrayList<AutoCloseable> components = new ArrayList<AutoCloseable>();
 		components.add((AutoCloseable) ps);
@@ -176,6 +168,5 @@ public class RepoWarehouse {
 			System.out.println(e.getMessage());
 		}
 	}
-	
 
 }

@@ -6,7 +6,6 @@ public class Location {
 	private double latitude;
 	
 	public Location(double longitude, double latitude) {
-		super();
 		this.longitude = longitude;
 		this.latitude = latitude;
 	}
