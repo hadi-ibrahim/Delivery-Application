@@ -1,10 +1,11 @@
 package DTO;
 
-public class WarehouseItem {
+public class WarehouseItem implements IDTO {
+	private int id;
 	private int idWarehouse;
 	private int idItem;
 	private int quantity;
-	private int isDisabled;
+	private int isDeleted;
 
 	public WarehouseItem() {
 
@@ -16,12 +17,22 @@ public class WarehouseItem {
 		this.quantity = quantity;
 	}
 
-	public int getIsDisabled() {
-		return isDisabled;
+	@Override
+	public int getId() {
+		return id;
 	}
 
-	public void setIsDisabled(int isDisabled) {
-		this.isDisabled = isDisabled;
+	@Override
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(int isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	public int getIdWarehouse() {

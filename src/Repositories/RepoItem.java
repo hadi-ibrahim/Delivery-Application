@@ -7,16 +7,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import DTO.Category;
+import DTO.IDTO;
 import DTO.Item;
 import Helpers.ConnectionManager;
 
-public class RepoItem {
+public class RepoItem implements ISoftDeletableRepo {
 	Connection con = null;
 	Statement stmt = null;
 	ResultSet rs = null;
 	PreparedStatement ps = null;
-
 
 	public RepoItem() {
 		con = ConnectionManager.getConnection();
@@ -37,12 +36,13 @@ public class RepoItem {
 		}
 	}
 
+	@Override
 	public Item get(int id) {
 		Item item = null;
 		try {
 			ps = con.prepareStatement("SELECT * FROM item WHERE id=?");
 			ps.setInt(1, id);
-			rs= ps.executeQuery();
+			rs = ps.executeQuery();
 
 			if (rs.next()) {
 				item = extractItemFromResultSet(rs);
@@ -54,10 +54,9 @@ public class RepoItem {
 		}
 		return null;
 	}
-	
-	
-	public ArrayList<Item> getAll() {
-		ArrayList<Item> LstOfItems = new ArrayList<Item>();
+
+	public ArrayList<IDTO> getAll() {
+		ArrayList<IDTO> LstOfItems = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery("Select * From item");
@@ -69,23 +68,26 @@ public class RepoItem {
 		}
 		return LstOfItems;
 	}
-	
-	public boolean exists(int id) {
-		try {
-			ps = con.prepareStatement("SELECT * FROM item WHERE id=?");
-			ps.setInt(1, id);
-			if (rs.next()) {
-				return true;
-			}
-		} catch (SQLException ex) {
-			System.out.println(ex);
-			return false;
-		}
-		return false;
-		
-	}
-	
-	public boolean create(Item item) {
+
+//TODO implement in business logic	
+//	public boolean exists(int id) {
+//		try {
+//			ps = con.prepareStatement("SELECT * FROM item WHERE id=?");
+//			ps.setInt(1, id);
+//			if (rs.next()) {
+//				return true;
+//			}
+//		} catch (SQLException ex) {
+//			System.out.println(ex);
+//			return false;
+//		}
+//		return false;
+//		
+//	}
+
+	@Override
+	public boolean create(IDTO dto) {
+		Item item = (Item) dto;
 		try {
 			ps = con.prepareStatement("INSERT INTO item(id,price,description,category,isDeleted) Values(NULL,?,?,?,0)");
 			ps.setDouble(1, item.getPrice());
@@ -100,7 +102,9 @@ public class RepoItem {
 		return true;
 	}
 
-	public boolean update(Item item) {
+	@Override
+	public boolean update(IDTO dto) {
+		Item item = (Item) dto;
 		try {
 			ps = con.prepareStatement("UPDATE item SET price=?,description=?, category=?, isDeleted=? WHERE id=?");
 			ps.setDouble(1, item.getPrice());
@@ -117,6 +121,7 @@ public class RepoItem {
 		return true;
 	}
 
+	@Override
 	public boolean delete(int id) {
 		try {
 			ps = con.prepareStatement("Update item set isDeleted=1 WHERE id=?");
@@ -127,9 +132,10 @@ public class RepoItem {
 			System.out.println(ex);
 			return false;
 		}
-		
+
 	}
 
+	@Override
 	public boolean restore(int id) {
 		try {
 			ps = con.prepareStatement("Update item set isDeleted=0 WHERE id=?");
@@ -143,6 +149,7 @@ public class RepoItem {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean destroy() {
 		ArrayList<AutoCloseable> components = new ArrayList<AutoCloseable>();
 		components.add((AutoCloseable) ps);
@@ -178,4 +185,5 @@ public class RepoItem {
 			System.out.println(e.getMessage());
 		}
 	}
+
 }

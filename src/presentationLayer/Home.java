@@ -368,6 +368,7 @@ public class Home extends JFrame {
         this.setCursor(cursor);
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void signUp() {
 		User user = new User ();
 		try {

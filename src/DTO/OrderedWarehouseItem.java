@@ -1,10 +1,32 @@
 package DTO;
 
-public class OrderedWarehouseItem {
+public class OrderedWarehouseItem implements IDTO {
+	private int id;
 	private int idOrder;
-	private int idWarehouse;
-	private int idItem;
+	private int idWarehouseItem;
 	private int quantity;
+	private double pricePerUnit;
+
+	public OrderedWarehouseItem() {
+
+	}
+
+	public OrderedWarehouseItem(int idOrder, int idWarehouseItem, int quantity, double price) {
+		this.idOrder = idOrder;
+		this.idWarehouseItem = idWarehouseItem;
+		this.quantity = quantity;
+		this.pricePerUnit = price;
+	}
+
+	@Override
+	public int getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public int getIdOrder() {
 		return idOrder;
@@ -14,20 +36,12 @@ public class OrderedWarehouseItem {
 		this.idOrder = idOrder;
 	}
 
-	public int getIdWarehouse() {
-		return idWarehouse;
+	public int getIdWarehouseItem() {
+		return idWarehouseItem;
 	}
 
-	public void setIdWarehouse(int idWarehouse) {
-		this.idWarehouse = idWarehouse;
-	}
-
-	public int getIdItem() {
-		return idItem;
-	}
-
-	public void setIdItem(int idItem) {
-		this.idItem = idItem;
+	public void setIdWarehouseItem(int idWarehouse) {
+		this.idWarehouseItem = idWarehouse;
 	}
 
 	public int getQuantity() {
@@ -36,6 +50,14 @@ public class OrderedWarehouseItem {
 
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+
+	public double getPricePerUnit() {
+		return pricePerUnit;
+	}
+
+	public void setPricePerUnit(double pricePerUnit) {
+		this.pricePerUnit = pricePerUnit;
 	}
 
 }

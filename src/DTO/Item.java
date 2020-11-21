@@ -2,13 +2,23 @@ package DTO;
 
 import java.util.ArrayList;
 
-public class Item {
+public class Item implements IDTO {
 	private int id;
 	private ArrayList<WarehouseItem> availability = new ArrayList<WarehouseItem>();
 	private String description;
 	private Category category;
 	private double price;
 	private int isDeleted;
+
+	public Item() {
+
+	}
+
+	public Item(String description, Category category, double price) {
+		this.description = description;
+		this.category = category;
+		this.price = price;
+	}
 
 	public int getIsDeleted() {
 		return isDeleted;
@@ -18,10 +28,12 @@ public class Item {
 		this.isDeleted = isDeleted;
 	}
 
+	@Override
 	public int getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -43,14 +55,14 @@ public class Item {
 	}
 
 	public Category getCategory() {
-	
+
 		return category;
 	}
 
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	
+
 	public void setCategory(String category) {
 		this.category = Category.valueOf(category);
 	}

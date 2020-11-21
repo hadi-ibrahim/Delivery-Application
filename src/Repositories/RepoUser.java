@@ -1,6 +1,5 @@
 package Repositories;
 
-import java.awt.Point;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,15 +7,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import DTO.DriverStatus;
+import DTO.IDTO;
 import DTO.Location;
 import DTO.Role;
 import DTO.User;
 import Helpers.ConnectionManager;
-import Helpers.SessionHelper;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
-public class RepoUser {
+public class RepoUser implements ISoftDeletableRepo {
 	Connection con = null;
 	Statement stmt = null;
 	ResultSet rs = null;
@@ -37,7 +35,6 @@ public class RepoUser {
 			user.setPassword(resultSet.getString("password"));
 			user.setRole(resultSet.getString("role"));
 			user.setPhone(resultSet.getString("phone"));
-			System.out.println(resultSet.getString("driverStatus"));
 			if (resultSet.getString("driverStatus") != null)
 				user.setDriverStatus(resultSet.getString("driverStatus"));
 			user.setLocation(new Location(resultSet.getDouble("longitude"), resultSet.getDouble("latitude")));
@@ -49,7 +46,7 @@ public class RepoUser {
 		return null;
 	}
 
-	public User Get(int id) {
+	public User get(int id) {
 		User user = null;
 		try {
 			ps = con.prepareStatement("SELECT * FROM user WHERE id=?");
@@ -64,8 +61,8 @@ public class RepoUser {
 		return user;
 	}
 
-	public ArrayList<User> GetAll() {
-		ArrayList<User> LstOfUsers = new ArrayList<User>();
+	public ArrayList<IDTO> getAll() {
+		ArrayList<IDTO> LstOfUsers = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery("Select * From user");
@@ -78,7 +75,8 @@ public class RepoUser {
 		return LstOfUsers;
 	}
 
-	public boolean Create(User user) {
+	public boolean create(IDTO dto) {
+		User user = (User) dto;
 		try {
 			ps = con.prepareStatement(
 					"INSERT INTO user(id,firstName,lastName,age,email,password,role,phone,isDeleted) VALUE(NULL,?,?,?,?,?,?,?,0);");
@@ -98,7 +96,8 @@ public class RepoUser {
 		return true;
 	}
 
-	public boolean Update(User user) {
+	public boolean update(IDTO dto) {
+		User user = (User) dto;
 		try {
 			ps = con.prepareStatement(
 					"UPDATE user SET firstName=?,lastName=?, age=?, email=?, password=?, role=?, phone=?, driverStatus=?,longitude= ?,latitude =?,isDeleted=? WHERE id=?");
@@ -113,8 +112,15 @@ public class RepoUser {
 				ps.setString(8, user.getDriverStatus().name());
 			else
 				ps.setString(8, null);
-			ps.setDouble(9, user.getLocation().getLongitude());
-			ps.setDouble(10, user.getLocation().getLatitude());
+			if(user.getRole() == Role.DRIVER) {
+				ps.setDouble(9, user.getLocation().getLongitude());
+				ps.setDouble(10, user.getLocation().getLatitude());
+			}
+			
+			else {
+				ps.setString(9, null);
+				ps.setString(10, null);
+			}
 			ps.setInt(11, user.getIsDeleted());
 			ps.setInt(12, user.getId());
 
@@ -126,11 +132,24 @@ public class RepoUser {
 		return true;
 	}
 
-	// TODO to adjust to soft delete
-	public boolean Delete(User user) {
+	@Override
+	public boolean delete(int id) {
 		try {
 			ps = con.prepareStatement("Update user set isDeleted=1 WHERE id=?");
-			ps.setInt(1, user.getId());
+			ps.setInt(1, id);
+			System.out.println(ps.executeUpdate() + " records deleted");
+		} catch (SQLException ex) {
+			System.out.println(ex);
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean restore(int id) {
+		try {
+			ps = con.prepareStatement("Update user set isDeleted=0 WHERE id=?");
+			ps.setInt(1, id);
 			System.out.println(ps.executeUpdate() + " records deleted");
 		} catch (SQLException ex) {
 			System.out.println(ex);
@@ -139,7 +158,9 @@ public class RepoUser {
 		return true;
 	}
 
-	public boolean Destroy() {
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean destroy() {
 		ArrayList<AutoCloseable> components = new ArrayList<AutoCloseable>();
 		components.add((AutoCloseable) ps);
 		components.add((AutoCloseable) rs);
@@ -175,7 +196,7 @@ public class RepoUser {
 		}
 	}
 
-	public User Login(String email, String password) {
+	public User login(String email, String password) {
 		try {
 
 			ps = con.prepareStatement("SELECT * FROM USER WHERE email=?");
@@ -190,5 +211,7 @@ public class RepoUser {
 		}
 		return null;
 	}
+
+
 
 }

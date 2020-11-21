@@ -1,9 +1,8 @@
 package DTO;
 
-import java.awt.Point;
 import java.util.ArrayList;
 
-public class User {
+public class User implements IDTO {
 	private int id;
 	private String firstname;
 	private String lastname;
@@ -17,10 +16,26 @@ public class User {
 	private int isDeleted;
 	private ArrayList<UserSavedAddress> userAddresses;
 
+	public User() {
+		
+	}
+	
+	public User(String firstname, String lastname, int age, String email, String password, Role role, String phone) {
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.age = age;
+		this.email = email;
+		this.password = password;
+		this.role = role;
+		this.phone = phone;
+	}
+
+	@Override
 	public int getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -56,7 +71,7 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 	public String getPassword() {
 		return password;
 	}
@@ -72,7 +87,7 @@ public class User {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-	
+
 	public void setRole(String role) {
 		this.role = Role.valueOf(role);
 	}
@@ -92,7 +107,7 @@ public class User {
 	public void setDriverStatus(DriverStatus driverStatus) {
 		this.driverStatus = driverStatus;
 	}
-	
+
 	public void setDriverStatus(String driverStatus) {
 		this.driverStatus = DriverStatus.valueOf(driverStatus);
 	}

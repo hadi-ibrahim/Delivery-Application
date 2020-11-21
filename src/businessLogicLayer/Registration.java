@@ -8,7 +8,7 @@ public class Registration {
 	private RepoUser repoUser = new RepoUser();
 
 	public User signUp(User user) {
-		if(repoUser.Create(user)) {
+		if(repoUser.create(user)) {
 			SessionHelper.isLoggedIn = user;
 			return user;
 		}
@@ -17,7 +17,7 @@ public class Registration {
 	}
 	
 	public User signIn(String email, String password) {
-		return SessionHelper.isLoggedIn = repoUser.Login(email, password);
+		return SessionHelper.isLoggedIn = repoUser.login(email, password);
 	}
 
 	public void signOut() {

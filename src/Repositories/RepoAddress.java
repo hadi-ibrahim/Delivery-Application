@@ -1,9 +1,5 @@
 package Repositories;
 
-import java.awt.Point;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,10 +8,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import DTO.Address;
+import DTO.IDTO;
 import DTO.Location;
 import Helpers.ConnectionManager;
 
-public class RepoAddress {
+public class RepoAddress implements IRepo {
 	Connection con;
 	PreparedStatement ps;
 	Statement stmt;
@@ -42,11 +39,12 @@ public class RepoAddress {
 
 	}
 
+	@Override
 	public Address get(int id) {
 		try {
 			ps = con.prepareStatement("SELECT * FROM address WHERE id=?");
 			ps.setInt(1, id);
-			rs= ps.executeQuery();
+			rs = ps.executeQuery();
 			if (rs.next())
 				return extractAddressFromResultSet(rs);
 		} catch (SQLException e) {
@@ -56,7 +54,9 @@ public class RepoAddress {
 		return null;
 	}
 
-	public boolean create(Address address) {
+	@Override
+	public boolean create(IDTO dto) {
+		Address address = (Address) dto;
 		try {
 			ps = con.prepareStatement(
 					"Insert into address(id,city,street,building,floor,longitude,latitude) Values(NULL,?,?,?,?,?,?)");
@@ -64,9 +64,9 @@ public class RepoAddress {
 			ps.setString(2, address.getStreet());
 			ps.setString(3, address.getBuilding());
 			ps.setString(4, address.getFloor());
-			
+
 			ps.setDouble(5, address.getLocation().getLongitude());
-			
+
 			ps.setDouble(6, address.getLocation().getLatitude());
 			System.out.println(ps.executeUpdate() + " record(s) created");
 			return true;
@@ -76,7 +76,8 @@ public class RepoAddress {
 		}
 	}
 
-	public boolean update(Address address) {
+	public boolean update(IDTO dto) {
+		Address address = (Address) dto;
 		try {
 			ps = con.prepareStatement(
 					"Update address SET city=?,street=?,building=?,floor=?,longitude=?, latitude=? where id=?");
@@ -95,19 +96,26 @@ public class RepoAddress {
 		}
 	}
 
-//	public boolean Delete(Address address) {
-//		try {
-//			ps = con.prepareStatement("Update address SET isDeleted=1  where id=?");
-//			ps.setInt(1, address.getId());
-//			System.out.println(ps.executeUpdate() + " record(s) deleted");
-//			return true;
-//		} catch (SQLException e) {
-//			System.out.println(e);
-//			return false;
-//		}
-//
-//	}
+	@Override
+	public boolean delete(int id) {
+		try {
+			ps = con.prepareStatement("DELETE FROM address WHERE id=?");
+			ps.setInt(1, id);
+			System.out.println(ps.executeUpdate() + " records deleted");
+		} catch (SQLException ex) {
+			System.out.println(ex);
+			return false;
+		}
+		return true;
+	}
 
+	@Override
+	public ArrayList<IDTO> getAll() {
+		return null;
+		// not needed for end points
+	}
+
+	@SuppressWarnings("deprecation")
 	public boolean destroy() {
 		ArrayList<AutoCloseable> components = new ArrayList<AutoCloseable>();
 		components.add((AutoCloseable) ps);
@@ -143,5 +151,5 @@ public class RepoAddress {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 }
