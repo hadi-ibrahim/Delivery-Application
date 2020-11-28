@@ -14,9 +14,9 @@ public class Item implements IDTO {
 
 	}
 
-	public Item(String description, Category category, double price) {
+	public Item(String description, String category, double price) {
 		this.description = description;
-		this.category = category;
+		this.setCategory(category);
 		this.price = price;
 	}
 

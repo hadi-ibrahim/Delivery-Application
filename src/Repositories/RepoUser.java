@@ -74,6 +74,34 @@ public class RepoUser implements ISoftDeletableRepo {
 		}
 		return LstOfUsers;
 	}
+	
+	public ArrayList<IDTO> getAllActive() {
+		ArrayList<IDTO> LstOfUsers = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From user where isDeleted=0 AND role NOT like 'ADMIN'");
+			while (rs.next()) {
+				LstOfUsers.add(extractUserFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return LstOfUsers;
+	}
+
+	public ArrayList<IDTO> getAllDisabled() {
+		ArrayList<IDTO> LstOfUsers = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From user where isDeleted=1");
+			while (rs.next()) {
+				LstOfUsers.add(extractUserFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return LstOfUsers;
+	}
 
 	public boolean create(IDTO dto) {
 		User user = (User) dto;
@@ -112,11 +140,11 @@ public class RepoUser implements ISoftDeletableRepo {
 				ps.setString(8, user.getDriverStatus().name());
 			else
 				ps.setString(8, null);
-			if(user.getRole() == Role.DRIVER) {
+			if (user.getRole() == Role.DRIVER) {
 				ps.setDouble(9, user.getLocation().getLongitude());
 				ps.setDouble(10, user.getLocation().getLatitude());
 			}
-			
+
 			else {
 				ps.setString(9, null);
 				ps.setString(10, null);
@@ -144,13 +172,13 @@ public class RepoUser implements ISoftDeletableRepo {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean restore(int id) {
 		try {
 			ps = con.prepareStatement("Update user set isDeleted=0 WHERE id=?");
 			ps.setInt(1, id);
-			System.out.println(ps.executeUpdate() + " records deleted");
+			System.out.println(ps.executeUpdate() + " records restored");
 		} catch (SQLException ex) {
 			System.out.println(ex);
 			return false;
@@ -211,7 +239,5 @@ public class RepoUser implements ISoftDeletableRepo {
 		}
 		return null;
 	}
-
-
 
 }

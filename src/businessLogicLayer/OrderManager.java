@@ -1,6 +1,9 @@
 package businessLogicLayer;
 
+import java.util.ArrayList;
+
 import DTO.DriverStatus;
+import DTO.IDTO;
 import DTO.Order;
 import DTO.OrderStatus;
 import DTO.OrderedWarehouseItem;
@@ -76,6 +79,10 @@ public class OrderManager {
 
 	public void setOrderOrderedItems(Order order) {
 		order.setOrderedItems(repoOrderedWarehouseItem.getOrderedItemsFromOrder(order.getId()));
+	}
+	
+	public ArrayList<IDTO> getAllOrders() {
+		return repoOrder.getAll();
 	}
 
 	// TODO

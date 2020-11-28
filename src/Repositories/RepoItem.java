@@ -68,6 +68,34 @@ public class RepoItem implements ISoftDeletableRepo {
 		}
 		return LstOfItems;
 	}
+	
+	public ArrayList<IDTO> getAllActiveItems() {
+		ArrayList<IDTO> LstOfItems = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From item where isDeleted=0");
+			while (rs.next()) {
+				LstOfItems.add(extractItemFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return LstOfItems;
+	}
+	
+	public ArrayList<IDTO> getAllDisabledItems() {
+		ArrayList<IDTO> LstOfItems = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From item where isDeleted=1");
+			while (rs.next()) {
+				LstOfItems.add(extractItemFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return LstOfItems;
+	}
 
 //TODO implement in business logic	
 //	public boolean exists(int id) {

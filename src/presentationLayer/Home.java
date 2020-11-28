@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 
 import DTO.Role;
 import DTO.User;
+import Helpers.SessionHelper;
 import businessLogicLayer.Registration;
 
 import java.awt.Color;
@@ -283,9 +284,42 @@ public class Home extends JFrame {
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
-				signIn();
-				test frame = new test();
-				frame.setVisible(true);
+				if(signIn()) {
+					if(SessionHelper.isLoggedIn.getRole() == Role.CUSTOMER) {
+						customerDashboard frame = new customerDashboard();
+						frame.setVisible(true);
+						 frame.addWindowListener(new java.awt.event.WindowAdapter() {
+					            @Override
+					            public void windowClosed(java.awt.event.WindowEvent evt) {
+					                setVisible(true);
+					                SessionHelper.signOut();
+					            }
+					        });
+					}
+					else if (SessionHelper.isLoggedIn.getRole() == Role.DRIVER) {
+						driverDashboard frame = new driverDashboard();
+						frame.setVisible(true);
+						 frame.addWindowListener(new java.awt.event.WindowAdapter() {
+					            @Override
+					            public void windowClosed(java.awt.event.WindowEvent evt) {
+					                setVisible(true);
+					                SessionHelper.signOut();
+					            }
+					        });
+					}
+					else if (SessionHelper.isLoggedIn.getRole()== Role.ADMIN) {
+						adminDashboard frame = new adminDashboard();
+						frame.setVisible(true);
+						 frame.addWindowListener(new java.awt.event.WindowAdapter() {
+					            @Override
+					            public void windowClosed(java.awt.event.WindowEvent evt) {
+					                setVisible(true);
+					                SessionHelper.signOut();
+					            }
+					        });
+					}
+					setVisible(false);
+				}
 			}
 		});
 		
@@ -388,7 +422,7 @@ public class Home extends JFrame {
 			System.out.println("unable to signup. make sure of values");
 		}
 	}
-	private void signIn() {
+	private boolean signIn() {
 		User user ;
 		String password, email;
 		try {
@@ -397,10 +431,12 @@ public class Home extends JFrame {
 		user= registration.signIn(email, password);
 		if (user!= null) {
 			System.out.println("sign in successful! ");
+			return true;
 		}
 		else System.out.println("unable to sign in");
 		} catch (Exception e ) {
 			System.out.println("unable to sign in. make sure of values");
 		}
+		return false;
 	}
 }
