@@ -1,6 +1,5 @@
 package presentationLayer;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -48,6 +47,10 @@ public class Home extends JFrame {
 	private JTextField ageField;
 	private JTextField phoneNumberField;
 	private boolean signUpFrameActive =true;
+	
+	private Color secondaryPink = new Color(241, 57, 83);
+	private Color tertiaryPink = new Color(255, 0 ,51);
+	private Color whiteShade = new Color(240, 248, 255);
 
 	/**
 	 * Launch the application.
@@ -104,19 +107,19 @@ public class Home extends JFrame {
 		lblSignUp.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				lblSignUp.setForeground(new Color(241, 57, 83));
+				lblSignUp.setForeground(secondaryPink);
 				setCursorAsPointer();
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
 				if(!signUpFrameActive)
 					lblSignUp.setForeground(Color.BLACK);
-				else lblSignUp.setForeground(new Color(255, 0, 51));
+				else lblSignUp.setForeground(tertiaryPink);
 				setCursorAsNormal();
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				lblSignUp.setForeground(new Color(255, 0, 51));
+				lblSignUp.setForeground(tertiaryPink);
 				signUpFrameActive = true;
 				lblSignIn.setForeground(Color.BLACK);
 				togglePanels();
@@ -125,21 +128,21 @@ public class Home extends JFrame {
 		lblSignIn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				lblSignIn.setForeground(new Color(241, 57, 83));
+				lblSignIn.setForeground(secondaryPink);
 				setCursorAsPointer();
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
 				if(signUpFrameActive)
 					lblSignIn.setForeground(Color.BLACK);
-				else lblSignIn.setForeground(new Color(255, 0, 51));
+				else lblSignIn.setForeground(tertiaryPink);
 				setCursorAsNormal();
 
 
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				lblSignIn.setForeground(new Color(255, 0, 51));
+				lblSignIn.setForeground(tertiaryPink);
 				signUpFrameActive = false;
 				lblSignUp.setForeground(Color.BLACK);
 				togglePanels();
@@ -152,28 +155,28 @@ public class Home extends JFrame {
 		lbl_close.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {		
-				System.exit(0);
+				disposeFrame();
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				lbl_close.setForeground(new Color(255, 0, 51));
+				lbl_close.setForeground(tertiaryPink);
 				setCursorAsPointer();
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				lbl_close.setForeground(new Color(241, 57, 83));
+				lbl_close.setForeground(secondaryPink);
 				setCursorAsNormal();
 
 			}
 		});
 		lbl_close.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_close.setForeground(new Color(241, 57, 83));
+		lbl_close.setForeground(secondaryPink);
 		lbl_close.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblSignIn.setBounds(465, 22, 64, 38);
 		lblSignIn.setFont(new Font("Gabriola", Font.PLAIN, 22));
 		contentPane.add(lblSignIn);
-		lblSignUp.setForeground(new Color(255, 0, 51));
+		lblSignUp.setForeground(tertiaryPink);
 		lblSignUp.setBounds(585, 22, 64, 38);
 		lblSignUp.setFont(new Font("Gabriola", Font.PLAIN, 22));
 		contentPane.add(lblSignUp);
@@ -187,13 +190,13 @@ public class Home extends JFrame {
 		JLabel lblTitle = new JLabel("Delivery App");
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setFont(new Font("Brush Script MT", Font.ITALIC, 42));
-		lblTitle.setForeground(new Color(240, 248, 255));
+		lblTitle.setForeground(whiteShade);
 		lblTitle.setBounds(70, 365, 224, 52);
 		panel.add(lblTitle);
 		
 		JLabel lblSlogan = new JLabel("We put the \"good\"");
 		lblSlogan.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSlogan.setForeground(new Color(240, 248, 255));
+		lblSlogan.setForeground(whiteShade);
 		lblSlogan.setFont(new Font("Gabriola", Font.PLAIN, 26));
 		lblSlogan.setBounds(86, 461, 185, 53);
 		panel.add(lblSlogan);
@@ -207,7 +210,7 @@ public class Home extends JFrame {
 		
 		JLabel lblInGoodsDelivery = new JLabel("in goods delivery");
 		lblInGoodsDelivery.setHorizontalAlignment(SwingConstants.CENTER);
-		lblInGoodsDelivery.setForeground(new Color(240, 248, 255));
+		lblInGoodsDelivery.setForeground(whiteShade);
 		lblInGoodsDelivery.setFont(new Font("Gabriola", Font.PLAIN, 26));
 		lblInGoodsDelivery.setBounds(87, 494, 185, 53);
 		panel.add(lblInGoodsDelivery);
@@ -246,13 +249,13 @@ public class Home extends JFrame {
 		signUpBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				signUpBtn.setBackground(new Color(255, 0, 51));
+				signUpBtn.setBackground(tertiaryPink);
 				setCursorAsPointer();
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				signUpBtn.setBackground(new Color(241, 57, 83));
+				signUpBtn.setBackground(secondaryPink);
 				setCursorAsNormal();
 
 			}
@@ -264,7 +267,7 @@ public class Home extends JFrame {
 		
 		signUpBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		signUpBtn.setForeground(Color.WHITE);
-		signUpBtn.setBackground(new Color(241, 57, 83));
+		signUpBtn.setBackground(secondaryPink);
 		signUpBtn.setBounds(51, 554, 283, 36);
 		signUpPanel.add(signUpBtn);
 		
@@ -272,13 +275,13 @@ public class Home extends JFrame {
 		signInBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				signInBtn.setBackground(new Color(255, 0, 51));
+				signInBtn.setBackground(tertiaryPink);
 				setCursorAsPointer();
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				signInBtn.setBackground(new Color(241, 57, 83));
+				signInBtn.setBackground(secondaryPink);
 				setCursorAsNormal();
 
 			}
@@ -286,7 +289,7 @@ public class Home extends JFrame {
 			public void mousePressed(MouseEvent e) {
 				if(signIn()) {
 					if(SessionHelper.isLoggedIn.getRole() == Role.CUSTOMER) {
-						customerDashboard frame = new customerDashboard();
+						CustomerDashboard frame = new CustomerDashboard();
 						frame.setVisible(true);
 						 frame.addWindowListener(new java.awt.event.WindowAdapter() {
 					            @Override
@@ -325,7 +328,7 @@ public class Home extends JFrame {
 		
 		signInBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		signInBtn.setForeground(Color.WHITE);
-		signInBtn.setBackground(new Color(241, 57, 83));
+		signInBtn.setBackground(secondaryPink);
 		signInBtn.setBounds(51, 400, 283, 36);
 		signInPanel.add(signInBtn);
 		
@@ -422,6 +425,7 @@ public class Home extends JFrame {
 			System.out.println("unable to signup. make sure of values");
 		}
 	}
+	@SuppressWarnings("deprecation")
 	private boolean signIn() {
 		User user ;
 		String password, email;
@@ -438,5 +442,9 @@ public class Home extends JFrame {
 			System.out.println("unable to sign in. make sure of values");
 		}
 		return false;
+	}
+	
+	private void disposeFrame() {
+		this.dispose();
 	}
 }
