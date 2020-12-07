@@ -64,7 +64,7 @@ public class AdminDashboard extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					CustomerDashboard frame = new CustomerDashboard();
+					CustomerDashboard frame = new CustomerDashboard(100,100);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -76,11 +76,11 @@ public class AdminDashboard extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public AdminDashboard() {
+	public AdminDashboard(int x, int y) {
 		this.setLocationByPlatform(true);
 		this.setUndecorated(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 1080, 720);
+		setBounds(x, y, 1080, 720);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

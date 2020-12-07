@@ -124,7 +124,7 @@ public class AdminAddWarehousesPane extends JPanel {
 				}
 				else {
 					Warehouse warehouse = createWarehouseFromFields();
-//					warehouseManager.create(warehouse);
+					warehouseManager.create(warehouse);
 					txtLongitude.setText("");
 					txtName.setText("");
 					txtLatitude.setText("");

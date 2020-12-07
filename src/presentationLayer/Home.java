@@ -43,6 +43,7 @@ public class Home extends JFrame {
 	private JPanel signUpPanel = new JPanel();
 	private JPanel signInPanel = new JPanel();
 	private Registration registration = new Registration();
+	private JFrame self = this;
 
 	private JTextField ageField;
 	private JTextField phoneNumberField;
@@ -289,7 +290,7 @@ public class Home extends JFrame {
 			public void mousePressed(MouseEvent e) {
 				if(signIn()) {
 					if(SessionHelper.isLoggedIn.getRole() == Role.CUSTOMER) {
-						CustomerDashboard frame = new CustomerDashboard();
+						CustomerDashboard frame = new CustomerDashboard(self.getX(),self.getY());
 						frame.setVisible(true);
 						 frame.addWindowListener(new java.awt.event.WindowAdapter() {
 					            @Override
@@ -300,7 +301,7 @@ public class Home extends JFrame {
 					        });
 					}
 					else if (SessionHelper.isLoggedIn.getRole() == Role.DRIVER) {
-						DriverDashboard frame = new DriverDashboard();
+						DriverDashboard frame = new DriverDashboard(self.getX(),self.getY());
 						frame.setVisible(true);
 						 frame.addWindowListener(new java.awt.event.WindowAdapter() {
 					            @Override
@@ -311,7 +312,7 @@ public class Home extends JFrame {
 					        });
 					}
 					else if (SessionHelper.isLoggedIn.getRole()== Role.ADMIN) {
-						AdminDashboard frame = new AdminDashboard();
+						AdminDashboard frame = new AdminDashboard(self.getX(),self.getY());
 						frame.setVisible(true);
 						 frame.addWindowListener(new java.awt.event.WindowAdapter() {
 					            @Override
