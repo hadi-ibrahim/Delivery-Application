@@ -112,7 +112,8 @@ public class AdminDashboard extends JFrame {
 		AdminManageItemsPane adminManageItemsPane = new AdminManageItemsPane(mainPanel);
 		mainPanel.add(adminManageItemsPane, "items");
 		
-		
+		AdminManageWarehousesPane adminManageWarehousesPane = new AdminManageWarehousesPane(mainPanel);
+		mainPanel.add(adminManageWarehousesPane, "warehouses");
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.BLACK);
@@ -218,7 +219,7 @@ public class AdminDashboard extends JFrame {
 						manageWarehousePanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								switchMainPanel("warehouse");
+								switchMainPanel("warehouses");
 							}
 						});		
 						addPanelEffects(manageWarehousePanel);

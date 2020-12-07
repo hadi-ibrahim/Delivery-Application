@@ -19,8 +19,9 @@ import javax.swing.table.DefaultTableModel;
 
 import DTO.IDTO;
 import DTO.Item;
+import DTO.Warehouse;
 import businessLogicLayer.InputManager;
-import businessLogicLayer.ItemManager;
+import businessLogicLayer.WarehouseManager;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -29,16 +30,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-public class AdminManageItemsPane extends JPanel {
+public class AdminManageWarehousesPane extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel mainPanel;
-	private JTable tblItems;
+	private JTable tblWarehouses;
 	private DefaultTableModel model;
-	private ItemManager itemManager = new ItemManager();
+	private WarehouseManager warehouseManager = new WarehouseManager();
 	private Color watermelon = new Color(254,127,156);
 	private Color lemonade = new Color(253,185,200);
 	private Color pastelPink = new Color(255, 209, 220);
@@ -49,9 +50,9 @@ public class AdminManageItemsPane extends JPanel {
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
 	
-	public JButton addItemBtn;
+	public JButton addWarehousesBtn;
 	public JButton deleteItemBtn;
-	public JButton restoreItemsBtn;
+	public JButton restoreWarehousesBtn;
 
 	/**
 	 * Launch the application.
@@ -65,7 +66,7 @@ public class AdminManageItemsPane extends JPanel {
 			        f.setSize( 780, 670);
 			        f.setTitle("Sometimes Red, Sometimes Blue");
 			        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			        f.getContentPane().add(new AdminManageItemsPane(new JPanel()));
+			        f.getContentPane().add(new AdminManageWarehousesPane(new JPanel()));
 			        f.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -77,15 +78,15 @@ public class AdminManageItemsPane extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public AdminManageItemsPane(JPanel mainPanel) {
+	public AdminManageWarehousesPane(JPanel mainPanel) {
 		super();
 		this.mainPanel = mainPanel;
 		
-		JPanel addItemsPanel = new AdminAddItemsPane (mainPanel, this);
-		mainPanel.add(addItemsPanel,"addItems");
+		JPanel addItemsPanel = new AdminAddWarehousesPane (mainPanel, this);
+		mainPanel.add(addItemsPanel,"addWarehouses");
 		
-		AdminRestoreItemsPane restoreItemsPanel = new AdminRestoreItemsPane(mainPanel, this);
-		mainPanel.add(restoreItemsPanel, "restoreItems");
+		AdminRestoreWarehousesPane restoreWarehousesPanel = new AdminRestoreWarehousesPane(mainPanel, this);
+		mainPanel.add(restoreWarehousesPanel, "restoreWarehouses");
 		
 		this.setBounds(100, 100, 780, 670);
 		this.setBackground(Color.WHITE);
@@ -98,37 +99,37 @@ public class AdminManageItemsPane extends JPanel {
 		scrollPane.setBackground(Color.WHITE);
 		this.add(scrollPane);
 
-		tblItems= new PinkTable();
-		scrollPane.setViewportView(tblItems);
+		tblWarehouses= new PinkTable();
+		scrollPane.setViewportView(tblWarehouses);
 
 		RefreshItemTable();
 		
-		addItemBtn = new JButton("Add");
-		addItemBtn.addMouseListener(new MouseAdapter() {
+		addWarehousesBtn = new JButton("Add");
+		addWarehousesBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				addItemBtn.setBackground(tertiaryPink);
+				addWarehousesBtn.setBackground(tertiaryPink);
 				setCursor(pointer);
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				addItemBtn.setBackground(secondaryPink);
+				addWarehousesBtn.setBackground(secondaryPink);
 				setCursor(arrow);
 
 			}
 			@Override
 			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("addItems");
+				switchMainPanel("addWarehouses");
 			}
 
 		});
 		
-		addItemBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		addItemBtn.setForeground(Color.WHITE);
-		addItemBtn.setBackground(secondaryPink);
-		addItemBtn.setBounds(100, 550, 150, 40);
-		this.add(addItemBtn);
+		addWarehousesBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		addWarehousesBtn.setForeground(Color.WHITE);
+		addWarehousesBtn.setBackground(secondaryPink);
+		addWarehousesBtn.setBounds(100, 550, 150, 40);
+		this.add(addWarehousesBtn);
 		
 		deleteItemBtn = new JButton("Delete");
 		deleteItemBtn.setForeground(Color.WHITE);
@@ -152,48 +153,49 @@ public class AdminManageItemsPane extends JPanel {
 			public void mousePressed(MouseEvent e ) {
 				
 				int column = 0;
-				int row = tblItems.getSelectedRow();
+				int row = tblWarehouses.getSelectedRow();
 				if (row >= 0) {
-					String id = tblItems.getModel().getValueAt(row, column).toString();
-					itemManager.delete(Integer.parseInt(id));
+					String id = tblWarehouses.getModel().getValueAt(row, column).toString();
+					warehouseManager.delete(Integer.parseInt(id));
 					RefreshItemTable();
-					restoreItemsPanel.RefreshItemTable();
+					restoreWarehousesPanel.RefreshItemTable();
 				}
 			}
 
 		});
 		this.add(deleteItemBtn);
 		
-		restoreItemsBtn = new JButton("Restore");
-		restoreItemsBtn.setForeground(Color.WHITE);
-		restoreItemsBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		restoreItemsBtn.setBackground(new Color(241, 57, 83));
-		restoreItemsBtn.setBounds(530, 550, 150, 40);
-		restoreItemsBtn.addMouseListener(new MouseAdapter() {
+		restoreWarehousesBtn = new JButton("Restore");
+		restoreWarehousesBtn.setForeground(Color.WHITE);
+		restoreWarehousesBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		restoreWarehousesBtn.setBackground(new Color(241, 57, 83));
+		restoreWarehousesBtn.setBounds(530, 550, 150, 40);
+		restoreWarehousesBtn.addMouseListener(new MouseAdapter() {
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				restoreItemsBtn.setBackground(tertiaryPink);
+				restoreWarehousesBtn.setBackground(tertiaryPink);
 				setCursor(pointer);
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				restoreItemsBtn.setBackground(secondaryPink);
+				restoreWarehousesBtn.setBackground(secondaryPink);
 				setCursor(arrow);
 
 			}
 			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("restoreItems");
+				switchMainPanel("restoreWarehouses");
 				}
 		});
-		this.add(restoreItemsBtn);
+		this.add(restoreWarehousesBtn);
 
 	}
 
 	public void RefreshItemTable() {
 		boolean isEditable[] = { false, true, true, true, false };
-		model = new DefaultTableModel(new Object[] { "id", "category", "price", "description", "isDeleted" }, 0) {
+		model = new DefaultTableModel(new Object[] { "id", "name", "latitude", "longitude", "isDeleted" }, 0) {
+
 
 			/**
 			 * 
@@ -205,48 +207,49 @@ public class AdminManageItemsPane extends JPanel {
 				return isEditable[column];
 			}
 		};
-		ArrayList<IDTO> activeItems = itemManager.getAllActiveItems();
-		if(activeItems.isEmpty()) {
-			model.addRow(new Object[] {"","","","",""});
+
+		ArrayList<IDTO > activeWarehouses=  warehouseManager.getAllActiveWarehouses();
+		if(activeWarehouses.isEmpty()) {
+			model.addRow(new Object[] {"", "", "", "", ""});
 		}
-		for (IDTO dto : activeItems) {
-			Item item = (Item) dto;
-			model.addRow(new Object[] { item.getId(), item.getCategory(), item.getPrice(), item.getDescription(),
-					item.getIsDeleted() });
+		for (IDTO dto : activeWarehouses) {
+			Warehouse warehouse = (Warehouse) dto;
+			model.addRow(new Object[] { warehouse.getId(), warehouse.getName(),warehouse.getLatitude(),warehouse.getLongitude(), warehouse.getIsDeleted()});
 		}
 		model.addTableModelListener(new TableModelListener() {
 			@Override
 			public void tableChanged(TableModelEvent e) {
+				
 				int column = 0;
-				int row = tblItems.getSelectedRow();
+				int row = tblWarehouses.getSelectedRow();
 				if (row >= 0) {
-					if (!InputManager.verifyPositiveDouble(tblItems.getModel().getValueAt(row, 2).toString())) {
+					
+					if (!InputManager.verifyLongitude(tblWarehouses.getModel().getValueAt(row, 3).toString())) {
 						RefreshItemTable();
-						JOptionPane.showMessageDialog(null, "Price must be a positive double.");
-					} else if (!InputManager.verifyCategory(tblItems.getModel().getValueAt(row, 1).toString())) {
+						JOptionPane.showMessageDialog(null, "Error: latitude invalid");
+					} else if (!InputManager.verifyLongitude(tblWarehouses.getModel().getValueAt(row, 2).toString())) {
 						RefreshItemTable();
-						JOptionPane.showMessageDialog(null, "Category must be either WEAPON, GROCERY or FOOD.");
+						JOptionPane.showMessageDialog(null, "Error: invalid longitude");
 					} else {
-
-						String id = tblItems.getModel().getValueAt(row, column).toString();
-						Item item = itemManager.get(Integer.parseInt(id));
-						item.setCategory(tblItems.getModel().getValueAt(row, 1).toString());
-						item.setPrice(Double.parseDouble(tblItems.getModel().getValueAt(row, 2).toString()));
-						item.setDescription(tblItems.getModel().getValueAt(row, 3).toString());
-						item.setIsDeleted(Integer.parseInt(tblItems.getModel().getValueAt(row, 4).toString()));
-						itemManager.update(item);
+						String id = tblWarehouses.getModel().getValueAt(row, column).toString();
+						Warehouse warehouse = warehouseManager.get(Integer.parseInt(id));
+						warehouse.setName(tblWarehouses.getModel().getValueAt(row, 1).toString());
+						warehouse.setLatitude(Double.parseDouble(tblWarehouses.getModel().getValueAt(row, 2).toString()));
+						warehouse.setLongitude(Double.parseDouble(tblWarehouses.getModel().getValueAt(row, 3).toString()));
+						warehouse.setIsDeleted(Integer.parseInt(tblWarehouses.getModel().getValueAt(row, 4).toString()));
+						warehouseManager.update(warehouse);
 						RefreshItemTable();
 					}
 				}
 			}
 		});
-		this.tblItems.setModel(model);
-		this.tblItems.getColumnModel().getColumn(0).setWidth(0);
-		this.tblItems.getColumnModel().getColumn(0).setMinWidth(0);
-		this.tblItems.getColumnModel().getColumn(0).setMaxWidth(0);
-		this.tblItems.getColumnModel().getColumn(4).setWidth(0);
-		this.tblItems.getColumnModel().getColumn(4).setMinWidth(0);
-		this.tblItems.getColumnModel().getColumn(4).setMaxWidth(0);
+		this.tblWarehouses.setModel(model);
+		this.tblWarehouses.getColumnModel().getColumn(0).setWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(0).setMinWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(0).setMaxWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(4).setWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(4).setMinWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(4).setMaxWidth(0);
 		
 
 	}

@@ -8,12 +8,10 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
 public class PinkTable extends JTable {
-	  private static final Color ALTERNATE_ONE = Color.YELLOW;
-	  private static final Color ALTERNATE_TWO = Color.GRAY;
-
-	  private Color alternateColor = ALTERNATE_ONE;
-	  private Color whiteColor = Color.WHITE;
-	  
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3522381013760637197L;
 		private Color watermelon = new Color(254,127,156);
 		private Color lemonade = new Color(253,185,200);
 		private Color pastelPink = new Color(255, 209, 220);

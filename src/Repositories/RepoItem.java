@@ -97,22 +97,6 @@ public class RepoItem implements ISoftDeletableRepo {
 		return LstOfItems;
 	}
 
-//TODO implement in business logic	
-//	public boolean exists(int id) {
-//		try {
-//			ps = con.prepareStatement("SELECT * FROM item WHERE id=?");
-//			ps.setInt(1, id);
-//			if (rs.next()) {
-//				return true;
-//			}
-//		} catch (SQLException ex) {
-//			System.out.println(ex);
-//			return false;
-//		}
-//		return false;
-//		
-//	}
-
 	@Override
 	public boolean create(IDTO dto) {
 		Item item = (Item) dto;

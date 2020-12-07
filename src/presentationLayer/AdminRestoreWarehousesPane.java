@@ -20,9 +20,11 @@ import javax.swing.table.DefaultTableModel;
 
 import DTO.IDTO;
 import DTO.Item;
+import DTO.Warehouse;
 import businessLogicLayer.ItemManager;
+import businessLogicLayer.WarehouseManager;
 
-public class AdminRestoreItemsPane extends JPanel {
+public class AdminRestoreWarehousesPane extends JPanel {
 
 	/**
 	 * 
@@ -32,6 +34,7 @@ public class AdminRestoreItemsPane extends JPanel {
 	private JTable tblItems;
 	private DefaultTableModel model;
 	private ItemManager itemManager = new ItemManager();
+	private WarehouseManager warehouseManager = new WarehouseManager();
 	private Color watermelon = new Color(254,127,156);
 	private Color lemonade = new Color(253,185,200);
 	private Color pastelPink = new Color(255, 209, 220);
@@ -69,7 +72,7 @@ public class AdminRestoreItemsPane extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public AdminRestoreItemsPane(JPanel mainPanel, AdminManageItemsPane itemsPane) {
+	public AdminRestoreWarehousesPane(JPanel mainPanel, AdminManageWarehousesPane warehousesPane) {
 		super();
 		this.mainPanel = mainPanel;
 		
@@ -109,9 +112,9 @@ public class AdminRestoreItemsPane extends JPanel {
 			        int row = tblItems.getSelectedRow();
 			        if (row >= 0) {
 			            String id = tblItems.getModel().getValueAt(row, column).toString();
-			            itemManager.restore(Integer.parseInt(id));
+			            warehouseManager.restore(Integer.parseInt(id));
 			            RefreshItemTable();
-			            itemsPane.RefreshItemTable();
+			            warehousesPane.RefreshItemTable();
 			        }
 			     }
 
@@ -143,7 +146,7 @@ public class AdminRestoreItemsPane extends JPanel {
 
 			}
 			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("items");
+				switchMainPanel("warehouses");
 			}
 		});
 		this.add(backBtn);
@@ -152,7 +155,7 @@ public class AdminRestoreItemsPane extends JPanel {
 
 	public void RefreshItemTable() {
 		boolean isEditable[] = { false, true, true, true, false };
-		model = new DefaultTableModel(new Object[] { "id", "category", "price", "description", "isDeleted" }, 0) {
+		model = new DefaultTableModel(new Object[] { "id", "name", "latitude", "longitude", "isDeleted" }, 0) {
 
 			/**
 			 * 
@@ -164,14 +167,17 @@ public class AdminRestoreItemsPane extends JPanel {
 				return isEditable[column];
 			}
 		};
-		ArrayList<IDTO> disabledItems = itemManager.getAllActiveItems();
-		if(disabledItems.isEmpty()) {
+
+		ArrayList<IDTO> disabledWarehouses = warehouseManager.getAllDisabledWarehouses();
+		if (disabledWarehouses.isEmpty()) {
 			model.addRow(new Object[] {"","","","",""});
 		}
-		for (IDTO dto : itemManager.getAllDisabledItems()) {
-			Item item = (Item) dto;
-			model.addRow(new Object[] { item.getId(), item.getCategory(), item.getPrice(), item.getDescription(),
-					item.getIsDeleted() });
+		else {
+			for (IDTO dto : disabledWarehouses ) {
+				Warehouse warehouse = (Warehouse) dto;
+				model.addRow(new Object[] { warehouse.getId(), warehouse.getName(), warehouse.getLatitude(), warehouse.getLongitude(),
+						warehouse.getIsDeleted() });
+			}
 		}
 		this.tblItems.setModel(model);
 		this.tblItems.getColumnModel().getColumn(0).setWidth(0);

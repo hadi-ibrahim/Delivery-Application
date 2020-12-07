@@ -1,4 +1,6 @@
-package presentationLayer.LocationManager;
+package businessLogicLayer.LocationManager;
+
+import java.io.File;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -8,12 +10,11 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import DTO.Location;
 
-public class chooseAddress {
+public class AddressPicker {
 
-	public Location addressChoice() {
-		System.setProperty("webdriver.chrome.driver",
-				"C:\\Users\\david\\Desktop\\Projects\\Year 3\\Object Oriented Programming II\\DeliveryApp\\src\\Drivers\\chromedriver.exe");
-		String getLocationPathHTML = "C:\\Users\\david\\Desktop\\Projects\\Year 3\\Object Oriented Programming II\\DeliveryApp\\src\\presentationLayer\\LocationManager\\chooseAddress.html";
+	public Location pickAddress() {
+		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
+		String getLocationPathHTML =new File("src/businessLogicLayer/locationManager/chooseAddress.html").getAbsolutePath();
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("window-size=1920,1080");
 		WebDriver driver = new ChromeDriver(options);

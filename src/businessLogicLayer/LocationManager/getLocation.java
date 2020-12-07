@@ -1,4 +1,6 @@
-package presentationLayer.LocationManager;
+package businessLogicLayer.LocationManager;
+
+import java.io.File;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -10,8 +12,8 @@ import DTO.Location;
 public class getLocation {
 
 	public Location getUserLocation() {
-		System.setProperty("webdriver.chrome.driver", "C:\\Users\\david\\Desktop\\Projects\\Year 3\\Object Oriented Programming II\\DeliveryApp\\src\\Drivers\\chromedriver.exe");
-		String getLocationPathHTML = "C:\\Users\\david\\Desktop\\Projects\\Year 3\\Object Oriented Programming II\\DeliveryApp\\src\\presentationLayer\\LocationManager\\getLocation.html";
+		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
+		String getLocationPathHTML = new File("src/businessLogicLayer/LocationManager/getLocation.html").getAbsolutePath();
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("window-size=0,0");
 		WebDriver driver = new ChromeDriver(options);

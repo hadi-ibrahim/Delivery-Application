@@ -47,4 +47,31 @@ public class InputManager {
 	        }
 	        return true;
 	}
+	
+	public static boolean verifyLongitude(String s) {
+		 Double validLongitude = -1.00;
+	        try {
+	            validLongitude = Double.parseDouble(s);
+	        } catch (NumberFormatException e) {
+	            return false;
+	        }
+	        if (validLongitude < -180 || validLongitude > 180) {
+	            return false;
+	        }
+	        return true;	
+	}
+	
+	public static boolean verifyLatitude(String s) {
+		 Double validLongitude = -1.00;
+	        try {
+	            validLongitude = Double.parseDouble(s);
+	        } catch (NumberFormatException e) {
+	            return false;
+	        }
+	        if (validLongitude < -180 || validLongitude > 180) {
+	            return false;
+	        }
+	        return true;	
+	}
+	
 }
