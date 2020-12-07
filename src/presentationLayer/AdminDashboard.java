@@ -12,6 +12,7 @@ import Helpers.SessionHelper;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.Icon;
@@ -26,6 +27,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.JSeparator;
+import java.awt.CardLayout;
 
 public class AdminDashboard extends JFrame {
 
@@ -41,9 +43,9 @@ public class AdminDashboard extends JFrame {
 	
 	private Color watermelon = new Color(254,127,156);
 	private Color lemonade = new Color(253,185,200);
-//	private Color pastelPink = new Color(255, 209, 220);
+	private Color pastelPink = new Color(255, 209, 220);
 	private Color secondaryPink = new Color(241, 57, 83);
-//	private Color tertiaryPink = new Color(255, 0 ,51);
+	private Color tertiaryPink = new Color(255, 0 ,51);
 	private Color whiteShade = new Color(240, 248, 255);
 	
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
@@ -105,6 +107,22 @@ public class AdminDashboard extends JFrame {
 		mainPanel.setBounds(300, 50, 780, 670);
 		mainPanel.setBackground(Color.WHITE);
 		contentPane.add(mainPanel);
+		mainPanel.setLayout(new CardLayout(0, 0));
+		
+		AdminManageItemsPane adminManageItemsPane = new AdminManageItemsPane(mainPanel);
+		mainPanel.add(adminManageItemsPane, "items");
+		
+		
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.BLACK);
+		mainPanel.add(panel, "1");
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.PINK);
+		mainPanel.add(panel_1, "2");
+
+		switchMainPanel("items");
 		
 		JLabel hamburgerLbl = new JLabel(hamburgerIcon);
 		hamburgerLbl.addMouseListener(new MouseAdapter() {
@@ -176,7 +194,7 @@ public class AdminDashboard extends JFrame {
 						manageItemsPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
+								switchMainPanel("items");								 
 							}
 						});		
 						manageItemsPanel.setBounds(0, 250, 300, 70);
@@ -200,7 +218,7 @@ public class AdminDashboard extends JFrame {
 						manageWarehousePanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
+								switchMainPanel("warehouse");
 							}
 						});		
 						addPanelEffects(manageWarehousePanel);
@@ -224,7 +242,7 @@ public class AdminDashboard extends JFrame {
 						ManageUsersPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
+								switchMainPanel("users");
 							}
 						});		
 						addPanelEffects(ManageUsersPanel);
@@ -248,7 +266,7 @@ public class AdminDashboard extends JFrame {
 						viewOrdersPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
+								switchMainPanel("Orders");
 							}
 						});		
 						addPanelEffects(viewOrdersPanel);
@@ -418,6 +436,13 @@ public class AdminDashboard extends JFrame {
 	private void disposeFrame() {
 		this.dispose();
 	}
+	
+	private void switchMainPanel(String name) {
+		CardLayout cards =(CardLayout) mainPanel.getLayout();
+		cards.show(mainPanel, name);
+	}
+	
+
 }
 
 

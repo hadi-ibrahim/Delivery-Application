@@ -61,15 +61,15 @@ public class adminDashboardOld extends JFrame {
 		JButton btnManageItems = new JButton("Manage Items");
 		btnManageItems.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				adminManageItems mngItems = new adminManageItems();
+				AdminManageItemsPane mngItems = new AdminManageItemsPane(contentPane);
 				mngItems.setVisible(true);
-				 mngItems.addWindowListener(new java.awt.event.WindowAdapter() {
-			            @Override
-			            public void windowClosed(java.awt.event.WindowEvent evt) {
-			                setVisible(true);
-			            }
-			        });
-				 setVisible(false);
+//				 mngItems.addWindowListener(new java.awt.event.WindowAdapter() {
+//			            @Override
+//			            public void windowClosed(java.awt.event.WindowEvent evt) {
+//			                setVisible(true);
+//			            }
+//			        });
+//				 setVisible(false);
 			}
 		});
 		btnManageItems.setBounds(157, 106, 124, 21);

@@ -345,7 +345,7 @@ public class DriverDashboard extends JFrame {
 	
 	private void toggleSideNav( ) {
 		this.sideNavActive = ! this.sideNavActive;
-		sidePanel.setVisible(sideNavActive);
+		sidePanel.setVisible(sideNavActive);	
 		recalculatePanelsWidth();
 	}
 	
