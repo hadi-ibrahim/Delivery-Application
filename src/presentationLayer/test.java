@@ -1,6 +1,7 @@
 package presentationLayer;
 
 import DTO.Location;
+import presentationLayer.LocationManager.chooseAddress;
 import presentationLayer.LocationManager.getLocation;
 
 public class test {
@@ -10,5 +11,10 @@ public class test {
 		 * Location loca = loc.getUserLocation(); 
 		 * System.out.println(loca.getLongitude()+","+loca.getLatitude());
 		 */
+		/*---------------- Choose Destination / Save Address --------------
+		chooseAddress add = new chooseAddress();
+		Location loca = add.addressChoice();
+		System.out.println(loca.getLongitude()+","+loca.getLatitude());
+		*/
 	}
 }

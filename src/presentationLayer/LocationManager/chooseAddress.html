@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet"
+	href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
+	type="text/css" />
+
+<style>
+	body {
+		margin: 0;
+		padding: 0;
+	}
+
+	#map {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	#info {
+		display: block;
+		position: relative;
+		margin: 0px auto;
+		width: 50%;
+		padding: 10px;
+		border: none;
+		border-radius: 3px;
+		font-size: 12px;
+		text-align: center;
+		color: #222;
+		background: #fff;
+	}
+
+	#confirm {
+		display: block;
+		position: fixed;
+		top: 10px;
+		width: 10%;
+		color: white;
+		text-align:center;
+		border-radius: 5px;
+	}
+
+	#confirm:disabled {
+		background: red;
+	}
+
+	#confirm:enabled {
+		background: green;
+	}
+
+	button:hover:enabled{
+		cursor: pointer;
+	} 
+</style>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Choose Address</title>
+</head>
+
+<body>
+	<input type="hidden" id="latitude">
+	<input type="hidden" id="longitude">
+	<input type="hidden" id="choice" value="false">
+	
+	<div id='map'>
+
+	</div>
+	<button onclick="confirm()" id="confirm" disabled>Confirm</button>
+	<script>
+		mapboxgl.accessToken = 'pk.eyJ1IjoiYWZ0ZXJsaWZldGFsIiwiYSI6ImNraTZkaG9rajAyZG4ycnMwaG5mOTFkZTEifQ.Pd_JGgUMjvo74ckmkYf_mQ';
+		var lebBounds = [[35.10377429734774, 33.04323030490899], // Southwest coordinates
+		[36.677004914154054, 34.68063864267695] // Northeast coordinates
+		];
+
+		var map = new mapboxgl.Map({
+			container: 'map',
+			style: 'mapbox://styles/mapbox/dark-v10',
+			center: [35.6172642, 33.8982101],
+			attributionControl: false,
+			zoom: 10,
+			maxBounds: lebBounds
+		});
+
+		map.addControl(new MapboxGeocoder({
+			accessToken: mapboxgl.accessToken,
+			countries: "lb",
+			mapboxgl: mapboxgl
+		}));
+
+		map.addControl(new mapboxgl.NavigationControl());
+
+		map.addControl(new mapboxgl.GeolocateControl({
+			positionOptions: {
+				enableHighAccuracy: true,
+			},
+			trackUserLocation: true
+		}));
+
+		var $markerCount = 0;
+		var addressMarker = new mapboxgl.Marker()
+		map.on('click', function (e) {
+			removeMarker;
+			var $lngLat = JSON.stringify(e.lngLat.wrap());
+			$lngLat = $lngLat.split(",")
+			var $long = $lngLat[0];
+			var $lat = $lngLat[1];
+			$lat = $lat.substr(6, $lat.length);
+			$lat = $lat.replace('}', '');
+			$long = $long.substr(7, $lat.length);
+			addressMarker.setLngLat([$long, $lat]);
+			addressMarker.addTo(map);
+			$markerCount = 1;
+			$('#longitude').val($long);
+			$('#latitude').val($lat);
+			document.getElementById("confirm").disabled = false;
+		});
+		function removeMarker() {
+			if ($markerCount != 0) {
+				map.removeLayer(addressMarker);
+				$markerCount = 0;
+			}
+		}
+
+		function confirm() {
+			$('#choice').val("true");
+		}
+	</script>
+
+
+</body>
+
+</html>

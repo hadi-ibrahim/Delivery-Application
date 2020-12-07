@@ -41,16 +41,18 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Get location</title>
+    <title>Choose Address</title>
 </head>
 
 <body>
-    <input type="textarea" id="latitude">
-    <input type="text" id="longitude">
-
+    <input readonly type="hidden" id="latitude">
+    <input readonly type="hidden" id="longitude">
+    <input readonly type="hidden" id="choice" value="false">
+    <!--<input type="text" id="confirmed" value="false">-->
+    <button onclick='confirm'>Confirm</button>
     <div id='map'></div>
     <script>
-        
+
         mapboxgl.accessToken = 'pk.eyJ1IjoiYWZ0ZXJsaWZldGFsIiwiYSI6ImNraTZkaG9rajAyZG4ycnMwaG5mOTFkZTEifQ.Pd_JGgUMjvo74ckmkYf_mQ';
         var lebBounds = [
             [35.10377429734774, 33.04323030490899], // Southwest coordinates
@@ -84,13 +86,12 @@
                 trackUserLocation: true
             })
         );
+
+
         var $markerCount = 0;
         var addressMarker = new mapboxgl.Marker()
         map.on('click', function (e) {
-            if ($markerCount != 0) {
-                map.removeLayer(addressMarker);
-                $markerCount = 0;
-            }
+            removeMarker();
             var $lngLat = JSON.stringify(e.lngLat.wrap());
             $lngLat = $lngLat.split(",")
             var $long = $lngLat[0];
@@ -101,23 +102,15 @@
             addressMarker.setLngLat([$long, $lat]);
             addressMarker.addTo(map);
             $markerCount = 1;
-            if (confirm("Confirm your address")) {
-                $('#longitude').val($long);
-                $('#latitude').val($lat);
-                $('#confirmed').val('true');
-            } else {
-                $('#longitude').val('');
-                $('#latitude').val('');
-                $('#confirmed').val('false');
-                if ($markerCount != 0) {
-                    map.removeLayer(addressMarker);
-                    $markerCount = 0;
-                }
-            }
-            function removeMarker() {
-
-            }
+            $('#longitude').val($long);
+            $('#latitude').val($lat);
         });
+        function removeMarker() {
+            if ($markerCount != 0) {
+                map.removeLayer(addressMarker);
+                $markerCount = 0;
+            }
+        }
 
         /*map.addControl(
             new MapboxDirections({
@@ -126,7 +119,9 @@
             'top-left'
         );
         */
-
+        function confirm() {
+                $('#choice').val("true");
+        }
 
     </script>
 
