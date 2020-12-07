@@ -11,7 +11,7 @@ public class getLocation {
 
 	public Location getUserLocation() {
 		System.setProperty("webdriver.chrome.driver", "C:\\Users\\david\\Desktop\\Projects\\Year 3\\Object Oriented Programming II\\DeliveryApp\\src\\Drivers\\chromedriver.exe");
-		String getLocationPathHTML = "WC:\\Users\\david\\\\Desktop\\Projects\\\\Year 3\\Object Oriented Programming II\\DeliveryApp\\\\src\\presentationLayer\\LocationManager\\getLocation.html";
+		String getLocationPathHTML = "C:\\Users\\david\\Desktop\\Projects\\Year 3\\Object Oriented Programming II\\DeliveryApp\\src\\presentationLayer\\LocationManager\\getLocation.html";
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("window-size=0,0");
 		WebDriver driver = new ChromeDriver(options);
