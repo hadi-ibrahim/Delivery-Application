@@ -300,7 +300,7 @@ public class Home extends JFrame {
 					        });
 					}
 					else if (SessionHelper.isLoggedIn.getRole() == Role.DRIVER) {
-						driverDashboard frame = new driverDashboard();
+						DriverDashboard frame = new DriverDashboard();
 						frame.setVisible(true);
 						 frame.addWindowListener(new java.awt.event.WindowAdapter() {
 					            @Override
@@ -311,7 +311,7 @@ public class Home extends JFrame {
 					        });
 					}
 					else if (SessionHelper.isLoggedIn.getRole()== Role.ADMIN) {
-						adminDashboard frame = new adminDashboard();
+						AdminDashboard frame = new AdminDashboard();
 						frame.setVisible(true);
 						 frame.addWindowListener(new java.awt.event.WindowAdapter() {
 					            @Override

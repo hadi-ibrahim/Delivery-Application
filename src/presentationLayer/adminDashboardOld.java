@@ -10,7 +10,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class adminDashboard extends JFrame {
+public class adminDashboardOld extends JFrame {
 
 	private JPanel contentPane;
 
@@ -21,7 +21,7 @@ public class adminDashboard extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					adminDashboard frame = new adminDashboard();
+					adminDashboardOld frame = new adminDashboardOld();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -33,7 +33,7 @@ public class adminDashboard extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public adminDashboard() {
+	public adminDashboardOld() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
