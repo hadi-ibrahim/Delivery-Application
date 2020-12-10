@@ -2,7 +2,8 @@ package DTO;
 
 public class Warehouse implements IDTO {
 	private int id;
-	private int idAddress;
+	private double longitude;
+	private double latitude;
 	private int isDeleted;
 	private String name;
 
@@ -10,9 +11,10 @@ public class Warehouse implements IDTO {
 
 	}
 
-	public Warehouse(int idAddress, String name) {
+	public Warehouse(String name, double longitude, double latitude) {
 		super();
-		this.idAddress = idAddress;
+		this.longitude = longitude;
+		this.latitude = latitude; 
 		this.name = name;
 	}
 
@@ -34,12 +36,20 @@ public class Warehouse implements IDTO {
 		this.id = id;
 	}
 
-	public int getIdAddress() {
-		return idAddress;
+	public double getLongitude() {
+		return longitude;
 	}
 
-	public void setIdAddress(int idAddress) {
-		this.idAddress = idAddress;
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
 	}
 
 	public int getIsDeleted() {

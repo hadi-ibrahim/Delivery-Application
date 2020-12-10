@@ -5,6 +5,7 @@ import java.awt.Point;
 import DTO.Address;
 import DTO.Category;
 import DTO.DriverStatus;
+import DTO.IDTO;
 import DTO.Item;
 import DTO.Location;
 import DTO.Role;
@@ -55,14 +56,22 @@ public class RepoTester {
 		System.out.println(i.getCategory() + " " + i.getDescription() );
 		
 		Warehouse w = new Warehouse();
-		w.setName("Junkies");
-		w.setIdAddress(2);
-		warehouse.create(w);
-		w = warehouse.get(1);
-		w.setName("Carrefour");
-		warehouse.update(w);
+//		w.setName("Junkies");
+//		w.setLongitude(123.23);
+//		w.setLatitude(12);
+//		warehouse.create(w);
+//		w = warehouse.get(1);
+//		w.setName("Carrefour");
+//		warehouse.update(w);
 		System.out.println(w.getName());
-		
+		for(IDTO dto  :warehouse.getAllActiveWarehouses()) {
+			Warehouse warh = (Warehouse) dto;
+			System.out.println("================================" + warh.getName());
+		}
+		for(IDTO dto  :warehouse.getAllDisabledWarehouses()) {
+			Warehouse warh = (Warehouse) dto;
+			System.out.println("*********************************" + warh.getName());
+		}		
 //		WarehouseItem wi = new WarehouseItem();
 //		wi.setIdItem(1);
 //		wi.setIdWarehouse(1);

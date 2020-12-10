@@ -27,8 +27,8 @@ public class RepoWarehouse implements ISoftDeletableRepo {
 		try {
 			Warehouse warehouse = new Warehouse();
 			warehouse.setId(resultSet.getInt("id"));
-			warehouse.setIdAddress(resultSet.getInt("idAddress"));
-			warehouse.setIsDeleted(resultSet.getInt("isDeleted"));
+			warehouse.setLongitude(resultSet.getDouble("longitude"));
+			warehouse.setLatitude(resultSet.getDouble("latitude"));
 			warehouse.setName(resultSet.getString("name"));
 			return warehouse;
 		} catch (SQLException e) {
@@ -69,14 +69,44 @@ public class RepoWarehouse implements ISoftDeletableRepo {
 		}
 		return LstOfWarehouse;
 	}
+	
+	public ArrayList<IDTO> getAllActiveWarehouses() {
+		ArrayList<IDTO> LstOfItems = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From warehouse where isDeleted=0");
+			while (rs.next()) {
+				LstOfItems.add(extractWarehouseFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return LstOfItems;
+	}
+	
+	public ArrayList<IDTO> getAllDisabledWarehouses() {
+		ArrayList<IDTO> LstOfItems = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From warehouse where isDeleted=1");
+			while (rs.next()) {
+				LstOfItems.add(extractWarehouseFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return LstOfItems;
+	}
 
 	@Override
 	public boolean create(IDTO dto) {
 		Warehouse warehouse = (Warehouse) dto;
 		try {
-			ps = con.prepareStatement("INSERT INTO warehouse(id,idAddress,isDeleted, name) Values(Null,?,0,?)");
-			ps.setInt(1, warehouse.getIdAddress());
-			ps.setString(2, warehouse.getName());
+			ps = con.prepareStatement("INSERT INTO warehouse(id,longitude, latitude, isDeleted, name) Values(Null,?,?,0,?)");
+			ps.setDouble(1, warehouse.getLongitude());
+			ps.setDouble(2, warehouse.getLatitude());
+
+			ps.setString(3, warehouse.getName());
 			System.out.println(ps.executeUpdate() + " record(s) created");
 
 		} catch (SQLException ex) {
@@ -90,11 +120,12 @@ public class RepoWarehouse implements ISoftDeletableRepo {
 	public boolean update(IDTO dto) {
 		Warehouse warehouse = (Warehouse) dto;
 		try {
-			ps = con.prepareStatement("UPDATE warehouse SET idAddress=?,isDeleted=?, name =? WHERE id=?");
-			ps.setInt(1, warehouse.getIdAddress());
-			ps.setInt(2, warehouse.getIsDeleted());
-			ps.setString(3, warehouse.getName());
-			ps.setInt(4, warehouse.getId());
+			ps = con.prepareStatement("UPDATE warehouse SET longitude=?, latitude=?, isDeleted=?, name =? WHERE id=?");
+			ps.setDouble(1, warehouse.getLongitude());
+			ps.setDouble(2, warehouse.getLatitude());
+			ps.setInt(3, warehouse.getIsDeleted());
+			ps.setString(4, warehouse.getName());
+			ps.setInt(5, warehouse.getId());
 			System.out.println(ps.executeUpdate());
 		} catch (SQLException ex) {
 			System.out.println(ex);
