@@ -119,6 +119,8 @@
 			addressMarker.setLngLat([$long, $lat]);
 			addressMarker.addTo(map);
 			$markerCount = 1;
+			$lat = parseFloat($lat.substr(0,11));
+            $long = parseFloat($long.substr(0,10));
 			$('#longitude').val($long);
 			$('#latitude').val($lat);
 			document.getElementById("confirm").disabled = false;
