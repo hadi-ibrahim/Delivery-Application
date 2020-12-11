@@ -22,11 +22,11 @@ public class WarehouseManager {
 	}
 	
 	public ArrayList<IDTO> getAllActiveWarehouses(){
-		return repoWarehouse.getAllActiveWarehouses();
+		return repoWarehouse.getAllActive();
 	}
 	
 	public ArrayList<IDTO> getAllDisabledWarehouses(){
-		return repoWarehouse.getAllDisabledWarehouses();
+		return repoWarehouse.getAllDisabled();
 	}
 
 	public Warehouse get(int id) {

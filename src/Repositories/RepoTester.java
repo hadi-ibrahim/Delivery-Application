@@ -64,11 +64,11 @@ public class RepoTester {
 //		w.setName("Carrefour");
 //		warehouse.update(w);
 		System.out.println(w.getName());
-		for(IDTO dto  :warehouse.getAllActiveWarehouses()) {
+		for(IDTO dto  :warehouse.getAllActive()) {
 			Warehouse warh = (Warehouse) dto;
 			System.out.println("================================" + warh.getName());
 		}
-		for(IDTO dto  :warehouse.getAllDisabledWarehouses()) {
+		for(IDTO dto  :warehouse.getAllDisabled()) {
 			Warehouse warh = (Warehouse) dto;
 			System.out.println("*********************************" + warh.getName());
 		}		

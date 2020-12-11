@@ -11,7 +11,7 @@ import DTO.IDTO;
 import DTO.Warehouse;
 import Helpers.ConnectionManager;
 
-public class RepoWarehouse implements ISoftDeletableRepo {
+public class RepoWarehouse implements IRepo, ISoftDeletable {
 
 	Connection con = null;
 	Statement stmt = null;
@@ -70,7 +70,7 @@ public class RepoWarehouse implements ISoftDeletableRepo {
 		return LstOfWarehouse;
 	}
 	
-	public ArrayList<IDTO> getAllActiveWarehouses() {
+	public ArrayList<IDTO> getAllActive() {
 		ArrayList<IDTO> LstOfItems = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
@@ -83,8 +83,7 @@ public class RepoWarehouse implements ISoftDeletableRepo {
 		}
 		return LstOfItems;
 	}
-	
-	public ArrayList<IDTO> getAllDisabledWarehouses() {
+	public ArrayList<IDTO> getAllDisabled() {
 		ArrayList<IDTO> LstOfItems = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
@@ -148,7 +147,6 @@ public class RepoWarehouse implements ISoftDeletableRepo {
 
 	}
 
-	@Override
 	public boolean restore(int id) {
 		try {
 			ps = con.prepareStatement("Update warehouse set isDeleted=0 WHERE id=?");

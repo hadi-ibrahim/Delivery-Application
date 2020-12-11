@@ -14,7 +14,7 @@ public class AddressPicker {
 
 	public Location pickAddress() {
 		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
-		String getLocationPathHTML =new File("src/businessLogicLayer/locationManager/chooseAddress.html").getAbsolutePath();
+		String getLocationPathHTML =new File("src/businessLogicLayer/locationManager/AddressPicker.html").getAbsolutePath();
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("window-size=1920,1080");
 		WebDriver driver = new ChromeDriver(options);

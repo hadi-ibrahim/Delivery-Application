@@ -11,7 +11,7 @@ import DTO.IDTO;
 import DTO.WarehouseItem;
 import Helpers.ConnectionManager;
 
-public class RepoWarehouseItem implements ISoftDeletableRepo {
+public class RepoWarehouseItem implements IRepo, ISoftDeletable {
 	Connection con = null;
 	Statement stmt = null;
 	ResultSet rs = null;
@@ -122,7 +122,6 @@ public class RepoWarehouseItem implements ISoftDeletableRepo {
 		return true;
 	}
 
-	@Override
 	public boolean restore(int id) {
 		try {
 			ps = con.prepareStatement("Update warehouseItem SET IsDeleted=0 where id=");
@@ -206,6 +205,7 @@ public class RepoWarehouseItem implements ISoftDeletableRepo {
 //		}
 //		return false;
 //	}
+
 
 //	public boolean enoughQuantity(WarehouseItem warehouseItem) {
 //		try {

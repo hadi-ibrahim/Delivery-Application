@@ -114,14 +114,6 @@ public class AdminDashboard extends JFrame {
 		
 		AdminManageWarehousesPane adminManageWarehousesPane = new AdminManageWarehousesPane(mainPanel);
 		mainPanel.add(adminManageWarehousesPane, "warehouses");
-		
-		JPanel panel = new JPanel();
-		panel.setBackground(Color.BLACK);
-		mainPanel.add(panel, "1");
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(Color.PINK);
-		mainPanel.add(panel_1, "2");
 
 		switchMainPanel("items");
 		
