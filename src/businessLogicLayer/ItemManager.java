@@ -23,11 +23,11 @@ public class ItemManager {
 	}
 	
 	public ArrayList<IDTO> getAllActiveItems(){
-		return repoItem.getAllActiveItems();
+		return repoItem.getAllActive();
 	}
 	
 	public ArrayList<IDTO> getAllDisabledItems(){
-		return repoItem.getAllDisabledItems();
+		return repoItem.getAllDisabled();
 	}
 
 	public Item get(int id) {

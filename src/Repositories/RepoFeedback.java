@@ -11,7 +11,7 @@ import DTO.Feedback;
 import DTO.IDTO;
 import Helpers.ConnectionManager;
 
-public class RepoFeedback implements ISoftDeletableRepo {
+public class RepoFeedback implements IRepo, ISoftDeletable {
 	ResultSet rs;
 	PreparedStatement ps;
 	Connection con;
@@ -50,7 +50,37 @@ public class RepoFeedback implements ISoftDeletableRepo {
 		ArrayList<IDTO> feedbacks = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From order");
+			rs = stmt.executeQuery("Select * From feedback");
+			while (rs.next()) {
+				feedbacks.add(extractFeedbackFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return feedbacks;
+	}
+	
+	@Override
+	public ArrayList<IDTO> getAllActive() {
+		ArrayList<IDTO> feedbacks = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From feedback where isDeleted=0");
+			while (rs.next()) {
+				feedbacks.add(extractFeedbackFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return feedbacks;
+	}
+
+	@Override
+	public ArrayList<IDTO> getAllDisabled() {
+		ArrayList<IDTO> feedbacks = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From feedback where isDeleted=1");
 			while (rs.next()) {
 				feedbacks.add(extractFeedbackFromResultSet(rs));
 			}
@@ -164,5 +194,7 @@ public class RepoFeedback implements ISoftDeletableRepo {
 			System.out.println(e.getMessage());
 		}
 	}
+
+	
 
 }

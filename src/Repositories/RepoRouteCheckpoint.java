@@ -13,7 +13,7 @@ import DTO.Location;
 import DTO.RouteCheckpoint;
 import Helpers.ConnectionManager;
 
-public class RepoRouteCheckpoint implements ISoftDeletableRepo {
+public class RepoRouteCheckpoint implements IRepo, ISoftDeletable {
 	ResultSet rs;
 	PreparedStatement ps;
 	Connection con;
@@ -52,7 +52,7 @@ public class RepoRouteCheckpoint implements ISoftDeletableRepo {
 		ArrayList<IDTO> routeCheckpoints = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From order");
+			rs = stmt.executeQuery("Select * From routecheckpoint");
 			while (rs.next()) {
 				routeCheckpoints.add(extractRouteCheckpointFromResultSet(rs));
 			}
@@ -62,6 +62,35 @@ public class RepoRouteCheckpoint implements ISoftDeletableRepo {
 		return routeCheckpoints;
 	}
 	
+	@Override
+	public ArrayList<IDTO> getAllActive() {
+		ArrayList<IDTO> routeCheckpoints = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From routecheckpoint where isDeleted=0");
+			while (rs.next()) {
+				routeCheckpoints.add(extractRouteCheckpointFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return routeCheckpoints;
+	}
+
+	@Override
+	public ArrayList<IDTO> getAllDisabled() {
+		ArrayList<IDTO> routeCheckpoints = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From routecheckpoint were isDeleted=1");
+			while (rs.next()) {
+				routeCheckpoints.add(extractRouteCheckpointFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return routeCheckpoints;
+	}
 	@Override
 	public boolean create(IDTO dto) {
 		RouteCheckpoint routeCheckpoint = (RouteCheckpoint) dto;
@@ -182,5 +211,6 @@ public class RepoRouteCheckpoint implements ISoftDeletableRepo {
 		}
 		return routeCheckpoints;
 	}
+
 
 }

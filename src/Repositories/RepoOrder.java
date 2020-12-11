@@ -12,7 +12,7 @@ import DTO.Location;
 import DTO.Order;
 import Helpers.ConnectionManager;
 
-public class RepoOrder implements ISoftDeletableRepo {
+public class RepoOrder implements IRepo, ISoftDeletable {
 	Connection con;
 	PreparedStatement ps;
 	Statement stmt;
@@ -67,6 +67,38 @@ public class RepoOrder implements ISoftDeletableRepo {
 
 	}
 
+	@Override
+	public ArrayList<IDTO> getAllActive() {
+		ArrayList<IDTO> orders = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From order where isDeleted=0");
+			while (rs.next()) {
+				orders.add(extractOrderFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return orders;
+
+	}
+
+	@Override
+	public ArrayList<IDTO> getAllDisabled() {
+		ArrayList<IDTO> orders = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From order where isDeleted=1");
+			while (rs.next()) {
+				orders.add(extractOrderFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return orders;
+
+	}
+	
 	@Override
 	public boolean create(IDTO dto) {
 		Order order = (Order) dto;
@@ -174,4 +206,6 @@ public class RepoOrder implements ISoftDeletableRepo {
 			System.out.println(e.getMessage());
 		}
 	}
+
+	
 }

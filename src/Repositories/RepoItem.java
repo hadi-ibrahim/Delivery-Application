@@ -11,7 +11,7 @@ import DTO.IDTO;
 import DTO.Item;
 import Helpers.ConnectionManager;
 
-public class RepoItem implements ISoftDeletableRepo {
+public class RepoItem implements IRepo, ISoftDeletable {
 	Connection con = null;
 	Statement stmt = null;
 	ResultSet rs = null;
@@ -69,7 +69,8 @@ public class RepoItem implements ISoftDeletableRepo {
 		return LstOfItems;
 	}
 	
-	public ArrayList<IDTO> getAllActiveItems() {
+	@Override
+	public ArrayList<IDTO> getAllActive() {
 		ArrayList<IDTO> LstOfItems = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
@@ -83,7 +84,8 @@ public class RepoItem implements ISoftDeletableRepo {
 		return LstOfItems;
 	}
 	
-	public ArrayList<IDTO> getAllDisabledItems() {
+	@Override
+	public ArrayList<IDTO> getAllDisabled() {
 		ArrayList<IDTO> LstOfItems = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
@@ -197,5 +199,7 @@ public class RepoItem implements ISoftDeletableRepo {
 			System.out.println(e.getMessage());
 		}
 	}
+
+	
 
 }

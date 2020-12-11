@@ -72,6 +72,35 @@ public class RepoWarehouseItem implements IRepo, ISoftDeletable {
 		return ListOfWarehouseItems;
 	}
 	
+	@Override
+	public ArrayList<IDTO> getAllActive() {
+		ArrayList<IDTO> ListOfWarehouseItems = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From item where isDeleted=0");
+			while (rs.next()) {
+				ListOfWarehouseItems.add(extractWarehouseItemFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return ListOfWarehouseItems;
+	}
+
+	@Override
+	public ArrayList<IDTO> getAllDisabled() {
+		ArrayList<IDTO> ListOfWarehouseItems = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From item where isDeleted=1");
+			while (rs.next()) {
+				ListOfWarehouseItems.add(extractWarehouseItemFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return ListOfWarehouseItems;
+	}
 	
 	@Override
 	public boolean create(IDTO dto) {
@@ -205,6 +234,8 @@ public class RepoWarehouseItem implements IRepo, ISoftDeletable {
 //		}
 //		return false;
 //	}
+
+	
 
 
 //	public boolean enoughQuantity(WarehouseItem warehouseItem) {

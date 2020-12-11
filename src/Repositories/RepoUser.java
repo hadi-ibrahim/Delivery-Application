@@ -14,7 +14,7 @@ import DTO.User;
 import Helpers.ConnectionManager;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
-public class RepoUser implements ISoftDeletableRepo {
+public class RepoUser implements IRepo,ISoftDeletable {
 	Connection con = null;
 	Statement stmt = null;
 	ResultSet rs = null;
@@ -93,7 +93,7 @@ public class RepoUser implements ISoftDeletableRepo {
 		ArrayList<IDTO> LstOfUsers = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From user where isDeleted=1");
+			rs = stmt.executeQuery("Select * From user where isDeleted=1 AND role NOT like 'ADMIN'");
 			while (rs.next()) {
 				LstOfUsers.add(extractUserFromResultSet(rs));
 			}
