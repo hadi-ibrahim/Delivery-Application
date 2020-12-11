@@ -9,7 +9,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import DTO.Location;
 
-public class getLocation {
+public class LocationGetter {
 
 	public Location getUserLocation() {
 		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");

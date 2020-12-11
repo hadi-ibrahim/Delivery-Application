@@ -1,4 +1,21 @@
-$(document).ready(function () {
+<!DOCTYPE html>
+<html lang="en">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Get location</title>
+</head>
+
+<body>
+    <input type="text" id="latitude">
+    <input type="text" id="longitude">
+    <input type="text" id="accuracy">
+    <input type="text" id="flag" value="false">
+
+    <script>
+        $(document).ready(function () {
     navigator.geolocation.getCurrentPosition(
         successCallback,
         errorCallback_highAccuracy,
@@ -44,3 +61,6 @@ $(document).ready(function () {
     }
 
 })
+    </script>
+</body>
+</html>

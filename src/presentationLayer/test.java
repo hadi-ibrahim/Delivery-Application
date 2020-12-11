@@ -22,7 +22,7 @@ import DTO.User;
 import DTO.Warehouse;
 import DTO.WarehouseItem;
 import businessLogicLayer.LocationManager.AddressPicker;
-import businessLogicLayer.LocationManager.getLocation;
+import businessLogicLayer.LocationManager.LocationGetter;
 
 public class test {
 	public static void main(String[] args) throws InterruptedException {
