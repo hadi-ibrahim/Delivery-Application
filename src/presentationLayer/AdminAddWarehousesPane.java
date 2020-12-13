@@ -22,7 +22,7 @@ import DTO.Warehouse;
 import businessLogicLayer.InputManager;
 import businessLogicLayer.ItemManager;
 import businessLogicLayer.WarehouseManager;
-import businessLogicLayer.LocationManager.AddressPicker;
+import businessLogicLayer.LocationManager.LocationManager;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
@@ -36,7 +36,7 @@ public class AdminAddWarehousesPane extends JPanel {
 	
 	private JPanel mainPanel;
 	WarehouseManager warehouseManager = new WarehouseManager();
-	private AddressPicker addressPicker = new AddressPicker();
+	private LocationManager addressPicker = new LocationManager();
 	
 	private Color watermelon = new Color(254,127,156);
 	private Color lemonade = new Color(253,185,200);
