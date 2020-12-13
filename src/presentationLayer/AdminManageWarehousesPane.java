@@ -102,6 +102,8 @@ public class AdminManageWarehousesPane extends JPanel {
 		AdminRestoreWarehousesPane restoreWarehousesPanel = new AdminRestoreWarehousesPane(mainPanel, this);
 		mainPanel.add(restoreWarehousesPanel, "restoreWarehouses");
 		
+		
+		
 
 		
 		this.setBounds(100, 100, 780, 670);
@@ -146,8 +148,8 @@ public class AdminManageWarehousesPane extends JPanel {
 					String id = tblWarehouses.getModel().getValueAt(row, column).toString();
 					Warehouse warehouse= warehouseManager.get(Integer.parseInt(id));
 					JPanel manageStockPanel = new AdminManageStockPane(mainPanel, self, warehouse);
-					mainPanel.add(manageStockPanel,"addStock");
-					switchMainPanel("addStock");
+					mainPanel.add(manageStockPanel,"manageStock");
+					switchMainPanel("manageStock");
 					notification.setText("");
 				}
 				else {

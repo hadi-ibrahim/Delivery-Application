@@ -67,6 +67,7 @@ public class AdminManageStockPane extends JPanel {
 	private JLabel deleteIcon;
 	private JLabel addIcon;
 	private JLabel notification;
+	private JLabel warehouseName;
 
 	/**
 	 * Launch the application.
@@ -102,6 +103,12 @@ public class AdminManageStockPane extends JPanel {
 		
 		this.mainPanel = mainPanel;
 		this.warehouse = warehouse;
+		
+		AdminAddWarehouseItem addWarehouseItem = new AdminAddWarehouseItem(mainPanel, this);
+		mainPanel.add(addWarehouseItem, "addWarehouseItem");
+		
+		AdminRestoreWarehouseItem adminRestoreWarehouseItem = new AdminRestoreWarehouseItem(mainPanel,this);
+		mainPanel.add(adminRestoreWarehouseItem, "restoreWarehouseItems");
 		
 		this.setBounds(100, 100, 780, 670);
 		this.setBackground(Color.WHITE);
@@ -208,7 +215,7 @@ public class AdminManageStockPane extends JPanel {
 			}
 			@Override
 			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("addItemsToWarehouse");
+				switchMainPanel("addWarehouseItem");
 				notification.setText("");
 			}
 
@@ -220,6 +227,13 @@ public class AdminManageStockPane extends JPanel {
 		notification.setHorizontalAlignment(SwingConstants.CENTER);
 		notification.setBounds(50, 610, 680, 50);
 		add(notification);
+		
+		warehouseName = new JLabel(warehouse.getName());
+		warehouseName.setHorizontalAlignment(SwingConstants.CENTER);
+		warehouseName.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		warehouseName.setForeground(watermelon);
+		warehouseName.setBounds(70, 20, 650, 40);
+		add(warehouseName);
 
 	}
 

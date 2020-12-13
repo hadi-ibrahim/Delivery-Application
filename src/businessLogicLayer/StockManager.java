@@ -53,6 +53,10 @@ public class StockManager {
 		repoWarehouseItem.delete(id);
 	}
 	
+	public void restore(int id) {
+		repoWarehouseItem.restore(id);
+	}
+	
 
 	
 	/*
