@@ -52,6 +52,8 @@ public class AdminManageWarehousesPane extends JPanel {
 	private Color secondaryPink = new Color(241, 57, 83);
 	private Color tertiaryPink = new Color(255, 0 ,51);
 	private Color whiteShade = new Color(240, 248, 255);
+	private Color tomato = new Color(255, 99, 71);
+	private Color emerald  = new Color(80, 220, 100);
 	
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
@@ -59,6 +61,7 @@ public class AdminManageWarehousesPane extends JPanel {
 	private JLabel addIcon;
 	private JLabel deleteIcon;
 	private JLabel restoreIcon;
+	private JLabel notification;
 
 	/**
 	 * Launch the application.
@@ -108,7 +111,7 @@ public class AdminManageWarehousesPane extends JPanel {
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(null);
-		scrollPane.setBounds(50, 70, 680, 500);
+		scrollPane.setBounds(50, 70, 680, 450);
 		scrollPane.setBackground(Color.WHITE);
 		this.add(scrollPane);
 
@@ -121,7 +124,7 @@ public class AdminManageWarehousesPane extends JPanel {
 		manageStockBtn.setForeground(Color.WHITE);
 		manageStockBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		manageStockBtn.setBackground(new Color(241, 57, 83));
-		manageStockBtn.setBounds(300, 600, 150, 40);
+		manageStockBtn.setBounds(310, 560, 150, 40);
 		manageStockBtn.addMouseListener(new MouseAdapter() {
 			
 			@Override
@@ -145,16 +148,14 @@ public class AdminManageWarehousesPane extends JPanel {
 					JPanel manageStockPanel = new AdminManageStockPane(mainPanel, self, warehouse);
 					mainPanel.add(manageStockPanel,"addStock");
 					switchMainPanel("addStock");
-				}			
+				}
+				else {
+					notification.setText("Select a warehouse add manage stock");
+					notification.setForeground(tomato);
+				}
 			}
 		});
 		add(manageStockBtn);
-		
-		JLabel warehouseNotifier = new JLabel("");
-		warehouseNotifier.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		warehouseNotifier.setHorizontalAlignment(SwingConstants.CENTER);
-		warehouseNotifier.setBounds(315, 601, 365, 40);
-		add(warehouseNotifier);
 		
 		addIcon = new JLabel(plusIcon);
 		addIcon.setBounds(70, 11, 40, 40);
@@ -172,6 +173,7 @@ public class AdminManageWarehousesPane extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e ) {
 				switchMainPanel("addWarehouses");
+				notification.setText("");
 			}
 
 		});
@@ -201,6 +203,10 @@ public class AdminManageWarehousesPane extends JPanel {
 					RefreshItemTable();
 					restoreWarehousesPanel.RefreshItemTable();
 				}
+				else {
+					notification.setText("Select a warehouse to delete");
+					notification.setForeground(tomato);
+				}
 			}
 
 		});
@@ -222,9 +228,16 @@ public class AdminManageWarehousesPane extends JPanel {
 			}
 			public void mousePressed(MouseEvent e ) {
 				switchMainPanel("restoreWarehouses");
+				notification.setText("");
 			}
 		});
 		add(restoreIcon);
+		
+		notification = new JLabel("");
+		notification.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		notification.setHorizontalAlignment(SwingConstants.CENTER);
+		notification.setBounds(50, 620, 680, 40);
+		add(notification);
 
 	}
 

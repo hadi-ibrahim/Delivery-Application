@@ -32,6 +32,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.Icon;
+import javax.swing.SwingConstants;
 
 public class AdminManageItemsPane extends JPanel {
 
@@ -49,6 +50,8 @@ public class AdminManageItemsPane extends JPanel {
 	private Color secondaryPink = new Color(241, 57, 83);
 	private Color tertiaryPink = new Color(255, 0 ,51);
 	private Color whiteShade = new Color(240, 248, 255);
+	private Color tomato = new Color(255, 99, 71);
+	private Color emerald  = new Color(80, 220, 100);
 	
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
@@ -128,6 +131,7 @@ public class AdminManageItemsPane extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e ) {
 				switchMainPanel("addItems");
+				notification.setText("");
 			}
 
 		});
@@ -157,6 +161,10 @@ public class AdminManageItemsPane extends JPanel {
 					RefreshItemTable();
 					restoreItemsPanel.RefreshItemTable();
 				}
+				else {
+					notification.setText("Select an Item to delete");
+					notification.setForeground(tomato);
+				}
 			}
 
 		});
@@ -178,11 +186,13 @@ public class AdminManageItemsPane extends JPanel {
 			}
 			public void mousePressed(MouseEvent e ) {
 				switchMainPanel("restoreItems");
+				notification.setText("");
 			}
 		});
 		add(restoreIcon);
 		
 		notification = new JLabel("");
+		notification.setHorizontalAlignment(SwingConstants.CENTER);
 		notification.setFont(new Font("Javanese Text", Font.PLAIN, 14));
 		notification.setBounds(90, 600, 600, 50);
 		add(notification);
