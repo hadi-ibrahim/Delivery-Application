@@ -188,12 +188,12 @@ public class AdminRestoreWarehouseItem extends JPanel {
 			}
 		};
 
-		ArrayList<IDTO> disabledWarehouses = stockManager.getAllDisabledWarehouses();
-		if (disabledWarehouses.isEmpty()) {
+		ArrayList<IDTO> disabledWarehouseItems = stockManager.getAllDisabledWarehouseItems();
+		if (disabledWarehouseItems.isEmpty()) {
 			model.addRow(new Object[] {"","","","","",""});
 		}
 		else {
-			for (IDTO dto : disabledWarehouses ) {
+			for (IDTO dto : disabledWarehouseItems ) {
 				WarehouseItem warehouseItem = (WarehouseItem) dto;
 				Item item = itemManager.get(warehouseItem.getIdItem());
 				model.addRow(new Object[] { warehouseItem.getId(), item.getCategory(), item.getPrice(), item.getDescription(),warehouseItem.getQuantity(),
@@ -204,9 +204,9 @@ public class AdminRestoreWarehouseItem extends JPanel {
 		this.tblItems.getColumnModel().getColumn(0).setWidth(0);
 		this.tblItems.getColumnModel().getColumn(0).setMinWidth(0);
 		this.tblItems.getColumnModel().getColumn(0).setMaxWidth(0);
-		this.tblItems.getColumnModel().getColumn(4).setWidth(0);
-		this.tblItems.getColumnModel().getColumn(4).setMinWidth(0);
-		this.tblItems.getColumnModel().getColumn(4).setMaxWidth(0);
+		this.tblItems.getColumnModel().getColumn(5).setWidth(0);
+		this.tblItems.getColumnModel().getColumn(5).setMinWidth(0);
+		this.tblItems.getColumnModel().getColumn(5).setMaxWidth(0);
 
 	}
 	
