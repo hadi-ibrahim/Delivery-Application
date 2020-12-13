@@ -37,6 +37,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 public class AdminManageStockPane extends JPanel {
 
@@ -57,13 +58,15 @@ public class AdminManageStockPane extends JPanel {
 	private Color secondaryPink = new Color(241, 57, 83);
 	private Color tertiaryPink = new Color(255, 0 ,51);
 	private Color whiteShade = new Color(240, 248, 255);
+	private Color tomato = new Color(255, 99, 71);
+	private Color emerald  = new Color(80, 220, 100);
 	
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
-	
-	public JButton addItemBtn;
-	public JButton deleteItemBtn;
-	public JButton backBtn;
+	private JLabel restoreIcon;
+	private JLabel deleteIcon;
+	private JLabel addIcon;
+	private JLabel notification;
 
 	/**
 	 * Launch the application.
@@ -92,6 +95,9 @@ public class AdminManageStockPane extends JPanel {
 	public AdminManageStockPane(JPanel mainPanel, AdminManageWarehousesPane adminManageWarehousePane, Warehouse warehouse) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
+		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.PLUS_CIRCLE	, 30, tertiaryPink);
+		Icon minusIcon = IconFontSwing.buildIcon(FontAwesome.MINUS_CIRCLE, 30, tertiaryPink);
+		Icon refreshIcon = IconFontSwing.buildIcon(FontAwesome.REFRESH, 30, tertiaryPink);
 		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
 		
 		this.mainPanel = mainPanel;
@@ -113,91 +119,6 @@ public class AdminManageStockPane extends JPanel {
 
 		RefreshItemTable();
 		
-		addItemBtn = new JButton("Add");
-		addItemBtn.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				addItemBtn.setBackground(tertiaryPink);
-				setCursor(pointer);
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				addItemBtn.setBackground(secondaryPink);
-				setCursor(arrow);
-
-			}
-			@Override
-			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("addItems");
-			}
-
-		});
-		
-		addItemBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		addItemBtn.setForeground(Color.WHITE);
-		addItemBtn.setBackground(secondaryPink);
-		addItemBtn.setBounds(100, 570, 150, 40);
-		this.add(addItemBtn);
-		
-		deleteItemBtn = new JButton("Delete");
-		deleteItemBtn.setForeground(Color.WHITE);
-		deleteItemBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		deleteItemBtn.setBackground(new Color(241, 57, 83));
-		deleteItemBtn.setBounds(315, 570, 150, 40);
-		deleteItemBtn.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				deleteItemBtn.setBackground(tertiaryPink);
-				setCursor(pointer);
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				deleteItemBtn.setBackground(secondaryPink);
-				setCursor(arrow);
-
-			}
-			@Override
-			public void mousePressed(MouseEvent e ) {
-				
-				int column = 0;
-				int row = tblItems.getSelectedRow();
-				if (row >= 0) {
-					String id = tblItems.getModel().getValueAt(row, column).toString();
-					stockManager.delete(Integer.parseInt(id));
-					RefreshItemTable();
-				}
-			}
-
-		});
-		this.add(deleteItemBtn);
-		
-		backBtn = new JButton("Back");
-		backBtn.setForeground(Color.WHITE);
-		backBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		backBtn.setBackground(new Color(241, 57, 83));
-		backBtn.setBounds(530, 570, 150, 40);
-		backBtn.addMouseListener(new MouseAdapter() {
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				backBtn.setBackground(tertiaryPink);
-				setCursor(pointer);
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				backBtn.setBackground(secondaryPink);
-				setCursor(arrow);
-
-			}
-			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("restoreItems");
-				}
-		});
-		this.add(backBtn);
-		
 		JLabel backArrow = new JLabel(backIcon);
 		backArrow.setBounds(680, 20, 40, 40);
 		backArrow.addMouseListener(new MouseAdapter() {
@@ -214,9 +135,91 @@ public class AdminManageStockPane extends JPanel {
 			}
 			public void mousePressed(MouseEvent e ) {
 				switchMainPanel("warehouses");
+				notification.setText("");
 			}
 		});
 		add(backArrow);
+		
+		restoreIcon = new JLabel(refreshIcon);
+		restoreIcon.setBounds(170, 20, 40, 40);
+		restoreIcon.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				setCursor(pointer);
+
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(arrow);
+
+			}
+			public void mousePressed(MouseEvent e ) {
+				switchMainPanel("restoreWarehouseItems");
+				notification.setText("");
+			}
+		});
+		add(restoreIcon);
+		
+		deleteIcon = new JLabel(minusIcon);
+		deleteIcon.setBounds(120, 20, 40, 40);
+		deleteIcon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				setCursor(pointer);
+
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(arrow);
+
+			}
+			@Override
+			public void mousePressed(MouseEvent e ) {
+				
+				int column = 0;
+				int row = tblItems.getSelectedRow();
+				if (row >= 0) {
+					String id = tblItems.getModel().getValueAt(row, column).toString();
+					stockManager.delete(Integer.parseInt(id));
+					RefreshItemTable();
+				}
+				else {
+					notification.setText("Select a warehouse item to delete");
+					notification.setForeground(tomato);
+				}
+			}
+
+		});
+		add(deleteIcon);
+		
+		addIcon = new JLabel(plusIcon);
+		addIcon.setBounds(70, 20, 40, 40);
+		addIcon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				setCursor(pointer);
+
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(arrow);
+
+			}
+			@Override
+			public void mousePressed(MouseEvent e ) {
+				switchMainPanel("addItemsToWarehouse");
+				notification.setText("");
+			}
+
+		});
+		add(addIcon);
+		
+		notification = new JLabel("");
+		notification.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		notification.setHorizontalAlignment(SwingConstants.CENTER);
+		notification.setBounds(50, 610, 680, 50);
+		add(notification);
 
 	}
 

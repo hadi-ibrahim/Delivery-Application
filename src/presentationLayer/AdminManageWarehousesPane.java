@@ -148,6 +148,7 @@ public class AdminManageWarehousesPane extends JPanel {
 					JPanel manageStockPanel = new AdminManageStockPane(mainPanel, self, warehouse);
 					mainPanel.add(manageStockPanel,"addStock");
 					switchMainPanel("addStock");
+					notification.setText("");
 				}
 				else {
 					notification.setText("Select a warehouse add manage stock");
@@ -227,8 +228,8 @@ public class AdminManageWarehousesPane extends JPanel {
 
 			}
 			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("restoreWarehouses");
 				notification.setText("");
+				switchMainPanel("restoreWarehouses");
 			}
 		});
 		add(restoreIcon);
