@@ -43,7 +43,7 @@ public class StockManager {
 	}
 	
 	public ArrayList<IDTO> getAllDisabledWarehouseItems(){
-		return repoWarehouseItem.getAllActive();
+		return repoWarehouseItem.getAllDisabled();
 	}
 	
 	public ArrayList<IDTO> getAllDisabledWarehouses(){

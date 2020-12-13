@@ -83,7 +83,7 @@ public class RepoWarehouseItem implements IRepo, ISoftDeletable {
 				ListOfWarehouseItems.add(extractWarehouseItemFromResultSet(rs));
 			}
 		} catch (SQLException ex) {
-			System.out.println(ex);
+			System.out.println(ex );
 		}
 		return ListOfWarehouseItems;
 	}
@@ -93,7 +93,7 @@ public class RepoWarehouseItem implements IRepo, ISoftDeletable {
 		ArrayList<IDTO> ListOfWarehouseItems = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From item where isDeleted=0");
+			rs = stmt.executeQuery("Select * From warehouseitem where isDeleted=0");
 			while (rs.next()) {
 				ListOfWarehouseItems.add(extractWarehouseItemFromResultSet(rs));
 			}
@@ -108,7 +108,7 @@ public class RepoWarehouseItem implements IRepo, ISoftDeletable {
 		ArrayList<IDTO> ListOfWarehouseItems = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From item where isDeleted=1");
+			rs = stmt.executeQuery("Select * From warehouseItem where isDeleted=1");
 			while (rs.next()) {
 				ListOfWarehouseItems.add(extractWarehouseItemFromResultSet(rs));
 			}
