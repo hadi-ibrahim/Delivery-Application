@@ -104,7 +104,7 @@ public class AdminManageStockPane extends JPanel {
 		this.mainPanel = mainPanel;
 		this.warehouse = warehouse;
 		
-		AdminAddWarehouseItem addWarehouseItem = new AdminAddWarehouseItem(mainPanel, this);
+		AdminAddWarehouseItem addWarehouseItem = new AdminAddWarehouseItem(mainPanel, this, warehouse);
 		mainPanel.add(addWarehouseItem, "addWarehouseItem");
 		
 		AdminRestoreWarehouseItem adminRestoreWarehouseItem = new AdminRestoreWarehouseItem(mainPanel,this);
@@ -188,8 +188,10 @@ public class AdminManageStockPane extends JPanel {
 				int row = tblItems.getSelectedRow();
 				if (row >= 0) {
 					String id = tblItems.getModel().getValueAt(row, column).toString();
+					System.out.println(Integer.parseInt(id));
 					stockManager.delete(Integer.parseInt(id));
 					RefreshItemTable();
+					adminRestoreWarehouseItem.RefreshItemTable();
 				}
 				else {
 					notification.setText("Select a warehouse item to delete");
@@ -264,9 +266,9 @@ public class AdminManageStockPane extends JPanel {
 		}
 		
 		this.tblItems.setModel(model);
-		this.tblItems.getColumnModel().getColumn(0).setWidth(0);
-		this.tblItems.getColumnModel().getColumn(0).setMinWidth(0);
-		this.tblItems.getColumnModel().getColumn(0).setMaxWidth(0);
+//		this.tblItems.getColumnModel().getColumn(0).setWidth(0);
+//		this.tblItems.getColumnModel().getColumn(0).setMinWidth(0);
+//		this.tblItems.getColumnModel().getColumn(0).setMaxWidth(0);
 		this.tblItems.getColumnModel().getColumn(5).setWidth(0);
 		this.tblItems.getColumnModel().getColumn(5).setMinWidth(0);
 		this.tblItems.getColumnModel().getColumn(5).setMaxWidth(0);	

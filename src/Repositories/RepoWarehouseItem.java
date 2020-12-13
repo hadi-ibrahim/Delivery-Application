@@ -122,7 +122,7 @@ public class RepoWarehouseItem implements IRepo, ISoftDeletable {
 	public boolean create(IDTO dto) {
 		WarehouseItem warehouseItem = (WarehouseItem) dto;
 		try {
-			ps = con.prepareStatement("INSERT INTO warehousewarehouseItem(id, idWarehouse, idItem, ItemQuantity, isDeleted) Values(NULL,?,?,?,0)");
+			ps = con.prepareStatement("INSERT INTO warehouseItem(id, idWarehouse, idItem, ItemQuantity, isDeleted) Values(NULL,?,?,?,0)");
 			ps.setInt(1, warehouseItem.getIdWarehouse());
 			ps.setInt(2, warehouseItem.getIdItem());
 			ps.setInt(3, warehouseItem.getQuantity());
@@ -158,18 +158,20 @@ public class RepoWarehouseItem implements IRepo, ISoftDeletable {
 	@Override
 	public boolean delete(int id) {
 		try {
-			ps = con.prepareStatement("Update warehouseItem SET IsDeleted=1 where id=");
+			ps = con.prepareStatement("Update warehouseitem  set isDeleted=1 WHERE id=?");
 			ps.setInt(1, id);
 			System.out.println(ps.executeUpdate() + " records deleted");
+			return true;
 		} catch (SQLException ex) {
+			System.out.println(ex);
 			return false;
 		}
-		return true;
+
 	}
 
 	public boolean restore(int id) {
 		try {
-			ps = con.prepareStatement("Update warehouseItem SET IsDeleted=0 where id=");
+			ps = con.prepareStatement("Update warehouseitem SET isDeleted=0, itemQuantity =0 where id=?");
 			ps.setInt(1, id);
 			System.out.println(ps.executeUpdate() + " records deleted");
 		} catch (SQLException ex) {

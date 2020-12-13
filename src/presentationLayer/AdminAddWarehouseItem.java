@@ -19,8 +19,10 @@ import javax.swing.table.DefaultTableModel;
 
 import DTO.IDTO;
 import DTO.Item;
+import DTO.Warehouse;
 import businessLogicLayer.InputManager;
 import businessLogicLayer.ItemManager;
+import businessLogicLayer.StockManager;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.Icon;
 import javax.swing.SwingConstants;
+import javax.swing.JTextField;
 
 public class AdminAddWarehouseItem extends JPanel {
 
@@ -43,7 +46,11 @@ public class AdminAddWarehouseItem extends JPanel {
 	private JPanel mainPanel;
 	private JTable tblItems;
 	private DefaultTableModel model;
+	private Warehouse warehouse;
+	private StockManager stockManager = new StockManager();
 	private ItemManager itemManager = new ItemManager();
+
+
 	private Color watermelon = new Color(254,127,156);
 	private Color lemonade = new Color(253,185,200);
 	private Color pastelPink = new Color(255, 209, 220);
@@ -84,9 +91,10 @@ public class AdminAddWarehouseItem extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public AdminAddWarehouseItem (JPanel mainPanel, AdminManageStockPane stockPane) {
+	public AdminAddWarehouseItem (JPanel mainPanel, AdminManageStockPane stockPane, Warehouse warehouse) {
 		super();
 		this.mainPanel = mainPanel;
+		this.warehouse = warehouse;
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.PLUS_CIRCLE	, 30, tertiaryPink);
 		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
@@ -122,11 +130,30 @@ public class AdminAddWarehouseItem extends JPanel {
 			}
 			@Override
 			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("addItems");
-				notification.setText("");
-			}
-
-		});
+				 int column = 0;
+			        int row = tblItems.getSelectedRow();
+			        if (row >= 0) {
+			            String id = tblItems.getModel().getValueAt(row, column).toString();
+			            Item item = itemManager.get(Integer.parseInt(id));
+			            String quantity = tblItems.getModel().getValueAt(row, 5).toString();
+			            if(InputManager.verifyPositiveInteger(quantity)) {
+			            	if(Integer.parseInt(quantity) > 0)
+			            		stockManager.addItemToWarehouse(warehouse, item, Integer.parseInt(quantity));
+			            }
+			            else {
+			            	notification.setText("Please enter a valid quantity");
+			            }
+			     
+			            RefreshItemTable();
+			            stockPane.RefreshItemTable();
+			            notification.setText("");
+			        }
+			        else {
+			        	notification.setText("Select an Item to add to the warehouse");
+			        	notification.setForeground(tomato);
+			        }
+			     }
+			});
 		add(addIcon);
 		
 		notification = new JLabel("");
@@ -166,8 +193,8 @@ public class AdminAddWarehouseItem extends JPanel {
 	}
 
 	public void RefreshItemTable() {
-		boolean isEditable[] = { false, true, true, true, false };
-		model = new DefaultTableModel(new Object[] { "id", "category", "price", "description", "isDeleted" }, 0) {
+		boolean isEditable[] = { false, false, false, false, false, true };
+		model = new DefaultTableModel(new Object[] { "id", "category", "price", "description", "isDeleted", "quantity" }, 0) {
 
 			/**
 			 * 
@@ -179,41 +206,16 @@ public class AdminAddWarehouseItem extends JPanel {
 				return isEditable[column];
 			}
 		};
-		ArrayList<IDTO> activeItems = itemManager.getAllActiveItems();
+		ArrayList<IDTO> activeItems = stockManager.getAllItemsNotInWarehouse(warehouse);
 		if(activeItems.isEmpty()) {
 			model.addRow(new Object[] {"","","","",""});
 		}
 		for (IDTO dto : activeItems) {
 			Item item = (Item) dto;
 			model.addRow(new Object[] { item.getId(), item.getCategory(), item.getPrice(), item.getDescription(),
-					item.getIsDeleted() });
+					item.getIsDeleted(), 0 });
 		}
-		model.addTableModelListener(new TableModelListener() {
-			@Override
-			public void tableChanged(TableModelEvent e) {
-				int column = 0;
-				int row = tblItems.getSelectedRow();
-				if (row >= 0) {
-					if (!InputManager.verifyPositiveDouble(tblItems.getModel().getValueAt(row, 2).toString())) {
-						RefreshItemTable();
-						JOptionPane.showMessageDialog(null, "Price must be a positive double.");
-					} else if (!InputManager.verifyCategory(tblItems.getModel().getValueAt(row, 1).toString())) {
-						RefreshItemTable();
-						JOptionPane.showMessageDialog(null, "Category must be either WEAPON, GROCERY or FOOD.");
-					} else {
-
-						String id = tblItems.getModel().getValueAt(row, column).toString();
-						Item item = itemManager.get(Integer.parseInt(id));
-						item.setCategory(tblItems.getModel().getValueAt(row, 1).toString());
-						item.setPrice(Double.parseDouble(tblItems.getModel().getValueAt(row, 2).toString()));
-						item.setDescription(tblItems.getModel().getValueAt(row, 3).toString());
-						item.setIsDeleted(Integer.parseInt(tblItems.getModel().getValueAt(row, 4).toString()));
-						itemManager.update(item);
-						RefreshItemTable();
-					}
-				}
-			}
-		});
+		
 		this.tblItems.setModel(model);
 		this.tblItems.getColumnModel().getColumn(0).setWidth(0);
 		this.tblItems.getColumnModel().getColumn(0).setMinWidth(0);
@@ -229,5 +231,4 @@ public class AdminAddWarehouseItem extends JPanel {
 		CardLayout cards =(CardLayout) mainPanel.getLayout();
 		cards.show(mainPanel, name);
 	}
-
 }
