@@ -26,6 +26,9 @@ import jiconfont.swing.IconFontSwing;
 
 import javax.swing.JLabel;
 import javax.swing.Icon;
+import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class AdminRestoreItemsPane extends JPanel {
 
@@ -43,12 +46,15 @@ public class AdminRestoreItemsPane extends JPanel {
 	private Color secondaryPink = new Color(241, 57, 83);
 	private Color tertiaryPink = new Color(255, 0 ,51);
 	private Color whiteShade = new Color(240, 248, 255);
+	private Color tomato = new Color(255, 99, 71);
+	private Color emerald  = new Color(80, 220, 100);
 	
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
 	
 	public JButton restoreItemBtn;
 	private JLabel backArrow;
+	private JLabel notification;
 
 	/**
 	 * Launch the application.
@@ -98,6 +104,10 @@ public class AdminRestoreItemsPane extends JPanel {
 		RefreshItemTable();
 		
 		restoreItemBtn = new JButton("Restore");
+		restoreItemBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		restoreItemBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -121,6 +131,10 @@ public class AdminRestoreItemsPane extends JPanel {
 			            RefreshItemTable();
 			            itemsPane.RefreshItemTable();
 			        }
+			        else {
+			        	notification.setText("Select item to restore");
+			        	notification.setForeground(tomato);
+			        }
 			     }
 
 		});
@@ -128,7 +142,7 @@ public class AdminRestoreItemsPane extends JPanel {
 		restoreItemBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		restoreItemBtn.setForeground(Color.WHITE);
 		restoreItemBtn.setBackground(secondaryPink);
-		restoreItemBtn.setBounds(300, 570, 150, 40);
+		restoreItemBtn.setBounds(310, 550, 150, 40);
 		this.add(restoreItemBtn);
 		
 		backArrow = new JLabel(backIcon);
@@ -147,11 +161,17 @@ public class AdminRestoreItemsPane extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e ) {
 				switchMainPanel("items");
-				
+				notification.setText("");
 			}
 
 		});
 		add(backArrow);
+		
+		notification = new JLabel("");
+		notification.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		notification.setHorizontalAlignment(SwingConstants.CENTER);
+		notification.setBounds(50, 610, 680, 40);
+		add(notification);
 
 	}
 

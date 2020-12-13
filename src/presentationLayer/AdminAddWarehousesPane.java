@@ -64,6 +64,7 @@ public class AdminAddWarehousesPane extends JPanel {
 	public AdminAddWarehousesPane(JPanel mainPanel, AdminManageWarehousesPane displayPanel) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
+		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
 		Icon locationIcon = IconFontSwing.buildIcon(FontAwesome.MAP_MARKER, 60, tertiaryPink);
 
 		setBackground(Color.WHITE);
@@ -94,7 +95,7 @@ public class AdminAddWarehousesPane extends JPanel {
 		addItemBtn.setForeground(Color.WHITE);
 		addItemBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		addItemBtn.setBackground(new Color(241, 57, 83));
-		addItemBtn.setBounds(150, 510, 150, 40);
+		addItemBtn.setBounds(275, 520, 150, 40);
 		addItemBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -140,31 +141,6 @@ public class AdminAddWarehousesPane extends JPanel {
 		txtName.setColumns(10);
 		txtName.setBounds(200, 100, 300, 40);
 		add(txtName);
-		
-		JButton backBtn = new JButton("Back");
-		backBtn.setForeground(Color.WHITE);
-		backBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		backBtn.setBackground(new Color(241, 57, 83));
-		backBtn.setBounds(470, 510, 150, 40);
-		backBtn.addMouseListener(new MouseAdapter() {
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			backBtn.setBackground(tertiaryPink);
-			setCursor(pointer);
-
-		}
-		@Override
-		public void mouseExited(MouseEvent e) {
-			backBtn.setBackground(secondaryPink);
-			setCursor(arrow);
-
-		}
-		@Override
-		public void mousePressed(MouseEvent e ) {
-			switchMainPanel("warehouses");
-		}
-		});
-		add(backBtn);
 		
 		txtLongitude = new JTextField();
 		txtLongitude.setEditable(false);
@@ -222,6 +198,26 @@ public class AdminAddWarehousesPane extends JPanel {
 		lblChooseLocation.setHorizontalAlignment(SwingConstants.CENTER);
 		lblChooseLocation.setBounds(310, 190, 60, 60);
 		add(lblChooseLocation);
+		
+		JLabel backArrow = new JLabel(backIcon);
+		backArrow.setBounds(670, 20, 40, 40);
+		backArrow.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				setCursor(pointer);
+	
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(arrow);
+	
+			}
+			@Override
+			public void mousePressed(MouseEvent e ) {
+				switchMainPanel("warehouses");
+			}
+		});
+		add(backArrow);
 	}
 	
 	

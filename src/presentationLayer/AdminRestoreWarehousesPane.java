@@ -28,6 +28,8 @@ import jiconfont.swing.IconFontSwing;
 
 import javax.swing.JLabel;
 import javax.swing.Icon;
+import javax.swing.JComboBox;
+import javax.swing.SwingConstants;
 
 public class AdminRestoreWarehousesPane extends JPanel {
 
@@ -46,12 +48,15 @@ public class AdminRestoreWarehousesPane extends JPanel {
 	private Color secondaryPink = new Color(241, 57, 83);
 	private Color tertiaryPink = new Color(255, 0 ,51);
 	private Color whiteShade = new Color(240, 248, 255);
+	private Color tomato = new Color(255, 99, 71);
+	private Color emerald  = new Color(80, 220, 100);
 	
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
 	
 	public JButton restoreItemBtn;
 	private JLabel backArrow;
+	private JLabel notification;
 
 	/**
 	 * Launch the application.
@@ -90,7 +95,7 @@ public class AdminRestoreWarehousesPane extends JPanel {
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(null);
-		scrollPane.setBounds(50, 70, 680, 500);
+		scrollPane.setBounds(50, 70, 680, 470);
 		scrollPane.setBackground(Color.WHITE);
 		this.add(scrollPane);
 
@@ -122,6 +127,11 @@ public class AdminRestoreWarehousesPane extends JPanel {
 			            warehouseManager.restore(Integer.parseInt(id));
 			            RefreshItemTable();
 			            warehousesPane.RefreshItemTable();
+			            notification.setText("");
+			        }
+			        else {
+			        	notification.setText("Select a Warehouse to restore");
+			        	notification.setForeground(tomato);
 			        }
 			     }
 
@@ -130,7 +140,7 @@ public class AdminRestoreWarehousesPane extends JPanel {
 		restoreItemBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		restoreItemBtn.setForeground(Color.WHITE);
 		restoreItemBtn.setBackground(secondaryPink);
-		restoreItemBtn.setBounds(300, 600, 150, 40);
+		restoreItemBtn.setBounds(310, 560, 150, 40);
 		this.add(restoreItemBtn);
 		
 		backArrow = new JLabel(backIcon);
@@ -149,9 +159,16 @@ public class AdminRestoreWarehousesPane extends JPanel {
 			}
 			public void mousePressed(MouseEvent e ) {
 				switchMainPanel("warehouses");
+	            notification.setText("");
 			}
 		});
 		add(backArrow);
+		
+		notification = new JLabel("");
+		notification.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		notification.setHorizontalAlignment(SwingConstants.CENTER);
+		notification.setBounds(50, 610, 680, 40);
+		add(notification);
 
 	}
 
@@ -195,5 +212,4 @@ public class AdminRestoreWarehousesPane extends JPanel {
 		CardLayout cards =(CardLayout) mainPanel.getLayout();
 		cards.show(mainPanel, name);
 	}
-
 }
