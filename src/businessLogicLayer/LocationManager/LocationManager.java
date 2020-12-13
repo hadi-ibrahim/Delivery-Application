@@ -14,22 +14,18 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import DTO.Location;
 import DTO.Order;
 import DTO.OrderStatus;
-import DTO.OrderedWarehouseItem;
 import DTO.RouteCheckpoint;
 import DTO.User;
 import DTO.Warehouse;
-import DTO.WarehouseItem;
 
 public class LocationManager {
 
 	public Location pickAddress() {
 		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
-		String getLocationPathHTML = new File("src/businessLogicLayer/locationManager/AddressPicker.html")
-				.getAbsolutePath();
+		String HTMLPath = new File("src/businessLogicLayer/locationManager/AddressPicker.html").getAbsolutePath();
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments("window-size=1920,1080", "--app=" + getLocationPathHTML);
+		options.addArguments("window-size=1920,1080", "--app=" + HTMLPath);
 		WebDriver driver = new ChromeDriver(options);
-		// driver.navigate().to(getLocationPathHTML);
 		String currLong = "0";
 		String currLat = "0";
 		while (true) {
@@ -51,62 +47,16 @@ public class LocationManager {
 		return new Location(Double.parseDouble(currLong), Double.parseDouble(currLat));
 	}
 
-	public void trackOrderDriver(User driverCar, Order order, Warehouse warehouse) {
-
-		String driverLong = Double.toString(driverCar.getLocation().getLongitude());
-		String driverLat = Double.toString(driverCar.getLocation().getLatitude());
-		String destinationLong = null;
-		String destinationLat = null;
-		if (order.getStatus() == OrderStatus.PENDING) {
-			destinationLong = Double.toString(warehouse.getLongitude());
-			destinationLat = Double.toString(warehouse.getLatitude());
-			System.out.println("Driver is driving to warehouse at " + destinationLong + "," + destinationLat);
-
-		} else if (order.getStatus() == OrderStatus.DELIVERING) {
-			destinationLong = Double.toString(order.getLocationDestination().getLongitude());
-			destinationLat = Double.toString(order.getLocationDestination().getLatitude());
-			System.out.println("Driver is driving to user at " + destinationLong + "," + destinationLat);
-		}
-		System.out.println("Driver is currently at : " + driverLong + "," + driverLat);
-		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
-		String getLocationPathHTML = new File("src/businessLogicLayer/DriverTracking.html").getAbsolutePath();
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments("window-size=1920,1080", "--app=" + getLocationPathHTML);
-		WebDriver driver = new ChromeDriver(options);
-		WebDriverWait wait = new WebDriverWait(driver, 20);
-		wait.until(ExpectedConditions.elementToBeClickable(By.id("map")));
-		driver.findElement(By.id("sentDestinationLong")).sendKeys(destinationLong);
-		driver.findElement(By.id("sentDestinationLat")).sendKeys(destinationLat);
-		driver.findElement(By.id("sentOriginLong")).sendKeys(driverLong);
-		driver.findElement(By.id("sentOriginLat")).sendKeys(driverLat);
-		driver.findElement(By.id("sent")).clear();
-		driver.findElement(By.id("sent")).sendKeys("true");
-		while (true) {
-			WebElement flag = driver.findElement(By.id("choice"));
-			if (flag.getAttribute("value").equalsIgnoreCase("true")) {
-				break;
-			}
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		driver.quit();
-	}
-
 	public Location getCurrentLocation() {
 		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
-		String getLocationPathHTML = new File("src/businessLogicLayer/LocationManager/getLocation.html")
-				.getAbsolutePath();
+		String HTMLPath = new File("src/businessLogicLayer/LocationManager/getLocation.html").getAbsolutePath();
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments("window-size=0,0", "--app=" + getLocationPathHTML);
+		options.addArguments("window-size=0,0", "--app=" + HTMLPath);
 		WebDriver driver = new ChromeDriver(options);
 		String currLong = "0";
 		String currLat = "0";
 		while (true) {
 			WebElement flag = driver.findElement(By.id("flag"));
-			System.out.println(flag.getAttribute("value"));
 			if (flag.getAttribute("value").equalsIgnoreCase("true")) {
 				WebElement accuracy = driver.findElement(By.id("accuracy"));
 				if (Integer.parseInt(accuracy.getAttribute("value")) < 100) {
@@ -131,12 +81,10 @@ public class LocationManager {
 		}
 		checkPoints = checkPoints.substring(0, checkPoints.length() - 1);
 		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
-		String getLocationPathHTML = new File("src\\businessLogicLayer\\LocationManager\\DisplayRoute.html")
-				.getAbsolutePath();
+		String HTMLPath = new File("src\\businessLogicLayer\\LocationManager\\DisplayRoute.html").getAbsolutePath();
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments("window-size=1920,1080");
+		options.addArguments("window-size=1920,1080", "--app=" + HTMLPath);
 		WebDriver driver = new ChromeDriver(options);
-		driver.navigate().to(getLocationPathHTML);
 		WebDriverWait wait = new WebDriverWait(driver, 20);
 		wait.until(ExpectedConditions.elementToBeClickable(By.id("map")));
 		driver.findElement(By.id("sentJSON")).sendKeys(checkPoints);
@@ -150,7 +98,46 @@ public class LocationManager {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		driver.quit();
+	}
+
+	public void trackOrderDriver(User driverCar, Order order, Warehouse warehouse) {
+
+		String driverLong = Double.toString(driverCar.getLocation().getLongitude());
+		String driverLat = Double.toString(driverCar.getLocation().getLatitude());
+		String destinationLong = null;
+		String destinationLat = null;
+		if (order.getStatus() == OrderStatus.PENDING) {
+			destinationLong = Double.toString(warehouse.getLongitude());
+			destinationLat = Double.toString(warehouse.getLatitude());
+		} else if (order.getStatus() == OrderStatus.DELIVERING) {
+			destinationLong = Double.toString(order.getLocationDestination().getLongitude());
+			destinationLat = Double.toString(order.getLocationDestination().getLatitude());
+		}
+		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
+		String HTMLPath = new File("src/businessLogicLayer/DriverTracking.html").getAbsolutePath();
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("window-size=1920,1080", "--app=" + HTMLPath);
+		WebDriver driver = new ChromeDriver(options);
+		WebDriverWait wait = new WebDriverWait(driver, 20);
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("map")));
+		driver.findElement(By.id("sentDestinationLong")).sendKeys(destinationLong);
+		driver.findElement(By.id("sentDestinationLat")).sendKeys(destinationLat);
+		driver.findElement(By.id("sentOriginLong")).sendKeys(driverLong);
+		driver.findElement(By.id("sentOriginLat")).sendKeys(driverLat);
+		driver.findElement(By.id("sent")).clear();
+		driver.findElement(By.id("sent")).sendKeys("true");
+		while (true) {
+			WebElement flag = driver.findElement(By.id("choice"));
+			if (flag.getAttribute("value").equalsIgnoreCase("true")) {
+				break;
+			}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
@@ -165,18 +152,15 @@ public class LocationManager {
 		if (order.getStatus() == OrderStatus.PENDING) {
 			destinationLong = Double.toString(warehouse.getLongitude());
 			destinationLat = Double.toString(warehouse.getLatitude());
-			System.out.println("Driver is driving to warehouse at " + destinationLong + "," + destinationLat);
 
 		} else if (order.getStatus() == OrderStatus.DELIVERING) {
 			destinationLong = Double.toString(order.getLocationDestination().getLongitude());
 			destinationLat = Double.toString(order.getLocationDestination().getLatitude());
-			System.out.println("Driver is driving to user at " + destinationLong + "," + destinationLat);
 		}
-		System.out.println("Driver is currently at : " + driverLong + "," + driverLat);
 		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
-		String getLocationPathHTML = new File("src/businessLogicLayer/DriverLocationUpdater.html").getAbsolutePath();
+		String HTMLPath = new File("src/businessLogicLayer/DriverLocationUpdater.html").getAbsolutePath();
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments("window-size=1920,1080", "--app=" + getLocationPathHTML);
+		options.addArguments("window-size=1920,1080", "--app=" + HTMLPath);
 		WebDriver driver = new ChromeDriver(options);
 		WebDriverWait wait = new WebDriverWait(driver, 20);
 		wait.until(ExpectedConditions.elementToBeClickable(By.id("map")));
@@ -203,13 +187,18 @@ public class LocationManager {
 			}
 		}
 		driver.quit();
-		return new Location(Double.parseDouble(driverLong),Double.parseDouble(driverLat));
+		return new Location(Double.parseDouble(driverLong), Double.parseDouble(driverLat));
 	}
-	
+
 	public Double calculateDistance(Location userLocation, Location warehouseLocation) {
-		Double distance = null;
-		
-		
-		return distance;
+		final double R = 6372.8;
+		double dLat = Math.toRadians(userLocation.getLatitude() - warehouseLocation.getLatitude());
+		double dLon = Math.toRadians(userLocation.getLongitude() - warehouseLocation.getLongitude());
+		Double warehouseLat = Math.toRadians(warehouseLocation.getLatitude());
+		Double userLat = Math.toRadians(userLocation.getLatitude());
+		double a = Math.pow(Math.sin(dLat / 2), 2)
+				+ Math.pow(Math.sin(dLon / 2), 2) * Math.cos(warehouseLat) * Math.cos(userLat);
+		double c = 2 * Math.asin(Math.sqrt(a));
+		return R * c;
 	}
 }
