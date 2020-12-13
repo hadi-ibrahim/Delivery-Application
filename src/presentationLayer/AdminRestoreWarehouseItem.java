@@ -180,33 +180,32 @@ public class AdminRestoreWarehouseItem extends JPanel {
 			/**
 			 * 
 			 */
-			private static final long serialVersionUID = 5871568570449186724L;
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				return isEditable[column];
 			}
 		};
-
-		ArrayList<IDTO> disabledWarehouseItems = stockManager.getAllDisabledWarehouseItems();
-		if (disabledWarehouseItems.isEmpty()) {
+		
+		ArrayList<IDTO> warehouseItems = stockManager.getAllDisabledWarehouseItems();
+		if(warehouseItems.isEmpty()) {
 			model.addRow(new Object[] {"","","","","",""});
 		}
-		else {
-			for (IDTO dto : disabledWarehouseItems ) {
-				WarehouseItem warehouseItem = (WarehouseItem) dto;
-				Item item = itemManager.get(warehouseItem.getIdItem());
-				model.addRow(new Object[] { warehouseItem.getId(), item.getCategory(), item.getPrice(), item.getDescription(),warehouseItem.getQuantity(),
-						warehouseItem.getIsDeleted() });
-			}
+		for (IDTO dto : warehouseItems) {
+			WarehouseItem warehouseItem = (WarehouseItem) dto;
+			Item item = itemManager.get(warehouseItem.getIdItem());
+			model.addRow(new Object[] { warehouseItem.getId(), item.getCategory(), item.getPrice(), item.getDescription(),warehouseItem.getQuantity(),
+					warehouseItem.getIsDeleted() });
 		}
+		
 		this.tblItems.setModel(model);
 		this.tblItems.getColumnModel().getColumn(0).setWidth(0);
 		this.tblItems.getColumnModel().getColumn(0).setMinWidth(0);
 		this.tblItems.getColumnModel().getColumn(0).setMaxWidth(0);
 		this.tblItems.getColumnModel().getColumn(5).setWidth(0);
 		this.tblItems.getColumnModel().getColumn(5).setMinWidth(0);
-		this.tblItems.getColumnModel().getColumn(5).setMaxWidth(0);
+		this.tblItems.getColumnModel().getColumn(5).setMaxWidth(0);	
 
 	}
 	
