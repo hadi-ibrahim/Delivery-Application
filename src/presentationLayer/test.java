@@ -262,6 +262,14 @@ public class test {
 		}
 		driver.quit();
 		*/
+		
+		
+		/* Distance calculator
+		Location L1= new Location(34.3219023,33.4231902);
+		Location L2= new Location(32.32190321,37.32190321);
+		LocationManager LM = new LocationManager();
+		System.out.println(LM.calculateDistance(L1, L2));
+		*/
 }	
 	
 }
