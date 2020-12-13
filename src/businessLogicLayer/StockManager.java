@@ -53,8 +53,6 @@ public class StockManager {
 		repoWarehouseItem.delete(id);
 	}
 	
-
-	
 	/*
 	 * TRIGGER BEFORE INSERT ON WAREHOUSEITEM
 	 * 	IF new.idWarehouse IN select idWarehouse from warehouseItem where idItem= NEW.idItem
