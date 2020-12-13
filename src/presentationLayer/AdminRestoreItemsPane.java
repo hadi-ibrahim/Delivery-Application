@@ -21,6 +21,11 @@ import javax.swing.table.DefaultTableModel;
 import DTO.IDTO;
 import DTO.Item;
 import businessLogicLayer.ItemManager;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
+
+import javax.swing.JLabel;
+import javax.swing.Icon;
 
 public class AdminRestoreItemsPane extends JPanel {
 
@@ -43,7 +48,7 @@ public class AdminRestoreItemsPane extends JPanel {
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
 	
 	public JButton restoreItemBtn;
-	public JButton backBtn;
+	private JLabel backArrow;
 
 	/**
 	 * Launch the application.
@@ -72,6 +77,9 @@ public class AdminRestoreItemsPane extends JPanel {
 	public AdminRestoreItemsPane(JPanel mainPanel, AdminManageItemsPane itemsPane) {
 		super();
 		this.mainPanel = mainPanel;
+		IconFontSwing.register(FontAwesome.getIconFont());
+		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
+		
 		
 		this.setBounds(100, 100, 780, 670);
 		this.setBackground(Color.WHITE);
@@ -80,7 +88,7 @@ public class AdminRestoreItemsPane extends JPanel {
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(null);
-		scrollPane.setBounds(50, 50, 680, 450);
+		scrollPane.setBounds(50, 70, 680, 450);
 		scrollPane.setBackground(Color.WHITE);
 		this.add(scrollPane);
 
@@ -120,33 +128,30 @@ public class AdminRestoreItemsPane extends JPanel {
 		restoreItemBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		restoreItemBtn.setForeground(Color.WHITE);
 		restoreItemBtn.setBackground(secondaryPink);
-		restoreItemBtn.setBounds(140, 550, 150, 40);
+		restoreItemBtn.setBounds(300, 570, 150, 40);
 		this.add(restoreItemBtn);
 		
-		backBtn = new JButton("Back");
-		backBtn.setForeground(Color.WHITE);
-		backBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		backBtn.setBackground(new Color(241, 57, 83));
-		backBtn.setBounds(480, 550, 150, 40);
-		backBtn.addMouseListener(new MouseAdapter() {
-			
+		backArrow = new JLabel(backIcon);
+		backArrow.setBounds(680, 20, 40, 40);
+		backArrow.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				backBtn.setBackground(tertiaryPink);
 				setCursor(pointer);
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				backBtn.setBackground(secondaryPink);
 				setCursor(arrow);
 
 			}
+			@Override
 			public void mousePressed(MouseEvent e ) {
 				switchMainPanel("items");
+				
 			}
+
 		});
-		this.add(backBtn);
+		add(backArrow);
 
 	}
 
@@ -182,10 +187,8 @@ public class AdminRestoreItemsPane extends JPanel {
 		this.tblItems.getColumnModel().getColumn(4).setMaxWidth(0);
 
 	}
-	
 	private void switchMainPanel(String name) {
 		CardLayout cards =(CardLayout) mainPanel.getLayout();
 		cards.show(mainPanel, name);
 	}
-
 }

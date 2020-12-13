@@ -22,6 +22,8 @@ import DTO.Item;
 import DTO.Warehouse;
 import businessLogicLayer.InputManager;
 import businessLogicLayer.WarehouseManager;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -29,6 +31,9 @@ import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.Icon;
 
 public class AdminManageWarehousesPane extends JPanel {
 
@@ -37,6 +42,7 @@ public class AdminManageWarehousesPane extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel mainPanel;
+	private AdminManageWarehousesPane self= this;
 	private JTable tblWarehouses;
 	private DefaultTableModel model;
 	private WarehouseManager warehouseManager = new WarehouseManager();
@@ -49,10 +55,10 @@ public class AdminManageWarehousesPane extends JPanel {
 	
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
-	
-	public JButton addWarehousesBtn;
-	public JButton deleteItemBtn;
-	public JButton restoreWarehousesBtn;
+	public JButton manageStockBtn;
+	private JLabel addIcon;
+	private JLabel deleteIcon;
+	private JLabel restoreIcon;
 
 	/**
 	 * Launch the application.
@@ -82,11 +88,18 @@ public class AdminManageWarehousesPane extends JPanel {
 		super();
 		this.mainPanel = mainPanel;
 		
+		IconFontSwing.register(FontAwesome.getIconFont());
+		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.PLUS_CIRCLE	, 30, tertiaryPink);
+		Icon minusIcon = IconFontSwing.buildIcon(FontAwesome.MINUS_CIRCLE, 30, tertiaryPink);
+		Icon refreshIcon = IconFontSwing.buildIcon(FontAwesome.REFRESH, 30, tertiaryPink);
+
 		JPanel addItemsPanel = new AdminAddWarehousesPane (mainPanel, this);
 		mainPanel.add(addItemsPanel,"addWarehouses");
 		
 		AdminRestoreWarehousesPane restoreWarehousesPanel = new AdminRestoreWarehousesPane(mainPanel, this);
 		mainPanel.add(restoreWarehousesPanel, "restoreWarehouses");
+		
+
 		
 		this.setBounds(100, 100, 780, 670);
 		this.setBackground(Color.WHITE);
@@ -95,7 +108,7 @@ public class AdminManageWarehousesPane extends JPanel {
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(null);
-		scrollPane.setBounds(50, 50, 680, 450);
+		scrollPane.setBounds(50, 70, 680, 500);
 		scrollPane.setBackground(Color.WHITE);
 		this.add(scrollPane);
 
@@ -104,17 +117,55 @@ public class AdminManageWarehousesPane extends JPanel {
 
 		RefreshItemTable();
 		
-		addWarehousesBtn = new JButton("Add");
-		addWarehousesBtn.addMouseListener(new MouseAdapter() {
+		manageStockBtn = new JButton("Manage stock");
+		manageStockBtn.setForeground(Color.WHITE);
+		manageStockBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		manageStockBtn.setBackground(new Color(241, 57, 83));
+		manageStockBtn.setBounds(300, 600, 150, 40);
+		manageStockBtn.addMouseListener(new MouseAdapter() {
+			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				addWarehousesBtn.setBackground(tertiaryPink);
+				manageStockBtn.setBackground(tertiaryPink);
 				setCursor(pointer);
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				addWarehousesBtn.setBackground(secondaryPink);
+				manageStockBtn.setBackground(secondaryPink);
+				setCursor(arrow);
+
+			}
+			public void mousePressed(MouseEvent e ) {
+				int column = 0;
+				int row = tblWarehouses.getSelectedRow();
+				if (row >= 0) {
+					String id = tblWarehouses.getModel().getValueAt(row, column).toString();
+					Warehouse warehouse= warehouseManager.get(Integer.parseInt(id));
+					JPanel manageStockPanel = new AdminManageStockPane(mainPanel, self, warehouse);
+					mainPanel.add(manageStockPanel,"addStock");
+					switchMainPanel("addStock");
+				}			
+			}
+		});
+		add(manageStockBtn);
+		
+		JLabel warehouseNotifier = new JLabel("");
+		warehouseNotifier.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		warehouseNotifier.setHorizontalAlignment(SwingConstants.CENTER);
+		warehouseNotifier.setBounds(315, 601, 365, 40);
+		add(warehouseNotifier);
+		
+		addIcon = new JLabel(plusIcon);
+		addIcon.setBounds(70, 11, 40, 40);
+		addIcon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				setCursor(pointer);
+
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
 				setCursor(arrow);
 
 			}
@@ -124,28 +175,18 @@ public class AdminManageWarehousesPane extends JPanel {
 			}
 
 		});
+		add(addIcon);
 		
-		addWarehousesBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		addWarehousesBtn.setForeground(Color.WHITE);
-		addWarehousesBtn.setBackground(secondaryPink);
-		addWarehousesBtn.setBounds(100, 550, 150, 40);
-		this.add(addWarehousesBtn);
-		
-		deleteItemBtn = new JButton("Delete");
-		deleteItemBtn.setForeground(Color.WHITE);
-		deleteItemBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		deleteItemBtn.setBackground(new Color(241, 57, 83));
-		deleteItemBtn.setBounds(315, 550, 150, 40);
-		deleteItemBtn.addMouseListener(new MouseAdapter() {
+		deleteIcon = new JLabel(minusIcon);
+		deleteIcon.setBounds(120, 11, 40, 40);
+		deleteIcon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				deleteItemBtn.setBackground(tertiaryPink);
 				setCursor(pointer);
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				deleteItemBtn.setBackground(secondaryPink);
 				setCursor(arrow);
 
 			}
@@ -163,32 +204,27 @@ public class AdminManageWarehousesPane extends JPanel {
 			}
 
 		});
-		this.add(deleteItemBtn);
+		add(deleteIcon);
 		
-		restoreWarehousesBtn = new JButton("Restore");
-		restoreWarehousesBtn.setForeground(Color.WHITE);
-		restoreWarehousesBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		restoreWarehousesBtn.setBackground(new Color(241, 57, 83));
-		restoreWarehousesBtn.setBounds(530, 550, 150, 40);
-		restoreWarehousesBtn.addMouseListener(new MouseAdapter() {
+		restoreIcon = new JLabel(refreshIcon);
+		restoreIcon.setBounds(170, 11, 40, 40);
+		restoreIcon.addMouseListener(new MouseAdapter() {
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				restoreWarehousesBtn.setBackground(tertiaryPink);
 				setCursor(pointer);
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				restoreWarehousesBtn.setBackground(secondaryPink);
 				setCursor(arrow);
 
 			}
 			public void mousePressed(MouseEvent e ) {
 				switchMainPanel("restoreWarehouses");
-				}
+			}
 		});
-		this.add(restoreWarehousesBtn);
+		add(restoreIcon);
 
 	}
 
@@ -258,5 +294,4 @@ public class AdminManageWarehousesPane extends JPanel {
 		CardLayout cards =(CardLayout) mainPanel.getLayout();
 		cards.show(mainPanel, name);
 	}
-
 }

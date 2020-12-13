@@ -16,11 +16,14 @@ import DTO.Category;
 import DTO.Item;
 import businessLogicLayer.InputManager;
 import businessLogicLayer.ItemManager;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
+import javax.swing.Icon;
 
 public class AdminAddItemsPane extends JPanel {
 
@@ -53,6 +56,8 @@ public class AdminAddItemsPane extends JPanel {
 	 */
 	public AdminAddItemsPane(JPanel mainPanel, AdminManageItemsPane displayPanel) {
 		super();
+		IconFontSwing.register(FontAwesome.getIconFont());
+		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
 		setBackground(Color.WHITE);
 		this.mainPanel = mainPanel;
 		setBounds(100, 100, 780, 670);
@@ -61,33 +66,33 @@ public class AdminAddItemsPane extends JPanel {
 		
 		comboBoxCategory = new JComboBox<String>();
 		comboBoxCategory.setFont(new Font("Javanese Text", Font.PLAIN, 14));
-		comboBoxCategory.setBounds(200, 100, 300, 40);
+		comboBoxCategory.setBounds(190, 150, 300, 40);
 		addCategoryTypes();
 		this.add(comboBoxCategory);
 		
 		JLabel lblCategory = new JLabel("Category");
 		lblCategory.setFont(new Font("Javanese Text", Font.PLAIN, 14));
 		lblCategory.setHorizontalAlignment(SwingConstants.LEFT);
-		lblCategory.setBounds(100, 100, 100, 40);
+		lblCategory.setBounds(90, 150, 100, 40);
 		this.add(lblCategory);
 		
 		JLabel lblPrice = new JLabel("Price");
 		lblPrice.setFont(new Font("Javanese Text", Font.PLAIN, 14));
 		lblPrice.setHorizontalAlignment(SwingConstants.LEFT);
-		lblPrice.setBounds(100, 200, 100, 40);
+		lblPrice.setBounds(90, 250, 100, 40);
 		this.add(lblPrice);
 		
 		JLabel lblDescription = new JLabel("Description");
 		lblDescription.setFont(new Font("Javanese Text", Font.PLAIN, 14));
 		lblDescription.setHorizontalAlignment(SwingConstants.LEFT);
-		lblDescription.setBounds(100, 300, 100, 40);
+		lblDescription.setBounds(90, 350, 100, 40);
 		this.add(lblDescription);
 		
 		JButton addItemBtn = new JButton("Add Item");
 		addItemBtn.setForeground(Color.WHITE);
 		addItemBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		addItemBtn.setBackground(new Color(241, 57, 83));
-		addItemBtn.setBounds(150, 466, 150, 40);
+		addItemBtn.setBounds(260, 500, 150, 40);
 		addItemBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -121,42 +126,17 @@ public class AdminAddItemsPane extends JPanel {
 		
 		txtPrice = new JTextField();
 		txtPrice.setColumns(10);
-		txtPrice.setBounds(200, 200, 300, 40);
+		txtPrice.setBounds(190, 250, 300, 40);
 		add(txtPrice);
-		
-		JButton backBtn = new JButton("Back");
-		backBtn.setForeground(Color.WHITE);
-		backBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		backBtn.setBackground(new Color(241, 57, 83));
-		backBtn.setBounds(470, 466, 150, 40);
-		backBtn.addMouseListener(new MouseAdapter() {
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			backBtn.setBackground(tertiaryPink);
-			setCursor(pointer);
-
-		}
-		@Override
-		public void mouseExited(MouseEvent e) {
-			backBtn.setBackground(secondaryPink);
-			setCursor(arrow);
-
-		}
-		@Override
-		public void mousePressed(MouseEvent e ) {
-			switchMainPanel("items");
-		}
-		});
-		add(backBtn);
 		
 		txtDescription = new JTextField();
 		txtDescription.setColumns(10);
-		txtDescription.setBounds(200, 300, 300, 40);
+		txtDescription.setBounds(190, 350, 300, 40);
 		add(txtDescription);
 		
 		JLabel basketIconLbl = new JLabel("");
 		basketIconLbl.setHorizontalAlignment(SwingConstants.CENTER);
-		basketIconLbl.setBounds(540, 110, 225, 225);
+		basketIconLbl.setBounds(530, 160, 225, 225);
 		basketIconLbl.setIcon(new ImageIcon(CustomerDashboard.class.getResource("images/basket.png")));
 
 		add(basketIconLbl);
@@ -167,6 +147,26 @@ public class AdminAddItemsPane extends JPanel {
 		resultLbl.setFont(new Font("Javanese Text", Font.PLAIN, 22));
 		resultLbl.setBounds(185, 550, 400, 50);
 		add(resultLbl);
+		
+		JLabel backArrow = new JLabel(backIcon);
+		backArrow.setBounds(680, 20, 40, 40);
+		backArrow.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				setCursor(pointer);
+	
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(arrow);
+	
+			}
+			@Override
+			public void mousePressed(MouseEvent e ) {
+				switchMainPanel("items");
+			}
+		});
+		add(backArrow);
 	}
 	
 	public void addCategoryTypes() {

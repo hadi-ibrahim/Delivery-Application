@@ -331,8 +331,8 @@ public class AdminDashboard extends JFrame {
 						sidePanel.add(userInfoPanel);
 						userInfoPanel.setLayout(null);
 						
-						JLabel usernameLbl = new JLabel("Welcome, " + SessionHelper.isLoggedIn.getFirstname());
-						usernameLbl.setBounds(60, 10, 120, 50);
+						JLabel usernameLbl = new JLabel(SessionHelper.isLoggedIn.getFirstname());
+						usernameLbl.setBounds(60, 0, 200, 70);
 						userInfoPanel.add(usernameLbl);
 						setLblFont(usernameLbl);
 						

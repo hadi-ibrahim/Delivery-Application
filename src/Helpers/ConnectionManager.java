@@ -12,7 +12,6 @@ public class ConnectionManager {
 	public static Connection getConnection() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-			System.out.println("Driver initiated successfully");
 			if (con == null || con.isClosed()) {
 				con = DriverManager.getConnection(ConnectionString);
 			}

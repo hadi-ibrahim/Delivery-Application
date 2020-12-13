@@ -23,6 +23,11 @@ import DTO.Item;
 import DTO.Warehouse;
 import businessLogicLayer.ItemManager;
 import businessLogicLayer.WarehouseManager;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
+
+import javax.swing.JLabel;
+import javax.swing.Icon;
 
 public class AdminRestoreWarehousesPane extends JPanel {
 
@@ -46,7 +51,7 @@ public class AdminRestoreWarehousesPane extends JPanel {
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
 	
 	public JButton restoreItemBtn;
-	public JButton backBtn;
+	private JLabel backArrow;
 
 	/**
 	 * Launch the application.
@@ -75,6 +80,8 @@ public class AdminRestoreWarehousesPane extends JPanel {
 	public AdminRestoreWarehousesPane(JPanel mainPanel, AdminManageWarehousesPane warehousesPane) {
 		super();
 		this.mainPanel = mainPanel;
+		IconFontSwing.register(FontAwesome.getIconFont());
+		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
 		
 		this.setBounds(100, 100, 780, 670);
 		this.setBackground(Color.WHITE);
@@ -83,7 +90,7 @@ public class AdminRestoreWarehousesPane extends JPanel {
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(null);
-		scrollPane.setBounds(50, 50, 680, 450);
+		scrollPane.setBounds(50, 70, 680, 500);
 		scrollPane.setBackground(Color.WHITE);
 		this.add(scrollPane);
 
@@ -123,25 +130,20 @@ public class AdminRestoreWarehousesPane extends JPanel {
 		restoreItemBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		restoreItemBtn.setForeground(Color.WHITE);
 		restoreItemBtn.setBackground(secondaryPink);
-		restoreItemBtn.setBounds(140, 550, 150, 40);
+		restoreItemBtn.setBounds(300, 600, 150, 40);
 		this.add(restoreItemBtn);
 		
-		backBtn = new JButton("Back");
-		backBtn.setForeground(Color.WHITE);
-		backBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		backBtn.setBackground(new Color(241, 57, 83));
-		backBtn.setBounds(480, 550, 150, 40);
-		backBtn.addMouseListener(new MouseAdapter() {
+		backArrow = new JLabel(backIcon);
+		backArrow.setBounds(670, 20, 40, 40);
+		backArrow.addMouseListener(new MouseAdapter() {
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				backBtn.setBackground(tertiaryPink);
 				setCursor(pointer);
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				backBtn.setBackground(secondaryPink);
 				setCursor(arrow);
 
 			}
@@ -149,7 +151,7 @@ public class AdminRestoreWarehousesPane extends JPanel {
 				switchMainPanel("warehouses");
 			}
 		});
-		this.add(backBtn);
+		add(backArrow);
 
 	}
 

@@ -1,5 +1,7 @@
 package businessLogicLayer;
 
+import java.util.ArrayList;
+
 import DTO.IDTO;
 import DTO.Item;
 import DTO.Warehouse;
@@ -34,6 +36,21 @@ public class StockManager {
 	
 	public void addItemToWarehouse( Warehouse warehouse, Item item, int quantity) {
 		repoWarehouseItem.create( new WarehouseItem(warehouse.getId(),item.getId(), quantity));
+	}
+	
+	public ArrayList<IDTO> getAllActiveWarehouseItems(){
+		return repoWarehouseItem.getAllActive();
+	}
+	
+	public ArrayList<IDTO> getAllDisabledWarehouses(){
+		return repoWarehouseItem.getAllDisabled();
+	}
+	public ArrayList<IDTO> getAllItemsInWarehouse (Warehouse warehouse) {
+		return repoWarehouseItem.getAllItemsInWarehouse(warehouse);
+	}
+	
+	public void delete(int id) {
+		repoWarehouseItem.delete(id);
 	}
 	
 

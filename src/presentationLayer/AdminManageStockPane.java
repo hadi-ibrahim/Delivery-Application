@@ -19,21 +19,26 @@ import javax.swing.table.DefaultTableModel;
 
 import DTO.IDTO;
 import DTO.Item;
+import DTO.Warehouse;
+import DTO.WarehouseItem;
+import Repositories.RepoItem;
 import businessLogicLayer.InputManager;
 import businessLogicLayer.ItemManager;
+import businessLogicLayer.StockManager;
 import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.icons.google_material_design_icons.GoogleMaterialDesignIcons;
 import jiconfont.swing.IconFontSwing;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JLabel;
-import javax.swing.Icon;
 
-public class AdminManageItemsPane extends JPanel {
+public class AdminManageStockPane extends JPanel {
 
 	/**
 	 * 
@@ -42,7 +47,10 @@ public class AdminManageItemsPane extends JPanel {
 	private JPanel mainPanel;
 	private JTable tblItems;
 	private DefaultTableModel model;
+	
+	private Warehouse warehouse;
 	private ItemManager itemManager = new ItemManager();
+	private StockManager stockManager = new StockManager();
 	private Color watermelon = new Color(254,127,156);
 	private Color lemonade = new Color(253,185,200);
 	private Color pastelPink = new Color(255, 209, 220);
@@ -52,10 +60,10 @@ public class AdminManageItemsPane extends JPanel {
 	
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
-	private JLabel addIcon;
-	private JLabel deleteIcon;
-	private JLabel restoreIcon;
-	private JLabel notification;
+	
+	public JButton addItemBtn;
+	public JButton deleteItemBtn;
+	public JButton backBtn;
 
 	/**
 	 * Launch the application.
@@ -81,20 +89,13 @@ public class AdminManageItemsPane extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public AdminManageItemsPane(JPanel mainPanel) {
+	public AdminManageStockPane(JPanel mainPanel, AdminManageWarehousesPane adminManageWarehousePane, Warehouse warehouse) {
 		super();
-		this.mainPanel = mainPanel;
 		IconFontSwing.register(FontAwesome.getIconFont());
-		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.PLUS_CIRCLE	, 30, tertiaryPink);
-		Icon minusIcon = IconFontSwing.buildIcon(FontAwesome.MINUS_CIRCLE, 30, tertiaryPink);
-		Icon refreshIcon = IconFontSwing.buildIcon(FontAwesome.REFRESH, 30, tertiaryPink);
-
+		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
 		
-		JPanel addItemsPanel = new AdminAddItemsPane (mainPanel, this);
-		mainPanel.add(addItemsPanel,"addItems");
-		
-		AdminRestoreItemsPane restoreItemsPanel = new AdminRestoreItemsPane(mainPanel, this);
-		mainPanel.add(restoreItemsPanel, "restoreItems");
+		this.mainPanel = mainPanel;
+		this.warehouse = warehouse;
 		
 		this.setBounds(100, 100, 780, 670);
 		this.setBackground(Color.WHITE);
@@ -103,7 +104,7 @@ public class AdminManageItemsPane extends JPanel {
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(null);
-		scrollPane.setBounds(50, 70, 680, 500);
+		scrollPane.setBounds(50, 70, 680, 450);
 		scrollPane.setBackground(Color.WHITE);
 		this.add(scrollPane);
 
@@ -112,16 +113,17 @@ public class AdminManageItemsPane extends JPanel {
 
 		RefreshItemTable();
 		
-		addIcon = new JLabel(plusIcon);
-		addIcon.setBounds(70, 20, 40, 40);
-		addIcon.addMouseListener(new MouseAdapter() {
+		addItemBtn = new JButton("Add");
+		addItemBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
+				addItemBtn.setBackground(tertiaryPink);
 				setCursor(pointer);
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
+				addItemBtn.setBackground(secondaryPink);
 				setCursor(arrow);
 
 			}
@@ -131,18 +133,28 @@ public class AdminManageItemsPane extends JPanel {
 			}
 
 		});
-		add(addIcon);
 		
-		deleteIcon = new JLabel(minusIcon);
-		deleteIcon.setBounds(120, 20, 40, 40);
-		deleteIcon.addMouseListener(new MouseAdapter() {
+		addItemBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		addItemBtn.setForeground(Color.WHITE);
+		addItemBtn.setBackground(secondaryPink);
+		addItemBtn.setBounds(100, 570, 150, 40);
+		this.add(addItemBtn);
+		
+		deleteItemBtn = new JButton("Delete");
+		deleteItemBtn.setForeground(Color.WHITE);
+		deleteItemBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		deleteItemBtn.setBackground(new Color(241, 57, 83));
+		deleteItemBtn.setBounds(315, 570, 150, 40);
+		deleteItemBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
+				deleteItemBtn.setBackground(tertiaryPink);
 				setCursor(pointer);
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
+				deleteItemBtn.setBackground(secondaryPink);
 				setCursor(arrow);
 
 			}
@@ -153,18 +165,42 @@ public class AdminManageItemsPane extends JPanel {
 				int row = tblItems.getSelectedRow();
 				if (row >= 0) {
 					String id = tblItems.getModel().getValueAt(row, column).toString();
-					itemManager.delete(Integer.parseInt(id));
+					stockManager.delete(Integer.parseInt(id));
 					RefreshItemTable();
-					restoreItemsPanel.RefreshItemTable();
 				}
 			}
 
 		});
-		add(deleteIcon);
+		this.add(deleteItemBtn);
 		
-		restoreIcon = new JLabel(refreshIcon);
-		restoreIcon.setBounds(170, 20, 40, 40);
-		restoreIcon.addMouseListener(new MouseAdapter() {
+		backBtn = new JButton("Back");
+		backBtn.setForeground(Color.WHITE);
+		backBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		backBtn.setBackground(new Color(241, 57, 83));
+		backBtn.setBounds(530, 570, 150, 40);
+		backBtn.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				backBtn.setBackground(tertiaryPink);
+				setCursor(pointer);
+
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				backBtn.setBackground(secondaryPink);
+				setCursor(arrow);
+
+			}
+			public void mousePressed(MouseEvent e ) {
+				switchMainPanel("restoreItems");
+				}
+		});
+		this.add(backBtn);
+		
+		JLabel backArrow = new JLabel(backIcon);
+		backArrow.setBounds(680, 20, 40, 40);
+		backArrow.addMouseListener(new MouseAdapter() {
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -177,21 +213,16 @@ public class AdminManageItemsPane extends JPanel {
 
 			}
 			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("restoreItems");
+				switchMainPanel("warehouses");
 			}
 		});
-		add(restoreIcon);
-		
-		notification = new JLabel("");
-		notification.setFont(new Font("Javanese Text", Font.PLAIN, 14));
-		notification.setBounds(90, 600, 600, 50);
-		add(notification);
+		add(backArrow);
 
 	}
 
 	public void RefreshItemTable() {
-		boolean isEditable[] = { false, true, true, true, false };
-		model = new DefaultTableModel(new Object[] { "id", "category", "price", "description", "isDeleted" }, 0) {
+		boolean isEditable[] = { false, false, false, false, false, false };
+		model = new DefaultTableModel(new Object[] { "id", "category", "price", "description", "quantity", "isDeleted" }, 0) {
 
 			/**
 			 * 
@@ -203,49 +234,25 @@ public class AdminManageItemsPane extends JPanel {
 				return isEditable[column];
 			}
 		};
-		ArrayList<IDTO> activeItems = itemManager.getAllActiveItems();
-		if(activeItems.isEmpty()) {
-			model.addRow(new Object[] {"","","","",""});
+		
+		ArrayList<IDTO> warehouseItems = stockManager.getAllItemsInWarehouse(warehouse);
+		if(warehouseItems.isEmpty()) {
+			model.addRow(new Object[] {"","","","","",""});
 		}
-		for (IDTO dto : activeItems) {
-			Item item = (Item) dto;
-			model.addRow(new Object[] { item.getId(), item.getCategory(), item.getPrice(), item.getDescription(),
-					item.getIsDeleted() });
+		for (IDTO dto : warehouseItems) {
+			WarehouseItem warehouseItem = (WarehouseItem) dto;
+			Item item = itemManager.get(warehouseItem.getIdItem());
+			model.addRow(new Object[] { warehouseItem.getId(), item.getCategory(), item.getPrice(), item.getDescription(),warehouseItem.getQuantity(),
+					warehouseItem.getIsDeleted() });
 		}
-		model.addTableModelListener(new TableModelListener() {
-			@Override
-			public void tableChanged(TableModelEvent e) {
-				int column = 0;
-				int row = tblItems.getSelectedRow();
-				if (row >= 0) {
-					if (!InputManager.verifyPositiveDouble(tblItems.getModel().getValueAt(row, 2).toString())) {
-						RefreshItemTable();
-						JOptionPane.showMessageDialog(null, "Price must be a positive double.");
-					} else if (!InputManager.verifyCategory(tblItems.getModel().getValueAt(row, 1).toString())) {
-						RefreshItemTable();
-						JOptionPane.showMessageDialog(null, "Category must be either WEAPON, GROCERY or FOOD.");
-					} else {
-
-						String id = tblItems.getModel().getValueAt(row, column).toString();
-						Item item = itemManager.get(Integer.parseInt(id));
-						item.setCategory(tblItems.getModel().getValueAt(row, 1).toString());
-						item.setPrice(Double.parseDouble(tblItems.getModel().getValueAt(row, 2).toString()));
-						item.setDescription(tblItems.getModel().getValueAt(row, 3).toString());
-						item.setIsDeleted(Integer.parseInt(tblItems.getModel().getValueAt(row, 4).toString()));
-						itemManager.update(item);
-						RefreshItemTable();
-					}
-				}
-			}
-		});
+		
 		this.tblItems.setModel(model);
 		this.tblItems.getColumnModel().getColumn(0).setWidth(0);
 		this.tblItems.getColumnModel().getColumn(0).setMinWidth(0);
 		this.tblItems.getColumnModel().getColumn(0).setMaxWidth(0);
-		this.tblItems.getColumnModel().getColumn(4).setWidth(0);
-		this.tblItems.getColumnModel().getColumn(4).setMinWidth(0);
-		this.tblItems.getColumnModel().getColumn(4).setMaxWidth(0);
-		
+		this.tblItems.getColumnModel().getColumn(5).setWidth(0);
+		this.tblItems.getColumnModel().getColumn(5).setMinWidth(0);
+		this.tblItems.getColumnModel().getColumn(5).setMaxWidth(0);	
 
 	}
 	
@@ -253,5 +260,4 @@ public class AdminManageItemsPane extends JPanel {
 		CardLayout cards =(CardLayout) mainPanel.getLayout();
 		cards.show(mainPanel, name);
 	}
-
 }

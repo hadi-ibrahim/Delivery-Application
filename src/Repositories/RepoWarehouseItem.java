@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import DTO.IDTO;
+import DTO.Warehouse;
 import DTO.WarehouseItem;
 import Helpers.ConnectionManager;
 
@@ -63,6 +64,21 @@ public class RepoWarehouseItem implements IRepo, ISoftDeletable {
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery("Select * From item");
+			while (rs.next()) {
+				ListOfWarehouseItems.add(extractWarehouseItemFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return ListOfWarehouseItems;
+	}
+
+	public ArrayList<IDTO> getAllItemsInWarehouse(Warehouse warehouse) {
+		ArrayList<IDTO> ListOfWarehouseItems = new ArrayList<IDTO>();
+		try {
+			ps = con.prepareStatement("SELECT * FROM warehouseItem WHERE isDeleted = 0 AND idWarehouse = ?");
+			ps.setInt(1, warehouse.getId());
+			rs= ps.executeQuery();
 			while (rs.next()) {
 				ListOfWarehouseItems.add(extractWarehouseItemFromResultSet(rs));
 			}
