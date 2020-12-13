@@ -49,7 +49,7 @@ public class InputManager {
 	}
 	
 	public static boolean verifyLongitude(String s) {
-		 Double validLongitude = -1.00;
+		 Double validLongitude = -200.00;
 	        try {
 	            validLongitude = Double.parseDouble(s);
 	        } catch (NumberFormatException e) {
@@ -62,13 +62,13 @@ public class InputManager {
 	}
 	
 	public static boolean verifyLatitude(String s) {
-		 Double validLongitude = -1.00;
+		 Double validLatitude = -200.00;
 	        try {
-	            validLongitude = Double.parseDouble(s);
+	            validLatitude = Double.parseDouble(s);
 	        } catch (NumberFormatException e) {
 	            return false;
 	        }
-	        if (validLongitude < -180 || validLongitude > 180) {
+	        if (validLatitude < -90 || validLatitude > 90) {
 	            return false;
 	        }
 	        return true;	

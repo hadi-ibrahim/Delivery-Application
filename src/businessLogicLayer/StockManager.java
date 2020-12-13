@@ -53,12 +53,18 @@ public class StockManager {
 		repoWarehouseItem.delete(id);
 	}
 	
+<<<<<<< HEAD
 	public void restore(int id) {
 		repoWarehouseItem.restore(id);
 	}
 	
 
 	
+=======
+	public ArrayList<IDTO> getAllItemsNotInWarehouse(Warehouse warehouse){
+		return repoItem.getAllItemsNotInWarehouse(warehouse);
+	}
+>>>>>>> branch 'master' of https://201720536@dev.azure.com/201720536/Delivery%20Application/_git/Delivery%20Application
 	/*
 	 * TRIGGER BEFORE INSERT ON WAREHOUSEITEM
 	 * 	IF new.idWarehouse IN select idWarehouse from warehouseItem where idItem= NEW.idItem
