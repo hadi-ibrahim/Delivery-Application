@@ -241,37 +241,6 @@ public class Home extends JFrame {
 		contentPane.add(signInPanel);
 		signInPanel.setVisible(false);
 		
-		signUpPanel.setBackground(Color.WHITE);
-		signUpPanel.setBounds(365, 0, 383, 600);
-		contentPane.add(signUpPanel);
-		signUpPanel.setLayout(null);
-		
-		Button signUpBtn = new Button("Sign Up");
-		signUpBtn.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				signUpBtn.setBackground(tertiaryPink);
-				setCursorAsPointer();
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				signUpBtn.setBackground(secondaryPink);
-				setCursorAsNormal();
-
-			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-				signUp();
-			}
-		});
-		
-		signUpBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		signUpBtn.setForeground(Color.WHITE);
-		signUpBtn.setBackground(secondaryPink);
-		signUpBtn.setBounds(51, 554, 283, 36);
-		signUpPanel.add(signUpBtn);
-		
 		Button signInBtn = new Button("Sign In");
 		signInBtn.addMouseListener(new MouseAdapter() {
 			@Override
@@ -332,6 +301,37 @@ public class Home extends JFrame {
 		signInBtn.setBackground(secondaryPink);
 		signInBtn.setBounds(51, 400, 283, 36);
 		signInPanel.add(signInBtn);
+		
+		signUpPanel.setBackground(Color.WHITE);
+		signUpPanel.setBounds(365, 0, 383, 600);
+		contentPane.add(signUpPanel);
+		signUpPanel.setLayout(null);
+		
+		Button signUpBtn = new Button("Sign Up");
+		signUpBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				signUpBtn.setBackground(tertiaryPink);
+				setCursorAsPointer();
+
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				signUpBtn.setBackground(secondaryPink);
+				setCursorAsNormal();
+
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				signUp();
+			}
+		});
+		
+		signUpBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		signUpBtn.setForeground(Color.WHITE);
+		signUpBtn.setBackground(secondaryPink);
+		signUpBtn.setBounds(51, 554, 283, 36);
+		signUpPanel.add(signUpBtn);
 		
 		firstNameField = new JTextField();
 		firstNameField.setBounds(51, 130, 283, 36);

@@ -5,6 +5,7 @@ import Repositories.RepoUser;
 import java.util.ArrayList;
 
 import DTO.IDTO;
+import DTO.Role;
 import DTO.User;
 
 public class UserManager {
@@ -26,7 +27,10 @@ public class UserManager {
 	public User get(int id) {
 		return repoUser.get(id);
 	}
-
+	
+	public void create(String firstname, String lastname, int age, String email, String password, Role role, String phone) {
+		repoUser.create(new User(firstname, lastname, age, email, password, role, phone));
+	}
 
 	public void update(User user) {
 		repoUser.update(user);
