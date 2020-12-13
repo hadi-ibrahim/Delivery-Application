@@ -53,6 +53,9 @@ public class StockManager {
 		repoWarehouseItem.delete(id);
 	}
 	
+	public ArrayList<IDTO> getAllItemsNotInWarehouse(Warehouse warehouse){
+		return repoItem.getAllItemsNotInWarehouse(warehouse);
+	}
 	/*
 	 * TRIGGER BEFORE INSERT ON WAREHOUSEITEM
 	 * 	IF new.idWarehouse IN select idWarehouse from warehouseItem where idItem= NEW.idItem

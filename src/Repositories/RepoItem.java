@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import DTO.IDTO;
 import DTO.Item;
+import DTO.Warehouse;
 import Helpers.ConnectionManager;
 
 public class RepoItem implements IRepo, ISoftDeletable {
@@ -200,6 +201,19 @@ public class RepoItem implements IRepo, ISoftDeletable {
 		}
 	}
 
-	
+	public ArrayList<IDTO> getAllItemsNotInWarehouse(Warehouse warehouse) {
+		ArrayList<IDTO> itemsNotInWarehouse = new ArrayList<IDTO>();
+		try {
+			ps = con.prepareStatement("SELECT * FROM item WHERE isDeleted=0 AND id NOT in (Select idItem from warehouseItem where idWarehouse =? ");
+			ps.setInt(1, warehouse.getId());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				itemsNotInWarehouse.add(extractItemFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return itemsNotInWarehouse;
+	}
 
 }
