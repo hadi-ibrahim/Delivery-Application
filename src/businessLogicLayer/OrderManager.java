@@ -19,11 +19,7 @@ public class OrderManager {
 	private RepoOrder repoOrder = new RepoOrder();
 	private RepoWarehouseItem repoWarehouseItem = new RepoWarehouseItem();
 	private RepoOrderedWarehouseItem repoOrderedWarehouseItem = new RepoOrderedWarehouseItem();
-	private StockManager stockManager;
-
-	public OrderManager(StockManager stockManager) {
-		this.stockManager = stockManager;
-	}
+	private StockManager stockManager = new StockManager();
 
 	public void placeOrder(Order order) {
 

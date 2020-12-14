@@ -266,9 +266,9 @@ public class AdminManageStockPane extends JPanel {
 		}
 		
 		this.tblItems.setModel(model);
-//		this.tblItems.getColumnModel().getColumn(0).setWidth(0);
-//		this.tblItems.getColumnModel().getColumn(0).setMinWidth(0);
-//		this.tblItems.getColumnModel().getColumn(0).setMaxWidth(0);
+		this.tblItems.getColumnModel().getColumn(0).setWidth(0);
+		this.tblItems.getColumnModel().getColumn(0).setMinWidth(0);
+		this.tblItems.getColumnModel().getColumn(0).setMaxWidth(0);
 		this.tblItems.getColumnModel().getColumn(5).setWidth(0);
 		this.tblItems.getColumnModel().getColumn(5).setMinWidth(0);
 		this.tblItems.getColumnModel().getColumn(5).setMaxWidth(0);	

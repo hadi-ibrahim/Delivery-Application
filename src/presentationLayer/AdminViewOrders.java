@@ -20,6 +20,7 @@ import javax.swing.table.DefaultTableModel;
 import DTO.IDTO;
 import DTO.Item;
 import DTO.User;
+import DTO.Warehouse;
 import businessLogicLayer.InputManager;
 import businessLogicLayer.ItemManager;
 import businessLogicLayer.UserManager;
@@ -57,9 +58,6 @@ public class AdminViewOrders extends JPanel {
 	
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
-	private JLabel addIcon;
-	private JLabel deleteIcon;
-	private JLabel restoreIcon;
 	private JLabel notification;
 
 	/**
@@ -101,7 +99,7 @@ public class AdminViewOrders extends JPanel {
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(null);
-		scrollPane.setBounds(50, 70, 680, 500);
+		scrollPane.setBounds(50, 70, 680, 450);
 		scrollPane.setBackground(Color.WHITE);
 		this.add(scrollPane);
 
@@ -110,86 +108,55 @@ public class AdminViewOrders extends JPanel {
 
 		RefreshUsersTable();
 		
-		addIcon = new JLabel(plusIcon);
-		addIcon.setBounds(70, 20, 40, 40);
-		addIcon.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				setCursor(pointer);
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				setCursor(arrow);
-
-			}
-			@Override
-			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("addUsers");
-				notification.setText("");
-			}
-
-		});
-		add(addIcon);
-		
-		deleteIcon = new JLabel(minusIcon);
-		deleteIcon.setBounds(120, 20, 40, 40);
-		deleteIcon.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				setCursor(pointer);
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				setCursor(arrow);
-
-			}
-			@Override
-			public void mousePressed(MouseEvent e ) {
-				
-				int column = 0;
-				int row = tblUsers.getSelectedRow();
-				if (row >= 0) {
-					String id = tblUsers.getModel().getValueAt(row, column).toString();
-					userManager.delete(Integer.parseInt(id));
-					RefreshUsersTable();
-				}
-				else {
-					notification.setText("Select a user to delete");
-					notification.setForeground(tomato);
-				}
-			}
-
-		});
-		add(deleteIcon);
-		
-		restoreIcon = new JLabel(refreshIcon);
-		restoreIcon.setBounds(170, 20, 40, 40);
-		restoreIcon.addMouseListener(new MouseAdapter() {
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				setCursor(pointer);
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				setCursor(arrow);
-
-			}
-			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("restoreUsers");
-				notification.setText("");
-			}
-		});
-		add(restoreIcon);
-		
 		notification = new JLabel("");
 		notification.setHorizontalAlignment(SwingConstants.CENTER);
 		notification.setFont(new Font("Javanese Text", Font.PLAIN, 14));
 		notification.setBounds(90, 600, 600, 50);
 		add(notification);
+		
+		JLabel tooltip = new JLabel("Select user to view orders");
+		tooltip.setHorizontalAlignment(SwingConstants.CENTER);
+		tooltip.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		tooltip.setBounds(50, 20, 680, 40);
+		add(tooltip);
+		
+		JButton viewOrdersBtn = new JButton("View Orders");
+		viewOrdersBtn.setForeground(Color.WHITE);
+		viewOrdersBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		viewOrdersBtn.setBackground(new Color(241, 57, 83));
+		viewOrdersBtn.setBounds(310, 549, 150, 40);
+		viewOrdersBtn.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				viewOrdersBtn.setBackground(tertiaryPink);
+				setCursor(pointer);
+
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				viewOrdersBtn.setBackground(secondaryPink);
+				setCursor(arrow);
+
+			}
+			public void mousePressed(MouseEvent e ) {
+				int column = 0;
+				int row = tblUsers.getSelectedRow();
+				if (row >= 0) {
+					String id = tblUsers.getModel().getValueAt(row, column).toString();
+					User user= userManager.get(Integer.parseInt(id));
+					JPanel viewUserOrders = new AdminViewUserOrders(mainPanel, self, user);
+					mainPanel.add(viewUserOrders,"viewUserOrders");
+					switchMainPanel("viewUserOrders");
+					notification.setText("");
+				}
+				else {
+					notification.setText("Select a warehouse add manage stock");
+					notification.setForeground(tomato);
+				}
+			}
+		});
+		add(viewOrdersBtn);
 
 	}
 
@@ -265,5 +232,4 @@ public class AdminViewOrders extends JPanel {
 		CardLayout cards =(CardLayout) mainPanel.getLayout();
 		cards.show(mainPanel, name);
 	}
-
 }
