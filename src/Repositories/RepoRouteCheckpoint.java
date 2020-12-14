@@ -131,10 +131,6 @@ public class RepoRouteCheckpoint implements IRepo, ISoftDeletable {
 
 	}
 
-	
-
-	
-
 	@Override
 	public boolean delete(int id) {
 		try {
@@ -198,8 +194,8 @@ public class RepoRouteCheckpoint implements IRepo, ISoftDeletable {
 		}
 	}
 	
-	public ArrayList<RouteCheckpoint> getOrderRoute(int idOrder) {
-		ArrayList<RouteCheckpoint> routeCheckpoints = new ArrayList<RouteCheckpoint>();
+	public ArrayList<IDTO> getOrderRoute(int idOrder) {
+		ArrayList<IDTO> routeCheckpoints = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery("Select * From routeCheckpoint where idOrder =" + idOrder);

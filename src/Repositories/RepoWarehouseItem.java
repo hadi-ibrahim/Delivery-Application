@@ -44,7 +44,7 @@ public class RepoWarehouseItem implements IRepo, ISoftDeletable {
 	public WarehouseItem get(int id) {
 		WarehouseItem warehouseItem = null;
 		try {
-			ps = con.prepareStatement("SELECT * FROM item WHERE id=?");
+			ps = con.prepareStatement("SELECT * FROM warehouseitem WHERE id=?");
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			if (rs.next()) {
@@ -63,7 +63,7 @@ public class RepoWarehouseItem implements IRepo, ISoftDeletable {
 		ArrayList<IDTO> ListOfWarehouseItems = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From item");
+			rs = stmt.executeQuery("Select * From warehouseitem");
 			while (rs.next()) {
 				ListOfWarehouseItems.add(extractWarehouseItemFromResultSet(rs));
 			}

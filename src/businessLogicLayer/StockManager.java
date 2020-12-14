@@ -61,6 +61,10 @@ public class StockManager {
 		repoWarehouseItem.restore(id);
 	}
 	
+	public WarehouseItem get( int id) {
+		return repoWarehouseItem.get(id);
+	}
+	
 	public ArrayList<IDTO> getAllItemsNotInWarehouse(Warehouse warehouse){
 		return repoItem.getAllItemsNotInWarehouse(warehouse);
 	}

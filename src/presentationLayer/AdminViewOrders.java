@@ -145,13 +145,13 @@ public class AdminViewOrders extends JPanel {
 				if (row >= 0) {
 					String id = tblUsers.getModel().getValueAt(row, column).toString();
 					User user= userManager.get(Integer.parseInt(id));
-					JPanel viewUserOrders = new AdminViewUserOrders(mainPanel, self, user);
+					JPanel viewUserOrders = new AdminViewUserOrders(mainPanel, user);
 					mainPanel.add(viewUserOrders,"viewUserOrders");
 					switchMainPanel("viewUserOrders");
 					notification.setText("");
 				}
 				else {
-					notification.setText("Select a warehouse add manage stock");
+					notification.setText("Select a user to view his orders");
 					notification.setForeground(tomato);
 				}
 			}

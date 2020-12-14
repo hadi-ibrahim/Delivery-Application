@@ -29,11 +29,11 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		order.setId(resultSet.getInt("id"));
 		order.setIdCustomer(resultSet.getInt("idCustomer"));
 		order.setIdDriver(resultSet.getInt("idDriver"));
-		order.setStartDate(resultSet.getTimestamp("startDate"));
-		order.setEndDate(resultSet.getTimestamp("endDate"));
+		order.setStartDate(resultSet.getTimestamp("dateStart"));
+		order.setEndDate(resultSet.getTimestamp("dateEnd"));
 		order.setOrderStatus(resultSet.getString("orderStatus"));
 		order.setTotalAmount(resultSet.getDouble("totalAmount"));
-		order.setLocationDestination(new Location(resultSet.getDouble("longitude"), resultSet.getDouble("latitude")));
+		order.setLocationDestination(new Location(resultSet.getDouble("destinationLongitude"), resultSet.getDouble("destinationLatitude")));
 		return order;
 
 	}
@@ -41,8 +41,9 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 	@Override
 	public Order get(int id) {
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From order where id=" + id);
+			ps = con.prepareStatement("Select * From `order` where id= ? " );
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
 			if (rs.next())
 				return extractOrderFromResultSet(rs);
 		} catch (SQLException e) {
@@ -57,7 +58,7 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		ArrayList<IDTO> orders = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From order");
+			rs = stmt.executeQuery("Select * From `order`");
 			while (rs.next()) {
 				orders.add(extractOrderFromResultSet(rs));
 			}
@@ -71,8 +72,10 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 	public ArrayList<IDTO> getAllFinishedByUser(int id){
 		ArrayList<IDTO> orders = new ArrayList<IDTO>();
 		try {
-			ps = con.prepareStatement("Select * From order where idCustomer=? AND orderStatus="+OrderStatus.COMPLETED);
+			ps = con.prepareStatement("Select * From `order` where idCustomer=? AND orderStatus LIKE ? ");
 			ps.setInt(1, id);
+			ps.setString(2, OrderStatus.COMPLETED.toString());
+			rs = ps.executeQuery();
 			while (rs.next()) {
 				orders.add(extractOrderFromResultSet(rs));
 			}
@@ -86,7 +89,7 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		ArrayList<IDTO> orders = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From order where isDeleted=0");
+			rs = stmt.executeQuery("Select * From `order` where isDeleted=0");
 			while (rs.next()) {
 				orders.add(extractOrderFromResultSet(rs));
 			}
@@ -102,7 +105,7 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		ArrayList<IDTO> orders = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From order where isDeleted=1");
+			rs = stmt.executeQuery("Select * From `order` where isDeleted=1");
 			while (rs.next()) {
 				orders.add(extractOrderFromResultSet(rs));
 			}
@@ -118,7 +121,7 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		Order order = (Order) dto;
 		try {
 			ps = con.prepareStatement(
-					"Insert into order(id,idCustomer,idDriver,longitude, latitude ,dateStart,dateEnd,orderStatus,totalAmount) VALUES(NULL,?,NULL,?,?,NOW(),NULL,?,?");
+					"Insert into `order`(id,idCustomer,idDriver,destinationLongitude, destinationLatitude ,dateStart,dateEnd,orderStatus,totalAmount) VALUES(NULL,?,NULL,?,?,NOW(),NULL,?,?)");
 			ps.setInt(1, order.getIdCustomer());
 			ps.setDouble(2, order.getLocationDestination().getLongitude());
 			ps.setDouble(3, order.getLocationDestination().getLatitude());
@@ -138,7 +141,7 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		Order order = (Order) dto;
 		try {
 			ps = con.prepareStatement(
-					"UPDATE order SET idDriver = ? ,longitude= ?, latitude=? ,orderStatus = ?,totalAmount=? WHERE id =?");
+					"UPDATE `order` SET idDriver = ? ,destinationLongitude= ?, destinationLatitude=? ,orderStatus = ?,totalAmount=? WHERE id =?");
 			ps.setInt(1, order.getIdDriver());
 			ps.setDouble(2, order.getLocationDestination().getLongitude());
 			ps.setDouble(3, order.getLocationDestination().getLatitude());
@@ -157,7 +160,7 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 	@Override
 	public boolean delete(int id) {
 		try {
-			ps = con.prepareStatement("Update order set isDeleted=1 WHERE id=?");
+			ps = con.prepareStatement("Update `order` set isDeleted=1 WHERE id=?");
 			ps.setInt(1, id);
 			System.out.println(ps.executeUpdate() + " records deleted");
 			return true;
@@ -171,7 +174,7 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 	@Override
 	public boolean restore(int id) {
 		try {
-			ps = con.prepareStatement("Update order set isDeleted=0 WHERE id=?");
+			ps = con.prepareStatement("Update `order` set isDeleted=0 WHERE id=?");
 			ps.setInt(1, id);
 			System.out.println(ps.executeUpdate() + " records restored");
 		} catch (SQLException ex) {

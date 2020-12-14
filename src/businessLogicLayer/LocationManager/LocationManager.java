@@ -11,6 +11,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import DTO.IDTO;
 import DTO.Location;
 import DTO.Order;
 import DTO.OrderStatus;
@@ -73,9 +74,10 @@ public class LocationManager {
 
 	}
 
-	public void displayRoute(ArrayList<RouteCheckpoint> Route) {
+	public void displayRoute(ArrayList<IDTO> Route) {
 		String checkPoints = "";
-		for (RouteCheckpoint c : Route) {
+		for (IDTO temp : Route) {
+			RouteCheckpoint c = (RouteCheckpoint) temp;
 			checkPoints = checkPoints + Double.toString(c.getLocation().getLongitude()) + ","
 					+ Double.toString(c.getLocation().getLatitude()) + ";";
 		}

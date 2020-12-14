@@ -11,6 +11,7 @@ import DTO.User;
 import DTO.WarehouseItem;
 import Repositories.RepoOrder;
 import Repositories.RepoOrderedWarehouseItem;
+import Repositories.RepoRouteCheckpoint;
 import Repositories.RepoUser;
 import Repositories.RepoWarehouseItem;
 
@@ -19,8 +20,13 @@ public class OrderManager {
 	private RepoOrder repoOrder = new RepoOrder();
 	private RepoWarehouseItem repoWarehouseItem = new RepoWarehouseItem();
 	private RepoOrderedWarehouseItem repoOrderedWarehouseItem = new RepoOrderedWarehouseItem();
+	private RepoRouteCheckpoint repoCheckpoint = new RepoRouteCheckpoint();
 	private StockManager stockManager = new StockManager();
 
+	public Order get(int id) {
+		return repoOrder.get(id);
+	}
+	
 	public void placeOrder(Order order) {
 
 		if (enoughItemsQuantityInWarehouse(order)) {
@@ -72,9 +78,9 @@ public class OrderManager {
 		repoOrder.update(order);
 		repoUser.update(driver);
 	}
-
-	public void setOrderOrderedItems(Order order) {
-		order.setOrderedItems(repoOrderedWarehouseItem.getOrderedItemsFromOrder(order.getId()));
+	
+	public ArrayList<IDTO> getOrderOrderedItems(Order order) {
+		return repoOrderedWarehouseItem.getOrderedItemsFromOrder(order.getId());
 	}
 	
 	public ArrayList<IDTO> getAllOrders() {
@@ -84,6 +90,10 @@ public class OrderManager {
 	public ArrayList<IDTO> getAllFinishedByUser(int id){
 		return repoOrder.getAllFinishedByUser(id);
 	}
+	public ArrayList<IDTO> getAllCheckpointsByOrder(Order order) {
+		return repoCheckpoint.getOrderRoute(order.getId());
+	}
+	
 	// TODO
 	/*
 	 * Event while driverStatus == busy update longitude latitude;

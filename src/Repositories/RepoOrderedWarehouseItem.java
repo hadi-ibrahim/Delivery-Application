@@ -29,7 +29,7 @@ public class RepoOrderedWarehouseItem implements IRepo {
 		orderedItem.setId(resultSet.getInt("id"));
 		orderedItem.setIdWarehouseItem(resultSet.getInt("idWarehouseItem"));
 		orderedItem.setIdOrder(resultSet.getInt("idOrder"));
-		orderedItem.setQuantity(resultSet.getInt("itemQuantity"));
+		orderedItem.setQuantity(resultSet.getInt("orderedQuantity"));
 		orderedItem.setPricePerUnit(resultSet.getDouble("pricePerUnit"));
 		return orderedItem;
 	}
@@ -71,7 +71,7 @@ public class RepoOrderedWarehouseItem implements IRepo {
 		OrderedWarehouseItem warehouse = (OrderedWarehouseItem) dto;
 		try {
 			ps = con.prepareStatement(
-					"INSERT INTO orderedwarehouseitem(id, idWarehouseItem, idOrder, itemQuantity, pricePerUnit) VALUES(NULL,?,?,?,?)");
+					"INSERT INTO orderedwarehouseitem(id, idWarehouseItem, idOrder, orderedQuantity, pricePerUnit) VALUES(NULL,?,?,?,?)");
 			ps.setInt(1, warehouse.getIdWarehouseItem());
 			ps.setInt(2, warehouse.getIdOrder());
 			ps.setInt(3, warehouse.getQuantity());
@@ -93,7 +93,7 @@ public class RepoOrderedWarehouseItem implements IRepo {
 		OrderedWarehouseItem warehouse = (OrderedWarehouseItem) dto;
 		try {
 			ps = con.prepareStatement(
-					"UPDATE orderedwarehouseitem SET idWarehouseItem=?, idOrder = ?, itemQuantity=?, pricePerUnit=? WHERE id=?");
+					"UPDATE orderedwarehouseitem SET idWarehouseItem=?, idOrder = ?, orderedQuantity=?, pricePerUnit=? WHERE id=?");
 			ps.setInt(1, warehouse.getIdWarehouseItem());
 			ps.setInt(2, warehouse.getIdOrder());
 			ps.setInt(3, warehouse.getQuantity());
@@ -165,8 +165,8 @@ public class RepoOrderedWarehouseItem implements IRepo {
 		}
 	}
 
-	public ArrayList<OrderedWarehouseItem> getOrderedItemsFromOrder(int idOrder) {
-		ArrayList<OrderedWarehouseItem> itemsOrdered = new ArrayList<OrderedWarehouseItem>();
+	public ArrayList<IDTO> getOrderedItemsFromOrder(int idOrder) {
+		ArrayList<IDTO> itemsOrdered = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
 			rs = stmt.executeQuery("Select * From orderedWarehouseItem where idOrder =" + idOrder);
