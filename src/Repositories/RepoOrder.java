@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import DTO.IDTO;
 import DTO.Location;
 import DTO.Order;
+import DTO.OrderStatus;
 import Helpers.ConnectionManager;
 
 public class RepoOrder implements IRepo, ISoftDeletable {
@@ -66,7 +67,20 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		return orders;
 
 	}
-
+	
+	public ArrayList<IDTO> getAllFinishedByUser(int id){
+		ArrayList<IDTO> orders = new ArrayList<IDTO>();
+		try {
+			ps = con.prepareStatement("Select * From order where idCustomer=? AND orderStatus="+OrderStatus.COMPLETED);
+			ps.setInt(1, id);
+			while (rs.next()) {
+				orders.add(extractOrderFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return orders;
+	}
 	@Override
 	public ArrayList<IDTO> getAllActive() {
 		ArrayList<IDTO> orders = new ArrayList<IDTO>();

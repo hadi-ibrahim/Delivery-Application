@@ -81,6 +81,9 @@ public class OrderManager {
 		return repoOrder.getAll();
 	}
 
+	public ArrayList<IDTO> getAllFinishedByUser(int id){
+		return repoOrder.getAllFinishedByUser(id);
+	}
 	// TODO
 	/*
 	 * Event while driverStatus == busy update longitude latitude;
