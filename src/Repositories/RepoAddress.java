@@ -54,6 +54,23 @@ public class RepoAddress implements IRepo {
 		return null;
 	}
 
+	public ArrayList<Address> getAllByUser(int idUser) {
+		ArrayList<Address> userAddress = new ArrayList<Address>();
+		try {
+			ps = con.prepareStatement("SELECT * FROM address WHERE idUser=?");
+			ps.setInt(1, idUser);
+			rs = ps.executeQuery();
+			if (rs.next())
+				rs = ps.executeQuery();
+			while (rs.next()) {
+				userAddress.add(extractAddressFromResultSet(rs));
+			}
+			return userAddress;
+		} catch (SQLException e) {
+			System.out.println(e);
+			return null;
+		}
+	}
 	@Override
 	public boolean create(IDTO dto) {
 		Address address = (Address) dto;

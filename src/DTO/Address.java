@@ -7,6 +7,7 @@ public class Address implements IDTO {
 	private String floor;
 	private String building;
 	private Location location;
+	private int idUser;
 
 	public Address() {
 
@@ -69,5 +70,13 @@ public class Address implements IDTO {
 	public void setLocation(Location location) {
 		this.location = location;
 
+	}
+
+	public int getIdUser() {
+		return idUser;
+	}
+
+	public void setIdUser(int idUser) {
+		this.idUser = idUser;
 	}
 }
