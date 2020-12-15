@@ -14,7 +14,7 @@ public class User implements IDTO {
 	private DriverStatus driverStatus;
 	private Location location;
 	private int isDeleted;
-	private ArrayList<UserSavedAddress> userAddresses;
+	private ArrayList<Address> userAddresses;
 
 	public User() {
 		
@@ -128,11 +128,11 @@ public class User implements IDTO {
 		this.isDeleted = isDeleted;
 	}
 
-	public ArrayList<UserSavedAddress> getUserAddresses() {
+	public ArrayList<Address> getUserAddresses() {
 		return userAddresses;
 	}
 
-	public void setUserAddresses(ArrayList<UserSavedAddress> userAddresses) {
-		this.userAddresses = userAddresses;
+	public void setUserAddresses(ArrayList<Address> address) {
+		this.userAddresses = address;
 	}
 }

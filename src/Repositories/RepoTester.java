@@ -18,7 +18,6 @@ public class RepoTester {
 	static RepoItem item = new RepoItem();
 	RepoOrder order = new RepoOrder();
 //	RepoOrderedWarehouseItem orderedWarehouseItem = new RepoOrderedWarehouseItem();
-	RepoUserSavedAddress userAddress = new RepoUserSavedAddress();
 	static RepoWarehouse warehouse = new RepoWarehouse();
 	RepoWarehouseItem warehouseItem = new RepoWarehouseItem();
 	static RepoUser user= new RepoUser();

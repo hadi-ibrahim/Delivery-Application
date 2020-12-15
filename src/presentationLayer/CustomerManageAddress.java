@@ -203,42 +203,16 @@ public class CustomerManageAddress extends JPanel {
 			}
 		};
 
-		ArrayList<IDTO > activeWarehouses=  addressManager.getAllByUser(SessionHelper.isLoggedIn);
-		if(activeWarehouses.isEmpty()) {
+		ArrayList<Address> addresses=  addressManager.getAllByUser(SessionHelper.isLoggedIn);
+		if(addresses.isEmpty()) {
 			model.addRow(new Object[] {"", "", "", "", "", "" });
 		}
-		for (IDTO dto : activeWarehouses) {
+		for (IDTO dto : addresses) {
 			Address address = (Address) dto;
 			model.addRow(new Object[] { address.getId(), address.getStreet(),address.getCity(), address.getBuilding(),
 					address.getLocation().getLatitude(),address.getLocation().getLongitude()});
 		}
-		model.addTableModelListener(new TableModelListener() {
-			@Override
-			public void tableChanged(TableModelEvent e) {
-				
-				int column = 0;
-				int row = tblAddresses.getSelectedRow();
-				if (row >= 0) {
-					
-					if (!InputManager.verifyLongitude(tblAddresses.getModel().getValueAt(row, 5).toString())) {
-						RefreshAddressTable();
-						JOptionPane.showMessageDialog(null, "Error: latitude invalid");
-					} else if (!InputManager.verifyLongitude(tblAddresses.getModel().getValueAt(row, 4).toString())) {
-						RefreshAddressTable();
-						JOptionPane.showMessageDialog(null, "Error: invalid longitude");
-					} else {
-						String id = tblAddresses.getModel().getValueAt(row, column).toString();
-						Warehouse warehouse = addressManager.get(Integer.parseInt(id));
-						warehouse.setName(tblAddresses.getModel().getValueAt(row, 1).toString());
-						warehouse.setLatitude(Double.parseDouble(tblAddresses.getModel().getValueAt(row, 2).toString()));
-						warehouse.setLongitude(Double.parseDouble(tblAddresses.getModel().getValueAt(row, 3).toString()));
-						warehouse.setIsDeleted(Integer.parseInt(tblAddresses.getModel().getValueAt(row, 4).toString()));
-						addressManager.update(warehouse);
-						RefreshAddressTable();
-					}
-				}
-			}
-		});
+		
 		this.tblAddresses.setModel(model);
 		this.tblAddresses.getColumnModel().getColumn(0).setWidth(0);
 		this.tblAddresses.getColumnModel().getColumn(0).setMinWidth(0);
