@@ -18,9 +18,10 @@ import DTO.OrderStatus;
 import DTO.RouteCheckpoint;
 import DTO.User;
 import DTO.Warehouse;
+import Repositories.RepoWarehouse;
 
 public class LocationManager {
-
+RepoWarehouse repoWarehouse = new RepoWarehouse();
 	public Location pickAddress() {
 		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
 		String HTMLPath = new File("src/businessLogicLayer/locationManager/AddressPicker.html").getAbsolutePath();
@@ -202,5 +203,23 @@ public class LocationManager {
 				+ Math.pow(Math.sin(dLon / 2), 2) * Math.cos(warehouseLat) * Math.cos(userLat);
 		double c = 2 * Math.asin(Math.sqrt(a));
 		return R * c;
+	}
+	
+	public Warehouse getNearestWarehouse(User user) {
+		Warehouse nearestWarehouse = null;
+		Double nearestDistance= null;
+		for (IDTO temp : repoWarehouse.getAllActive()) {
+			Warehouse warehouse = (Warehouse) temp;
+			Double distance = calculateDistance(user.getLocation(),warehouse.getLocation());
+			if(nearestWarehouse == null) {
+				nearestWarehouse = warehouse;
+				nearestDistance = distance;
+			}
+			if (distance < nearestDistance) {
+				nearestWarehouse = warehouse;
+				nearestDistance = distance;
+			}
+		}
+		return nearestWarehouse;
 	}
 }

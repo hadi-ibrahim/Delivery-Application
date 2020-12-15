@@ -59,5 +59,7 @@ public class Warehouse implements IDTO {
 	public void setIsDeleted(int isDeleted) {
 		this.isDeleted = isDeleted;
 	}
-
+	public Location getLocation() {
+		return new Location(this.getLongitude(),this.getLatitude());
+	}
 }
