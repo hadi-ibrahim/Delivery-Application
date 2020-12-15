@@ -2,6 +2,14 @@ package businessLogicLayer.LocationManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -21,7 +29,8 @@ import DTO.Warehouse;
 import Repositories.RepoWarehouse;
 
 public class LocationManager {
-RepoWarehouse repoWarehouse = new RepoWarehouse();
+	RepoWarehouse repoWarehouse = new RepoWarehouse();
+
 	public Location pickAddress() {
 		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
 		String HTMLPath = new File("src/businessLogicLayer/locationManager/AddressPicker.html").getAbsolutePath();
@@ -204,22 +213,27 @@ RepoWarehouse repoWarehouse = new RepoWarehouse();
 		double c = 2 * Math.asin(Math.sqrt(a));
 		return R * c;
 	}
-	
-	public Warehouse getNearestWarehouse(User user) {
-		Warehouse nearestWarehouse = null;
-		Double nearestDistance= null;
+
+	public HashMap<Warehouse, Double> getNearWarehouses(User user) {
+		HashMap<Warehouse, Double> validWarehouses = null;
+		Double maximumDistance = 50.0;
 		for (IDTO temp : repoWarehouse.getAllActive()) {
 			Warehouse warehouse = (Warehouse) temp;
-			Double distance = calculateDistance(user.getLocation(),warehouse.getLocation());
-			if(nearestWarehouse == null) {
-				nearestWarehouse = warehouse;
-				nearestDistance = distance;
-			}
-			if (distance < nearestDistance) {
-				nearestWarehouse = warehouse;
-				nearestDistance = distance;
+			Double distance = calculateDistance(user.getLocation(), warehouse.getLocation());
+			if (distance < maximumDistance) {
+				validWarehouses.put(warehouse, distance);
 			}
 		}
-		return nearestWarehouse;
+		List<Map.Entry<Warehouse, Double>> warehousesList = new LinkedList<Map.Entry<Warehouse, Double>>(validWarehouses.entrySet());
+		Collections.sort(warehousesList, new Comparator<Map.Entry<Warehouse, Double>>() {
+			public int compare(Map.Entry<Warehouse, Double> o1, Map.Entry<Warehouse, Double> o2) {
+				return (o1.getValue()).compareTo(o2.getValue());
+			}
+		});
+		HashMap<Warehouse, Double> sortedWarehousesHashMap = new LinkedHashMap<Warehouse, Double>();
+		for (Entry<Warehouse, Double> warehouseEntry: warehousesList) {
+			sortedWarehousesHashMap.put(warehouseEntry.getKey(), warehouseEntry.getValue());
+		}
+		return sortedWarehousesHashMap;
 	}
 }
