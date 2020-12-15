@@ -8,6 +8,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import Helpers.SessionHelper;
+import businessLogicLayer.OrderManager;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -40,11 +41,13 @@ public class DashBoardCustomer extends JFrame {
 	private JPanel mainPanel;
 	private JPanel topBar;
 	
+	
 	private Color watermelon = new Color(254,127,156);
 	private Color lemonade = new Color(253,185,200);
-//	private Color pastelPink = new Color(255, 209, 220);
+	private Color pastelPink = new Color(255, 209, 220);
 	private Color secondaryPink = new Color(241, 57, 83);
-//	private Color tertiaryPink = new Color(255, 0 ,51);
+	private OrderManager orderManager = new OrderManager();
+	private Color tertiaryPink = new Color(255, 0 ,51);
 	private Color whiteShade = new Color(240, 248, 255);
 	
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
@@ -433,6 +436,12 @@ public class DashBoardCustomer extends JFrame {
 	}
 	private void switchMainPanel(String name) {
 		CardLayout cards =(CardLayout) mainPanel.getLayout();
+		if(name!= "warehouseStock" || name!= "checkout" )
+			if(CustomerWarehouseStock.order != null) {
+				orderManager.restoreItemsFromShoppingCart(CustomerWarehouseStock.order);
+				CustomerWarehouseStock.order= null;
+			}
+			
 		cards.show(mainPanel, name);
 	}
 }

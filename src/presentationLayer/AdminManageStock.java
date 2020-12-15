@@ -254,7 +254,7 @@ public class AdminManageStock extends JPanel {
 			}
 		};
 		
-		ArrayList<IDTO> warehouseItems = stockManager.getAllItemsInWarehouse(warehouse);
+		ArrayList<IDTO> warehouseItems = stockManager.getAllActiveItemsInWarehouse(warehouse);
 		if(warehouseItems.isEmpty()) {
 			model.addRow(new Object[] {"","","","","",""});
 		}

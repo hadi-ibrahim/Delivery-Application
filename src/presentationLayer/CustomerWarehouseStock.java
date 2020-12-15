@@ -27,6 +27,7 @@ import Helpers.SessionHelper;
 import Repositories.RepoItem;
 import businessLogicLayer.InputManager;
 import businessLogicLayer.ItemManager;
+import businessLogicLayer.OrderManager;
 import businessLogicLayer.StockManager;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.icons.google_material_design_icons.GoogleMaterialDesignIcons;
@@ -51,11 +52,13 @@ public class CustomerWarehouseStock extends JPanel {
 	private JPanel mainPanel;
 	private JTable tblItems;
 	private DefaultTableModel model;
-	private Order order;
-	
+	public static Order order;
 	private Warehouse warehouse;
+	
 	private ItemManager itemManager = new ItemManager();
 	private StockManager stockManager = new StockManager();
+	private OrderManager orderManager = new OrderManager();
+	
 	private Color watermelon = new Color(254,127,156);
 	private Color lemonade = new Color(253,185,200);
 	private Color pastelPink = new Color(255, 209, 220);
@@ -70,28 +73,7 @@ public class CustomerWarehouseStock extends JPanel {
 	private JLabel addIcon;
 	private JLabel notification;
 	private JLabel warehouseName;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-			        JFrame f = new JFrame();
-			        f.setUndecorated(true);
-			        f.setSize( 780, 670);
-			        f.setTitle("Sometimes Red, Sometimes Blue");
-			        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			        f.getContentPane().add(new AdminManageItems(new JPanel()));
-			        f.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
+	
 	/**
 	 * Create the frame.
 	 */
@@ -100,8 +82,8 @@ public class CustomerWarehouseStock extends JPanel {
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.CART_PLUS	, 30, tertiaryPink);
 		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
-		
-		order.setIdCustomer(SessionHelper.isLoggedIn.getId());
+		order = new Order();
+		CustomerWarehouseStock.order.setIdCustomer(SessionHelper.isLoggedIn.getId());
 		
 		this.mainPanel = mainPanel;
 		this.warehouse = warehouse;
@@ -163,18 +145,21 @@ public class CustomerWarehouseStock extends JPanel {
 			        if (row >= 0) {
 			            String id = tblItems.getModel().getValueAt(row, column).toString();
 			            Item item = itemManager.get(Integer.parseInt(id));
-			            String quantity = tblItems.getModel().getValueAt(row, 6).toString();
-			            String availableQuantity = tblItems.getModel().getValueAt(row, 6).toString();
+			            String quantity = tblItems.getModel().getValueAt(row, 5).toString();
 
 			            if(InputManager.verifyPositiveInteger(quantity)) {
 			            	if(Integer.parseInt(quantity) > 0 ) {
-			            		if (Integer.parseInt(quantity) < Integer.parseInt(availableQuantity)) {
+					            RefreshItemTable();
+					            String availableQuantity = tblItems.getModel().getValueAt(row, 4).toString();
+			            		if (Integer.parseInt(quantity) <= Integer.parseInt(availableQuantity)) {
 			            			OrderedWarehouseItem orderedItem = new OrderedWarehouseItem();
-			            			orderedItem.setIdWarehouseItem(warehouse.getId());
+			            			orderedItem.setIdWarehouseItem(Integer.parseInt(tblItems.getModel().getValueAt(row, 0).toString()));
 			            			orderedItem.setPricePerUnit(item.getPrice());
 			            			orderedItem.setQuantity(Integer.parseInt(quantity));
 			            			
-			            			
+			            			orderManager.addItemToShoppingCart(orderedItem, order);
+			            			notification.setText("Item added to shopping cart");
+			            			notification.setForeground(emerald);
 			            		}
 			            		else notification.setText("Quantity not available");
 			            	}
@@ -185,10 +170,9 @@ public class CustomerWarehouseStock extends JPanel {
 			            }
 			     
 			            RefreshItemTable();
-			            notification.setText("");
 			        }
 			        else {
-			        	notification.setText("Select an Item to add to the warehouse");
+			        	notification.setText("Select an Item to add to shopping cart");
 			        	notification.setForeground(tomato);
 			        }
 			     }
@@ -208,12 +192,41 @@ public class CustomerWarehouseStock extends JPanel {
 		warehouseName.setForeground(Color.BLACK);
 		warehouseName.setBounds(70, 20, 650, 40);
 		add(warehouseName);
+		
+		JButton checkoutBtn = new JButton("Checkout");
+		checkoutBtn.setForeground(Color.WHITE);
+		checkoutBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		checkoutBtn.setBackground(new Color(241, 57, 83));
+		checkoutBtn.setBounds(310, 540, 150, 40);
+		checkoutBtn.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				checkoutBtn.setBackground(tertiaryPink);
+				setCursor(pointer);
+
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				checkoutBtn.setBackground(secondaryPink);
+				setCursor(arrow);
+
+			}
+			@Override
+			public void mousePressed(MouseEvent e ) {
+					JPanel checkoutPanel = new CustomerCheckout(mainPanel, order);
+					mainPanel.add(checkoutPanel,"checkout");
+					switchMainPanel("checkout");
+					notification.setText("");
+				}
+		});
+		add(checkoutBtn);
 
 	}
 
 	public void RefreshItemTable() {
-		boolean isEditable[] = { false, false, false, false, false,false, true};
-		model = new DefaultTableModel(new Object[] { "id", "category", "price", "description", "quantityAvailable", "isDeleted", "quantity" }, 0) {
+		boolean isEditable[] = { false, false, false, false, false, true};
+		model = new DefaultTableModel(new Object[] { "id", "category", "price", "description", "quantityAvailable", "quantity" }, 0) {
 
 			/**
 			 * 
@@ -226,15 +239,14 @@ public class CustomerWarehouseStock extends JPanel {
 			}
 		};
 		
-		ArrayList<IDTO> warehouseItems = stockManager.getAllItemsInWarehouse(warehouse);
+		ArrayList<IDTO> warehouseItems = stockManager.getAllActiveItemsInWarehouse(warehouse);
 		if(warehouseItems.isEmpty()) {
-			model.addRow(new Object[] {"","","","","","","" });
+			model.addRow(new Object[] {"","","","","","" });
 		}
 		for (IDTO dto : warehouseItems) {
 			WarehouseItem warehouseItem = (WarehouseItem) dto;
 			Item item = itemManager.get(warehouseItem.getIdItem());
-			model.addRow(new Object[] { warehouseItem.getId(), item.getCategory(), item.getPrice(), item.getDescription(),warehouseItem.getQuantity(),
-					warehouseItem.getIsDeleted(), "" });
+			model.addRow(new Object[] { warehouseItem.getId(), item.getCategory(), item.getPrice(), item.getDescription(),warehouseItem.getQuantity(), "0" });
 		}
 		
 		this.tblItems.setModel(model);
@@ -244,13 +256,13 @@ public class CustomerWarehouseStock extends JPanel {
 		this.tblItems.getColumnModel().getColumn(4).setWidth(0);
 		this.tblItems.getColumnModel().getColumn(4).setMinWidth(0);
 		this.tblItems.getColumnModel().getColumn(4).setMaxWidth(0);	
-		this.tblItems.getColumnModel().getColumn(5).setWidth(0);
-		this.tblItems.getColumnModel().getColumn(5).setMinWidth(0);
-		this.tblItems.getColumnModel().getColumn(5).setMaxWidth(0);	
+
 	}
 	
 	private void switchMainPanel(String name) {
 		CardLayout cards =(CardLayout) mainPanel.getLayout();
+		if(name!= "checkout")
+			orderManager.restoreItemsFromShoppingCart(order);
 		cards.show(mainPanel, name);
 	}
 }

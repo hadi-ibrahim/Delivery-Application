@@ -237,9 +237,9 @@ public class CustomerViewOrders extends JPanel {
 	}
 
 	public void RefreshOrdersTable() {
-		boolean isEditable[] = { false, false, false, false, false, false, false, false, false, false, false };
+		boolean isEditable[] = { false, false, false, false, false, false, false, false, false, false };
 		model = new DefaultTableModel(new Object[] { "id", "idCustomer", "idDriver", "destinationLongitude", "destinationLatitude", "dateStart", "dateEnd",
-				"orderStatus", "totalAmount", "isDeleted", "driverName"}, 0) {
+				"orderStatus", "totalAmount", "isDeleted"}, 0) {
 
 			/**
 			 * 
@@ -254,14 +254,13 @@ public class CustomerViewOrders extends JPanel {
 		
 		ArrayList<IDTO> orders = orderManager.getAllByUser(SessionHelper.isLoggedIn.getId());
 		if(orders.isEmpty()) {
-			model.addRow(new Object[] {"","","","","","","","","","", ""});
+			model.addRow(new Object[] {"","","","","","","","","",""});
 		}
 		for (IDTO dto : orders) {
 			Order order = (Order) dto;
-			User driver= userManager.get(order.getIdDriver());
 			model.addRow(new Object[] { order.getId(), order.getIdCustomer(), order.getIdDriver(), order.getLocationDestination().getLongitude(),
 					order.getLocationDestination().getLatitude(), order.getStartDate(), order.getEndDate(), order.getStatus(), order.getTotalAmount(),
-					order.isDeleted(), driver.getFirstname() + " " + driver.getLastname()});
+					order.isDeleted()});
 		}
 		
 		this.tblOrders.setModel(model);

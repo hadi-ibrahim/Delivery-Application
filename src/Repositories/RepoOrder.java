@@ -151,6 +151,19 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		}
 
 	}
+	public int getLastId() {
+		try {
+			stmt= con.createStatement();
+			rs = stmt.executeQuery("select distinct last_insert_id() as lastId from `order`");
+			if(rs.next())
+				return Integer.parseInt(rs.getString("lastId"));
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+
+	}
 
 	@Override
 	public boolean update(IDTO dto) {
