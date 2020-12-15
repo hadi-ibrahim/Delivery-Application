@@ -240,7 +240,7 @@ public class AdminManageStock extends JPanel {
 	}
 
 	public void RefreshItemTable() {
-		boolean isEditable[] = { false, false, false, false, false, false };
+		boolean isEditable[] = { false, false, false, false, true, false };
 		model = new DefaultTableModel(new Object[] { "id", "category", "price", "description", "quantity", "isDeleted" }, 0) {
 
 			/**
@@ -264,7 +264,29 @@ public class AdminManageStock extends JPanel {
 			model.addRow(new Object[] { warehouseItem.getId(), item.getCategory(), item.getPrice(), item.getDescription(),warehouseItem.getQuantity(),
 					warehouseItem.getIsDeleted() });
 		}
-		
+		model.addTableModelListener(new TableModelListener() {
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				
+				int column = 0;
+				int row = tblItems.getSelectedRow();
+				if (row >= 0) {
+					
+					if (!InputManager.verifyPositiveInteger(tblItems.getModel().getValueAt(row, 4).toString())) {
+						RefreshItemTable();
+						notification.setForeground(tomato);
+						notification.setText("Invalid Quantity");
+					} else {
+						notification.setText("");
+						String id = tblItems.getModel().getValueAt(row, column).toString();
+						WarehouseItem warehouseItem = stockManager.get(Integer.parseInt(id));
+						warehouseItem.setQuantity(Integer.parseInt(tblItems.getModel().getValueAt(row, 4).toString()));
+						stockManager.updateWarehouseItem(warehouseItem);
+						RefreshItemTable();
+					}
+				}
+			}
+		});
 		this.tblItems.setModel(model);
 		this.tblItems.getColumnModel().getColumn(0).setWidth(0);
 		this.tblItems.getColumnModel().getColumn(0).setMinWidth(0);

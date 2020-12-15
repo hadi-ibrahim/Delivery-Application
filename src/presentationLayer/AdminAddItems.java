@@ -112,6 +112,10 @@ public class AdminAddItems extends JPanel {
 					resultLbl.setForeground(tomato);
 					resultLbl.setText( "Price must be a positive value.");
 				}
+				else if(!InputManager.verifyStringNotEmpty(txtDescription.getText())) {
+					resultLbl.setForeground(tomato);
+					resultLbl.setText( "Description cannot be empty");
+				}
 				else {
 					itemManager.create(new Item(txtDescription.getText(),comboBoxCategory.getSelectedItem().toString(),Double.parseDouble(txtPrice.getText())));
 					txtDescription.setText("");

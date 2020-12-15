@@ -244,8 +244,9 @@ public class AdminViewUserOrders extends JPanel {
 					String id = tblOrders.getModel().getValueAt(row, column).toString();
 					Order order= orderManager.get(Integer.parseInt(id));
 					ArrayList<IDTO> cps = orderManager.getAllCheckpointsByOrder(order);
-					locationManager.displayRoute(cps);
-
+					new Thread(() -> {
+						locationManager.displayRoute(cps);
+					}).start();
 					notification.setText("");
 				}
 				else {
