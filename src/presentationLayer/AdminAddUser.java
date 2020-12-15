@@ -74,7 +74,7 @@ public class AdminAddUser extends JPanel {
 		this.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.setLayout(null);
 		
-		JButton addUserBtn = new JButton("Add User");
+		JButton addUserBtn = new JButton("Add Driver");
 		addUserBtn.setForeground(Color.WHITE);
 		addUserBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		addUserBtn.setBackground(new Color(241, 57, 83));
@@ -94,13 +94,45 @@ public class AdminAddUser extends JPanel {
 			}
 			@Override
 			public void mousePressed(MouseEvent e ) {
-				if(!InputManager.verifyPositiveInteger(ageTxt.getText())) {
+				User user = new User();
+				user.setFirstname(firstNameTxt.getText());
+				user.setLastname(lastNameTxt.getText());
+				if(InputManager.verifyStringNotEmpty(ageTxt.getText()))
+					user.setAge(Integer.parseInt(ageTxt.getText()));
+				else user.setAge(-1);
+				user.setPhone(phoneNumberTxt.getText());
+				user.setEmail(emailTxt.getText());
+				user.setPassword(String.valueOf(passwordTxt.getPassword()));
+				user.setRole(Role.DRIVER);
+				if(!InputManager.verifyStringNotEmpty(user.getFirstname())) {
 					notification.setForeground(tomato);
-					notification.setText( "Price must be a positive value.");
+					notification.setText("Invalid firstname");
+		
+				}
+				else if(!InputManager.verifyStringNotEmpty(user.getLastname())) {
+					notification.setForeground(tomato);
+					notification.setText("Invalid lastname");
+				}
+				else if(!InputManager.verifyPositiveInteger(""+user.getAge())) {
+					notification.setForeground(tomato);
+					notification.setText("Invalid age");
+		
+				}
+				else if(!InputManager.verifyPhoneNumber(user.getPhone())) {
+					notification.setForeground(tomato);
+					notification.setText("Invalid phone number");
+		
+				}
+				else if(!InputManager.verifyEmail(user.getEmail())) {
+					notification.setForeground(tomato);
+					notification.setText("Invalid email");
+				}
+				else if(!InputManager.verifyPassword(user.getPassword())) {
+					notification.setForeground(tomato);
+					notification.setText("Invalid password");
 				}
 				else {
-					userManager.create(firstNameTxt.getText(), lastNameTxt.getText(), Integer.parseInt(ageTxt.getText()),
-							emailTxt.getText(), String.valueOf(passwordTxt.getPassword()), Role.CUSTOMER, phoneNumberTxt.getText());
+					userManager.create(user);
 					firstNameTxt.setText("");
 					lastNameTxt.setText("");
 					ageTxt.setText("");

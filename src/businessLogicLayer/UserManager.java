@@ -28,8 +28,8 @@ public class UserManager {
 		return repoUser.get(id);
 	}
 	
-	public void create(String firstname, String lastname, int age, String email, String password, Role role, String phone) {
-		repoUser.create(new User(firstname, lastname, age, email, password, role, phone));
+	public void create(User user) {
+		repoUser.create(user);
 	}
 
 	public void update(User user) {

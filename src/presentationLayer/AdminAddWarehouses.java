@@ -110,7 +110,7 @@ public class AdminAddWarehouses extends JPanel {
 					resultLbl.setForeground(tomato);
 					resultLbl.setText( "Invalid location");
 				}
-				else if (txtName.getText().isBlank()) {
+				else if (!InputManager.verifyStringNotEmpty(txtName.getText())) {
 					resultLbl.setForeground(tomato);
 					resultLbl.setText( "Invalid warehouse name");
 				}

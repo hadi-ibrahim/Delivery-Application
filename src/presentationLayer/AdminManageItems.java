@@ -230,14 +230,21 @@ public class AdminManageItems extends JPanel {
 				if (row >= 0) {
 					if (!InputManager.verifyPositiveDouble(tblItems.getModel().getValueAt(row, 2).toString())) {
 						RefreshItemTable();
-						JOptionPane.showMessageDialog(null, "Price must be a positive double.");
+						notification.setText("Price must be a positive decimal.");
+						notification.setForeground(tomato);
 					} else if (!InputManager.verifyCategory(tblItems.getModel().getValueAt(row, 1).toString())) {
 						RefreshItemTable();
-						JOptionPane.showMessageDialog(null, "Category must be either WEAPON, GROCERY or FOOD.");
-					} else {
-
+						notification.setText("Category must be either WEAPON, GROCERY or FOOD.");
+						notification.setForeground(tomato);
+					} else if (!InputManager.verifyStringNotEmpty(tblItems.getModel().getValueAt(row, 3).toString())) {
+						RefreshItemTable();
+						notification.setText("Description cannot be empty");
+						notification.setForeground(tomato);
+					}
+					else {
 						String id = tblItems.getModel().getValueAt(row, column).toString();
 						Item item = itemManager.get(Integer.parseInt(id));
+						notification.setText("");
 						item.setCategory(tblItems.getModel().getValueAt(row, 1).toString());
 						item.setPrice(Double.parseDouble(tblItems.getModel().getValueAt(row, 2).toString()));
 						item.setDescription(tblItems.getModel().getValueAt(row, 3).toString());

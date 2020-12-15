@@ -245,7 +245,7 @@ public class AdminManageWarehouses extends JPanel {
 	}
 
 	public void RefreshItemTable() {
-		boolean isEditable[] = { false, true, true, true, false };
+		boolean isEditable[] = { false, true, false, false, false };
 		model = new DefaultTableModel(new Object[] { "id", "name", "latitude", "longitude", "isDeleted" }, 0) {
 
 
@@ -276,12 +276,10 @@ public class AdminManageWarehouses extends JPanel {
 				int row = tblWarehouses.getSelectedRow();
 				if (row >= 0) {
 					
-					if (!InputManager.verifyLongitude(tblWarehouses.getModel().getValueAt(row, 3).toString())) {
+					if (!InputManager.verifyStringNotEmpty(tblWarehouses.getModel().getValueAt(row, 1).toString())) {
 						RefreshItemTable();
-						JOptionPane.showMessageDialog(null, "Error: latitude invalid");
-					} else if (!InputManager.verifyLongitude(tblWarehouses.getModel().getValueAt(row, 2).toString())) {
-						RefreshItemTable();
-						JOptionPane.showMessageDialog(null, "Error: invalid longitude");
+						notification.setForeground(tomato);
+						notification.setText("Name cannot be empty");
 					} else {
 						String id = tblWarehouses.getModel().getValueAt(row, column).toString();
 						Warehouse warehouse = warehouseManager.get(Integer.parseInt(id));
@@ -299,6 +297,12 @@ public class AdminManageWarehouses extends JPanel {
 		this.tblWarehouses.getColumnModel().getColumn(0).setWidth(0);
 		this.tblWarehouses.getColumnModel().getColumn(0).setMinWidth(0);
 		this.tblWarehouses.getColumnModel().getColumn(0).setMaxWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(3).setWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(3).setMinWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(3).setMaxWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(2).setWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(2).setMinWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(2).setMaxWidth(0);
 		this.tblWarehouses.getColumnModel().getColumn(4).setWidth(0);
 		this.tblWarehouses.getColumnModel().getColumn(4).setMinWidth(0);
 		this.tblWarehouses.getColumnModel().getColumn(4).setMaxWidth(0);
