@@ -21,6 +21,14 @@ public class AddressManager {
 	public ArrayList<Address> getAllByUser(User user) {
 		return repoAddress.getAllByUser(user.getId());
 	}
+	
+	public void delete(int id) {
+		repoAddress.delete(id);
+	}
+	
+	public void create(Address address) {
+		repoAddress.create(address);
+	}
 	/*
 	 * TODO
 	 * TRIGGER AFTER UPDATE ON USER

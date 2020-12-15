@@ -15,10 +15,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import DTO.Address;
 import DTO.Category;
 import DTO.Item;
 import DTO.Location;
 import DTO.Warehouse;
+import Helpers.SessionHelper;
+import businessLogicLayer.AddressManager;
 import businessLogicLayer.InputManager;
 import businessLogicLayer.ItemManager;
 import businessLogicLayer.WarehouseManager;
@@ -35,7 +38,7 @@ public class CustomerAddAddress extends JPanel {
 
 	
 	private JPanel mainPanel;
-	WarehouseManager warehouseManager = new WarehouseManager();
+	private AddressManager addressManager = new AddressManager();
 	private LocationManager addressPicker = new LocationManager();
 	
 	private Color watermelon = new Color(254,127,156);
@@ -54,11 +57,15 @@ public class CustomerAddAddress extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -7017182885009918297L;
-	private JTextField txtName;
+	private JTextField txtCity;
 	private JTextField txtLongitude;
 	private JLabel resultLbl;
 	private JTextField txtLatitude;
 	private JLabel lblVerified;
+	private JTextField txtStreet;
+	private JTextField txtBuilding;
+	private JTextField textFloor;
+	private JTextField txtFloor;
 	/**
 	 * Create the panel.
 	 */
@@ -76,17 +83,17 @@ public class CustomerAddAddress extends JPanel {
 		this.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.setLayout(null);
 		
-		JLabel lblName = new JLabel("Name");
-		lblName.setFont(new Font("Javanese Text", Font.PLAIN, 14));
-		lblName.setHorizontalAlignment(SwingConstants.LEFT);
-		lblName.setBounds(100, 200, 100, 40);
-		this.add(lblName);
+		JLabel lblCity = new JLabel("City");
+		lblCity.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		lblCity.setHorizontalAlignment(SwingConstants.LEFT);
+		lblCity.setBounds(100, 150, 100, 40);
+		this.add(lblCity);
 		
 		JButton addWarehouseBtn = new JButton("Add");
 		addWarehouseBtn.setForeground(Color.WHITE);
 		addWarehouseBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		addWarehouseBtn.setBackground(new Color(241, 57, 83));
-		addWarehouseBtn.setBounds(275, 520, 150, 40);
+		addWarehouseBtn.setBounds(275, 500, 150, 40);
 		addWarehouseBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -110,34 +117,34 @@ public class CustomerAddAddress extends JPanel {
 					resultLbl.setForeground(tomato);
 					resultLbl.setText( "Invalid location");
 				}
-				else if (txtName.getText().isBlank()) {
-					resultLbl.setForeground(tomato);
-					resultLbl.setText( "Invalid address name");
-				}
+
 				else {
-					Warehouse warehouse = createWarehouseFromFields();
-					warehouseManager.create(warehouse);
+					Address address = createAddressFromFields();
+					addressManager.create(address);
 					txtLongitude.setText("");
-					txtName.setText("");
+					txtCity.setText("");
 					txtLatitude.setText("");
+					txtStreet.setText("");
+					txtBuilding.setText("");
+					txtFloor.setText("");
 					displayPanel.RefreshAddressTable();
-					resultLbl.setText("Warhouse added successfully!");
+					resultLbl.setText("Address saved successfully!");
 					resultLbl.setForeground(emerald);
 					}
 				}
 		});
 		add(addWarehouseBtn);
 		
-		txtName = new JTextField();
-		txtName.setColumns(10);
-		txtName.setBounds(200, 200, 300, 40);
-		add(txtName);
+		txtCity = new JTextField();
+		txtCity.setColumns(10);
+		txtCity.setBounds(200, 150, 300, 40);
+		add(txtCity);
 		
 		txtLongitude = new JTextField();
 		txtLongitude.setEditable(false);
 		txtLongitude.setDisabledTextColor(pastelPink);
 		txtLongitude.setColumns(10);
-		txtLongitude.setBounds(222, 78, 300, 40);
+		txtLongitude.setBounds(470, 58, 300, 40);
 		txtLongitude.setVisible(false);
 
 		add(txtLongitude);
@@ -160,7 +167,7 @@ public class CustomerAddAddress extends JPanel {
 		txtLatitude.setEditable(false);
 		txtLatitude.setDisabledTextColor(pastelPink);
 		txtLatitude.setColumns(10);
-		txtLatitude.setBounds(222, 129, 300, 40);
+		txtLatitude.setBounds(470, 109, 300, 40);
 		txtLatitude.setVisible(false);
 		add(txtLatitude);
 		
@@ -220,6 +227,40 @@ public class CustomerAddAddress extends JPanel {
 		lblVerified.setBounds(400, 340, 60, 60);
 		lblVerified.setVisible(false);
 		add(lblVerified);
+		
+		txtStreet = new JTextField();
+		txtStreet.setColumns(10);
+		txtStreet.setBounds(200, 200, 300, 40);
+		add(txtStreet);
+		
+		JLabel lblStreet = new JLabel("Street");
+		lblStreet.setHorizontalAlignment(SwingConstants.LEFT);
+		lblStreet.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		lblStreet.setBounds(100, 201, 100, 40);
+		add(lblStreet);
+		
+		txtBuilding = new JTextField();
+		txtBuilding.setColumns(10);
+		txtBuilding.setBounds(200, 250, 300, 40);
+		add(txtBuilding);
+		
+		JLabel lblBuilding = new JLabel("Building");
+		lblBuilding.setHorizontalAlignment(SwingConstants.LEFT);
+		lblBuilding.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		lblBuilding.setBounds(100, 252, 100, 40);
+		add(lblBuilding);
+		
+		
+		JLabel lblFloor = new JLabel("Floor");
+		lblFloor.setHorizontalAlignment(SwingConstants.LEFT);
+		lblFloor.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		lblFloor.setBounds(100, 300, 100, 40);
+		add(lblFloor);
+		
+		txtFloor = new JTextField();
+		txtFloor.setColumns(10);
+		txtFloor.setBounds(200, 300, 300, 40);
+		add(txtFloor);
 	}
 	
 	
@@ -228,9 +269,15 @@ public class CustomerAddAddress extends JPanel {
 		cards.show(mainPanel, name);
 	}
 	
-	private Warehouse createWarehouseFromFields() {
-		Warehouse warehouse = new Warehouse(txtName.getText(),Double.valueOf(txtLongitude.getText()),Double.valueOf(txtLatitude.getText()));
-		System.out.println(warehouse.getLongitude());
-		return warehouse;
+	private Address createAddressFromFields() {
+		Address address = new Address();
+		address.setCity(txtCity.getText());
+		address.setLocation(new Location(Double.valueOf(txtLongitude.getText()),Double.valueOf(txtLatitude.getText())));
+		address.setStreet(txtStreet.getText());
+		address.setBuilding(txtBuilding.getText());
+		address.setFloor(txtFloor.getText());
+		address.setIdUser(SessionHelper.isLoggedIn.getId());
+		System.out.println(address.getIdUser());
+		return address;
 	}
 }

@@ -158,15 +158,7 @@ public class CustomerManageAddress extends JPanel {
 				int row = tblAddresses.getSelectedRow();
 				if (row >= 0) {
 					String id = tblAddresses.getModel().getValueAt(row, column).toString();
-//					warehouseManager.delete(Integer.parseInt(id));
-					
-					
-					
-					
-					
-					
-					
-					
+					addressManager.delete(Integer.parseInt(id));
 					
 					RefreshAddressTable();
 				}
@@ -188,8 +180,8 @@ public class CustomerManageAddress extends JPanel {
 	}
 
 	public void RefreshAddressTable() {
-		boolean isEditable[] = { false, true, true, true, false, false};
-		model = new DefaultTableModel(new Object[] { "id", "street","city", "building", "latitude", "longitude" }, 0) {
+		boolean isEditable[] = { false, true, true, true, true, false, false};
+		model = new DefaultTableModel(new Object[] { "id", "street","city", "building", "floor", "latitude", "longitude" }, 0) {
 
 
 			/**
@@ -205,11 +197,11 @@ public class CustomerManageAddress extends JPanel {
 
 		ArrayList<Address> addresses=  addressManager.getAllByUser(SessionHelper.isLoggedIn);
 		if(addresses.isEmpty()) {
-			model.addRow(new Object[] {"", "", "", "", "", "" });
+			model.addRow(new Object[] {"", "", "", "", "", "", "" });
 		}
 		for (IDTO dto : addresses) {
 			Address address = (Address) dto;
-			model.addRow(new Object[] { address.getId(), address.getStreet(),address.getCity(), address.getBuilding(),
+			model.addRow(new Object[] { address.getId(), address.getStreet(),address.getCity(), address.getBuilding(), address.getFloor(),
 					address.getLocation().getLatitude(),address.getLocation().getLongitude()});
 		}
 		
@@ -217,9 +209,9 @@ public class CustomerManageAddress extends JPanel {
 		this.tblAddresses.getColumnModel().getColumn(0).setWidth(0);
 		this.tblAddresses.getColumnModel().getColumn(0).setMinWidth(0);
 		this.tblAddresses.getColumnModel().getColumn(0).setMaxWidth(0);
-		this.tblAddresses.getColumnModel().getColumn(4).setWidth(0);
-		this.tblAddresses.getColumnModel().getColumn(4).setMinWidth(0);
-		this.tblAddresses.getColumnModel().getColumn(4).setMaxWidth(0);
+		this.tblAddresses.getColumnModel().getColumn(6).setWidth(0);
+		this.tblAddresses.getColumnModel().getColumn(6).setMinWidth(0);
+		this.tblAddresses.getColumnModel().getColumn(6).setMaxWidth(0);
 		this.tblAddresses.getColumnModel().getColumn(5).setWidth(0);
 		this.tblAddresses.getColumnModel().getColumn(5).setMinWidth(0);
 		this.tblAddresses.getColumnModel().getColumn(5).setMaxWidth(0);

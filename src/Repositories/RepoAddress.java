@@ -76,15 +76,14 @@ public class RepoAddress implements IRepo {
 		Address address = (Address) dto;
 		try {
 			ps = con.prepareStatement(
-					"Insert into address(id,city,street,building,floor,longitude,latitude) Values(NULL,?,?,?,?,?,?)");
+					"Insert into address(id,city,street,building,floor,longitude,latitude, idUser) Values(NULL,?,?,?,?,?,?,?)");
 			ps.setString(1, address.getCity());
 			ps.setString(2, address.getStreet());
 			ps.setString(3, address.getBuilding());
 			ps.setString(4, address.getFloor());
-
 			ps.setDouble(5, address.getLocation().getLongitude());
-
 			ps.setDouble(6, address.getLocation().getLatitude());
+			ps.setInt(7, address.getIdUser());
 			System.out.println(ps.executeUpdate() + " record(s) created");
 			return true;
 		} catch (SQLException e) {
