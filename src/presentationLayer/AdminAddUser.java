@@ -119,7 +119,7 @@ public class AdminAddUser extends JPanel {
 		JLabel userIconLbl = new JLabel("");
 		userIconLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		userIconLbl.setBounds(530, 160, 225, 225);
-		userIconLbl.setIcon(new ImageIcon(CustomerDashboard.class.getResource("images/user.png")));
+		userIconLbl.setIcon(new ImageIcon(DashBoardCustomer.class.getResource("images/user.png")));
 
 		add(userIconLbl);
 		

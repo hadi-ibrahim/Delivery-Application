@@ -137,7 +137,7 @@ public class AdminAddItems extends JPanel {
 		JLabel basketIconLbl = new JLabel("");
 		basketIconLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		basketIconLbl.setBounds(530, 160, 225, 225);
-		basketIconLbl.setIcon(new ImageIcon(CustomerDashboard.class.getResource("images/basket.png")));
+		basketIconLbl.setIcon(new ImageIcon(DashBoardCustomer.class.getResource("images/basket.png")));
 
 		add(basketIconLbl);
 		
