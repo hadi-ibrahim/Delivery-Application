@@ -31,7 +31,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 
-public class AdminAddWarehouses extends JPanel {
+public class CustomerAddAddress extends JPanel {
 
 	
 	private JPanel mainPanel;
@@ -62,7 +62,7 @@ public class AdminAddWarehouses extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public AdminAddWarehouses(JPanel mainPanel, AdminManageWarehouses displayPanel) {
+	public CustomerAddAddress(JPanel mainPanel, CustomerManageAddress displayPanel) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
@@ -112,7 +112,7 @@ public class AdminAddWarehouses extends JPanel {
 				}
 				else if (txtName.getText().isBlank()) {
 					resultLbl.setForeground(tomato);
-					resultLbl.setText( "Invalid warehouse name");
+					resultLbl.setText( "Invalid address name");
 				}
 				else {
 					Warehouse warehouse = createWarehouseFromFields();
@@ -145,7 +145,7 @@ public class AdminAddWarehouses extends JPanel {
 		JLabel basketIconLbl = new JLabel("");
 		basketIconLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		basketIconLbl.setBounds(540, 180, 225, 225);
-		basketIconLbl.setIcon(new ImageIcon(AdminAddWarehouses.class.getResource("/presentationLayer/images/warehouse.png")));
+		basketIconLbl.setIcon(new ImageIcon(CustomerAddAddress.class.getResource("/presentationLayer/images/address.png")));
 
 		add(basketIconLbl);
 		
@@ -164,7 +164,7 @@ public class AdminAddWarehouses extends JPanel {
 		txtLatitude.setVisible(false);
 		add(txtLatitude);
 		
-		JLabel lblLocationSelect = new JLabel("Choose Warehouse Location:");
+		JLabel lblLocationSelect = new JLabel("Choose address Location:");
 		lblLocationSelect.setHorizontalAlignment(SwingConstants.LEFT);
 		lblLocationSelect.setFont(new Font("Javanese Text", Font.PLAIN, 14));
 		lblLocationSelect.setBounds(100, 350, 200, 40);
@@ -210,7 +210,7 @@ public class AdminAddWarehouses extends JPanel {
 			}
 			@Override
 			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("warehouses");
+				switchMainPanel("addresses");
 			}
 		});
 		add(backArrow);
@@ -228,11 +228,6 @@ public class AdminAddWarehouses extends JPanel {
 		cards.show(mainPanel, name);
 	}
 	
-//	private double strToDouble(String str) {
-//		DecimalFormat formatter = new DecimalFormat("#000.00000000");
-//		Double dble = new Double(str.valueOf(str));
-//		System.out.println(formatter.format(dble));
-//	}
 	private Warehouse createWarehouseFromFields() {
 		Warehouse warehouse = new Warehouse(txtName.getText(),Double.valueOf(txtLongitude.getText()),Double.valueOf(txtLatitude.getText()));
 		System.out.println(warehouse.getLongitude());

@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 
 import Helpers.SessionHelper;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -105,6 +106,17 @@ public class DashBoardCustomer extends JFrame {
 		mainPanel.setBounds(300, 50, 780, 670);
 		mainPanel.setBackground(Color.WHITE);
 		contentPane.add(mainPanel);
+		mainPanel.setLayout(new CardLayout(0, 0));
+
+//		CustomerOrderItems customerOrderItemsPane = new CustomerOrderItems(mainPanel);
+//		mainPanel.add(customerOrderItemsPane, "orderItems");
+		
+		CustomerManageAddress customerManageAddresses = new CustomerManageAddress(mainPanel);
+		mainPanel.add(customerManageAddresses, "addresses");
+		
+//		CustomerViewOrders customerViewOrders = new CustomerViewOrders(mainPanel);
+//		mainPanel.add(customerViewOrders, "viewOrders");
+
 		
 		JLabel hamburgerLbl = new JLabel(hamburgerIcon);
 		hamburgerLbl.addMouseListener(new MouseAdapter() {
@@ -177,7 +189,7 @@ public class DashBoardCustomer extends JFrame {
 						orderItemsPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
+								switchMainPanel("orderItems");
 							}
 						});		
 						orderItemsPanel.setBounds(0, 250, 300, 70);
@@ -201,7 +213,7 @@ public class DashBoardCustomer extends JFrame {
 						myAddressesPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
+								switchMainPanel("addresses");
 							}
 						});		
 						addPanelEffects(myAddressesPanel);
@@ -225,7 +237,7 @@ public class DashBoardCustomer extends JFrame {
 						viewOrdersPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
+								switchMainPanel("viewOrders");
 							}
 						});		
 						addPanelEffects(viewOrdersPanel);
@@ -249,7 +261,8 @@ public class DashBoardCustomer extends JFrame {
 						trackOrdersPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
+//								switchMainPanel("viewOrders");
+								
 							}
 						});		
 						addPanelEffects(trackOrdersPanel);
@@ -417,6 +430,10 @@ public class DashBoardCustomer extends JFrame {
 	
 	private void disposeFrame() {
 		this.dispose();
+	}
+	private void switchMainPanel(String name) {
+		CardLayout cards =(CardLayout) mainPanel.getLayout();
+		cards.show(mainPanel, name);
 	}
 }
 
