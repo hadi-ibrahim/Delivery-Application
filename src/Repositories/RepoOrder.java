@@ -84,6 +84,22 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		}
 		return orders;
 	}
+	
+	public ArrayList<IDTO> getAllByUser(int id){
+		ArrayList<IDTO> orders = new ArrayList<IDTO>();
+		try {
+			ps = con.prepareStatement("Select * From `order` where idCustomer=? ");
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				orders.add(extractOrderFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return orders;
+	}
+	
 	@Override
 	public ArrayList<IDTO> getAllActive() {
 		ArrayList<IDTO> orders = new ArrayList<IDTO>();

@@ -114,8 +114,8 @@ public class DashBoardCustomer extends JFrame {
 		CustomerManageAddress customerManageAddresses = new CustomerManageAddress(mainPanel);
 		mainPanel.add(customerManageAddresses, "addresses");
 		
-//		CustomerViewOrders customerViewOrders = new CustomerViewOrders(mainPanel);
-//		mainPanel.add(customerViewOrders, "viewOrders");
+		CustomerViewOrders customerViewOrders = new CustomerViewOrders(mainPanel);
+		mainPanel.add(customerViewOrders, "viewOrders");
 
 		
 		JLabel hamburgerLbl = new JLabel(hamburgerIcon);
@@ -261,8 +261,7 @@ public class DashBoardCustomer extends JFrame {
 						trackOrdersPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-//								switchMainPanel("viewOrders");
-								
+								switchMainPanel("viewOrders");
 							}
 						});		
 						addPanelEffects(trackOrdersPanel);
