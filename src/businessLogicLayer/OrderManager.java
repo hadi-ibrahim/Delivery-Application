@@ -36,7 +36,13 @@ public class OrderManager {
 			repoOrder.create(order);
 		}
 	}
-
+	
+	public void addItemToShoppingCart(OrderedWarehouseItem item, Order order) {
+		item.setIdOrder(order.getId());
+		stockManager.removeWarehouseItemStock(stockManager.get(item.getIdWarehouseItem()), item.getQuantity());
+		order.addOrderedItems(item);
+	}
+	
 	private boolean enoughItemsQuantityInWarehouse(Order order) {
 		for (OrderedWarehouseItem orderedWarehouseItem : order.getOrderedItems())
 			if (!enoughItemQuantityInWarehouse(orderedWarehouseItem.getIdWarehouseItem(),
@@ -96,6 +102,7 @@ public class OrderManager {
 	public ArrayList<IDTO> getAllCheckpointsByOrder(Order order) {
 		return repoCheckpoint.getOrderRoute(order.getId());
 	}
+	
 	
 	// TODO
 	/*

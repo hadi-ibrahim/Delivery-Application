@@ -19,8 +19,11 @@ import javax.swing.table.DefaultTableModel;
 
 import DTO.IDTO;
 import DTO.Item;
+import DTO.Order;
+import DTO.OrderedWarehouseItem;
 import DTO.Warehouse;
 import DTO.WarehouseItem;
+import Helpers.SessionHelper;
 import Repositories.RepoItem;
 import businessLogicLayer.InputManager;
 import businessLogicLayer.ItemManager;
@@ -48,6 +51,7 @@ public class CustomerWarehouseStock extends JPanel {
 	private JPanel mainPanel;
 	private JTable tblItems;
 	private DefaultTableModel model;
+	private Order order;
 	
 	private Warehouse warehouse;
 	private ItemManager itemManager = new ItemManager();
@@ -91,13 +95,13 @@ public class CustomerWarehouseStock extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public CustomerWarehouseStock(JPanel mainPanel, AdminManageWarehouses adminManageWarehousePane, Warehouse warehouse) {
+	public CustomerWarehouseStock(JPanel mainPanel,Warehouse warehouse) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
-		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.PLUS_CIRCLE	, 30, tertiaryPink);
-		Icon minusIcon = IconFontSwing.buildIcon(FontAwesome.MINUS_CIRCLE, 30, tertiaryPink);
-		Icon refreshIcon = IconFontSwing.buildIcon(FontAwesome.REFRESH, 30, tertiaryPink);
+		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.CART_PLUS	, 30, tertiaryPink);
 		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
+		
+		order.setIdCustomer(SessionHelper.isLoggedIn.getId());
 		
 		this.mainPanel = mainPanel;
 		this.warehouse = warehouse;
@@ -154,9 +158,40 @@ public class CustomerWarehouseStock extends JPanel {
 			}
 			@Override
 			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("addWarehouseItem");
-				notification.setText("");
-			}
+				 int column = 0;
+			        int row = tblItems.getSelectedRow();
+			        if (row >= 0) {
+			            String id = tblItems.getModel().getValueAt(row, column).toString();
+			            Item item = itemManager.get(Integer.parseInt(id));
+			            String quantity = tblItems.getModel().getValueAt(row, 6).toString();
+			            String availableQuantity = tblItems.getModel().getValueAt(row, 6).toString();
+
+			            if(InputManager.verifyPositiveInteger(quantity)) {
+			            	if(Integer.parseInt(quantity) > 0 ) {
+			            		if (Integer.parseInt(quantity) < Integer.parseInt(availableQuantity)) {
+			            			OrderedWarehouseItem orderedItem = new OrderedWarehouseItem();
+			            			orderedItem.setIdWarehouseItem(warehouse.getId());
+			            			orderedItem.setPricePerUnit(item.getPrice());
+			            			orderedItem.setQuantity(Integer.parseInt(quantity));
+			            			
+			            			
+			            		}
+			            		else notification.setText("Quantity not available");
+			            	}
+			            	else notification.setText("Please enter a quantity");
+			            }
+			            else {
+			            	notification.setText("Please enter a valid quantity");
+			            }
+			     
+			            RefreshItemTable();
+			            notification.setText("");
+			        }
+			        else {
+			        	notification.setText("Select an Item to add to the warehouse");
+			        	notification.setForeground(tomato);
+			        }
+			     }
 
 		});
 		add(addIcon);
@@ -177,8 +212,8 @@ public class CustomerWarehouseStock extends JPanel {
 	}
 
 	public void RefreshItemTable() {
-		boolean isEditable[] = { false, false, false, false, false, false };
-		model = new DefaultTableModel(new Object[] { "id", "category", "price", "description", "quantity", "isDeleted" }, 0) {
+		boolean isEditable[] = { false, false, false, false, false,false, true};
+		model = new DefaultTableModel(new Object[] { "id", "category", "price", "description", "quantityAvailable", "isDeleted", "quantity" }, 0) {
 
 			/**
 			 * 
@@ -193,23 +228,25 @@ public class CustomerWarehouseStock extends JPanel {
 		
 		ArrayList<IDTO> warehouseItems = stockManager.getAllItemsInWarehouse(warehouse);
 		if(warehouseItems.isEmpty()) {
-			model.addRow(new Object[] {"","","","","",""});
+			model.addRow(new Object[] {"","","","","","","" });
 		}
 		for (IDTO dto : warehouseItems) {
 			WarehouseItem warehouseItem = (WarehouseItem) dto;
 			Item item = itemManager.get(warehouseItem.getIdItem());
 			model.addRow(new Object[] { warehouseItem.getId(), item.getCategory(), item.getPrice(), item.getDescription(),warehouseItem.getQuantity(),
-					warehouseItem.getIsDeleted() });
+					warehouseItem.getIsDeleted(), "" });
 		}
 		
 		this.tblItems.setModel(model);
 		this.tblItems.getColumnModel().getColumn(0).setWidth(0);
 		this.tblItems.getColumnModel().getColumn(0).setMinWidth(0);
 		this.tblItems.getColumnModel().getColumn(0).setMaxWidth(0);
+		this.tblItems.getColumnModel().getColumn(4).setWidth(0);
+		this.tblItems.getColumnModel().getColumn(4).setMinWidth(0);
+		this.tblItems.getColumnModel().getColumn(4).setMaxWidth(0);	
 		this.tblItems.getColumnModel().getColumn(5).setWidth(0);
 		this.tblItems.getColumnModel().getColumn(5).setMinWidth(0);
 		this.tblItems.getColumnModel().getColumn(5).setMaxWidth(0);	
-
 	}
 	
 	private void switchMainPanel(String name) {

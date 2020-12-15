@@ -34,6 +34,11 @@ public class StockManager {
 		repoWarehouseItem.update(item);
 	}
 	
+	public void removeWarehouseItemStock(WarehouseItem item, int quantity) {
+		item.setQuantity(item.getQuantity()-quantity);
+		repoWarehouseItem.update(item);
+	}
+	
 	public void addItemToWarehouse( Warehouse warehouse, Item item, int quantity) {
 		repoWarehouseItem.create( new WarehouseItem(warehouse.getId(),item.getId(), quantity));
 	}

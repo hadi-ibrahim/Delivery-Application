@@ -129,8 +129,8 @@ public class CustomerOrderItems extends JPanel {
 				if (row >= 0) {
 					String id = tblWarehouses.getModel().getValueAt(row, column).toString();
 					Warehouse warehouse= warehouseManager.get(Integer.parseInt(id));
-//					JPanel userCheckWarehouseStock = new CustomerWarehouseStock(mainPanel, warehouse);
-//					mainPanel.add(userCheckWarehouseStock,"warehouseStock");
+					JPanel userCheckWarehouseStock = new CustomerWarehouseStock(mainPanel, warehouse);
+					mainPanel.add(userCheckWarehouseStock,"warehouseStock");
 					switchMainPanel("warehouseStock");
 					notification.setText("");
 				}

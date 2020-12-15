@@ -28,9 +28,18 @@ public class Order implements IDTO {
 	public ArrayList<OrderedWarehouseItem> getOrderedItems() {
 		return orderedItems;
 	}
+	
 
 	public void setOrderedItems(ArrayList<OrderedWarehouseItem> orderedItems) {
 		this.orderedItems = orderedItems;
+	}
+	
+	public void addOrderedItems(OrderedWarehouseItem item) {
+		this.orderedItems.add(item);
+	}
+	
+	public void removeOrderedItems(OrderedWarehouseItem item) {
+		this.orderedItems.remove(item);
 	}
 
 	@Override
