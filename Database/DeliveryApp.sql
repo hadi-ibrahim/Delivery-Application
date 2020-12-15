@@ -1,8 +1,10 @@
--- MySQL dump 10.13  Distrib 8.0.19, for Win64 (x86_64)
+CREATE DATABASE  IF NOT EXISTS `deliveryapp` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `deliveryapp`;
+-- MySQL dump 10.13  Distrib 8.0.21, for Win64 (x86_64)
 --
 -- Host: localhost    Database: deliveryapp
 -- ------------------------------------------------------
--- Server version	8.0.19
+-- Server version	8.0.21
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -24,13 +26,16 @@ DROP TABLE IF EXISTS `address`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `address` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `idUser` int NOT NULL,
   `Street` varchar(45) DEFAULT NULL,
   `City` varchar(45) DEFAULT NULL,
   `Building` varchar(45) DEFAULT NULL,
   `Floor` varchar(45) DEFAULT NULL,
   `longitude` decimal(11,8) NOT NULL,
   `latitude` decimal(11,8) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `fkUser_idx` (`idUser`),
+  CONSTRAINT `fkUserAddress` FOREIGN KEY (`idUser`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -40,7 +45,7 @@ CREATE TABLE `address` (
 
 LOCK TABLES `address` WRITE;
 /*!40000 ALTER TABLE `address` DISABLE KEYS */;
-INSERT INTO `address` VALUES (1,NULL,NULL,'UA',NULL,22.44000000,23.66600000),(2,'Elias al Herawi','Furn al chebbek','Residence de la ville','2nd floor',55.12312400,180.24242000),(3,NULL,NULL,NULL,NULL,22.44000000,23.66600000),(4,'Elias al Herawi','Furn al chebbek','Residence de la ville','2nd floor',55.12312400,180.24242000),(5,NULL,NULL,NULL,NULL,22.44000000,23.66600000),(6,'Elias al Herawi','Furn al chebbek','Residence de la ville','2nd floor',55.12312400,180.24242000),(7,NULL,NULL,NULL,NULL,22.44000000,23.66600000),(8,'Elias al Herawi','Furn al chebbek','Residence de la ville','2nd floor',55.12312400,180.24242000);
+INSERT INTO `address` VALUES (1,1,NULL,NULL,'UA',NULL,22.44000000,23.66600000),(2,1,'Elias al Herawi','Furn al chebbek','Residence de la ville','2nd floor',55.12312400,180.24242000),(3,1,NULL,NULL,NULL,NULL,22.44000000,23.66600000),(4,1,'Elias al Herawi','Furn al chebbek','Residence de la ville','2nd floor',55.12312400,180.24242000),(5,1,NULL,NULL,NULL,NULL,22.44000000,23.66600000),(6,1,'Elias al Herawi','Furn al chebbek','Residence de la ville','2nd floor',55.12312400,180.24242000),(7,1,NULL,NULL,NULL,NULL,22.44000000,23.66600000),(8,1,'Elias al Herawi','Furn al chebbek','Residence de la ville','2nd floor',55.12312400,180.24242000);
 /*!40000 ALTER TABLE `address` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -124,7 +129,7 @@ CREATE TABLE `order` (
   KEY `fk_order_driver_idx` (`idDriver`),
   CONSTRAINT `fk_order_customer` FOREIGN KEY (`idCustomer`) REFERENCES `user` (`id`),
   CONSTRAINT `fk_order_driver` FOREIGN KEY (`idDriver`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,7 +138,6 @@ CREATE TABLE `order` (
 
 LOCK TABLES `order` WRITE;
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
-INSERT INTO `order` VALUES (1,1,1,1.00000000,1.00000000,'2020-12-14 22:03:38','2020-12-14 22:03:38','COMPLETED',1.00,0);
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -155,7 +159,7 @@ CREATE TABLE `orderedwarehouseitem` (
   KEY `fk_orderedWarehouseItem_warehouseItem1_idx` (`idWarehouseItem`),
   CONSTRAINT `fk_order_has_warehouseItem_order1` FOREIGN KEY (`idOrder`) REFERENCES `order` (`id`),
   CONSTRAINT `fk_orderedWarehouseItem_warehouseItem1` FOREIGN KEY (`idWarehouseItem`) REFERENCES `warehouseitem` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -164,7 +168,6 @@ CREATE TABLE `orderedwarehouseitem` (
 
 LOCK TABLES `orderedwarehouseitem` WRITE;
 /*!40000 ALTER TABLE `orderedwarehouseitem` DISABLE KEYS */;
-INSERT INTO `orderedwarehouseitem` VALUES (1,1,1,1,1.00);
 /*!40000 ALTER TABLE `orderedwarehouseitem` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -179,13 +182,13 @@ CREATE TABLE `routecheckpoint` (
   `id` int NOT NULL AUTO_INCREMENT,
   `idOrder` int NOT NULL,
   `time` timestamp NOT NULL,
-  `longitude` decimal(11,8) NOT NULL,
+  `longitutde` decimal(11,8) NOT NULL,
   `latitude` decimal(11,8) NOT NULL,
   `isDeleted` tinyint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_routePointsTaken_order1_idx` (`idOrder`),
   CONSTRAINT `fk_routePointsTaken_order1` FOREIGN KEY (`idOrder`) REFERENCES `order` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -194,7 +197,6 @@ CREATE TABLE `routecheckpoint` (
 
 LOCK TABLES `routecheckpoint` WRITE;
 /*!40000 ALTER TABLE `routecheckpoint` DISABLE KEYS */;
-INSERT INTO `routecheckpoint` VALUES (1,1,'2020-12-14 22:12:09',33.10000000,33.10000000,0),(2,1,'2020-12-14 22:12:09',33.20000000,33.20000000,0);
 /*!40000 ALTER TABLE `routecheckpoint` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -231,34 +233,6 @@ LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES (1,'1','1','1','1','$2a$12$rmMNEOL5alPKOm6CNjTslOBJWZmro5k1KR2NZH88X.K.cWtOsZdXu','11',NULL,NULL,'CUSTOMER',NULL,0),(2,'Courier','Swindler','2','2','$2a$12$.V1cpHQ70B3Y5G28uE4N8.MkwaJRvReu4KtGYltG3Np0Uf07zL5yG','2',23.23234240,130.23310000,'DRIVER','AVAILABLE',0),(3,'3','3','3','3','$2a$12$nXs1PpymlGJNdmmx4L2fX.fg69A1RRY7YrvVOL2LvMUZDqP6P9d/i','3',NULL,NULL,'ADMIN',NULL,0),(4,'Fatima','Ibrahim','31','toutydroid@gmail.com','$2a$12$HVbFoqsxx8F8AKhQ7HEpf.4wCVp4SumxPR/9WzVZ5EvBWmyOQcCYi','76805019',NULL,NULL,'CUSTOMER',NULL,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `usersavedaddress`
---
-
-DROP TABLE IF EXISTS `usersavedaddress`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `usersavedaddress` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `idUser` int NOT NULL,
-  `idAddress` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_user_has_Address_Address1_idx` (`idAddress`),
-  KEY `fk_user_has_Address_user1_idx` (`idUser`),
-  CONSTRAINT `fk_user_has_Address_Address1` FOREIGN KEY (`idAddress`) REFERENCES `address` (`id`),
-  CONSTRAINT `fk_user_has_Address_user1` FOREIGN KEY (`idUser`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `usersavedaddress`
---
-
-LOCK TABLES `usersavedaddress` WRITE;
-/*!40000 ALTER TABLE `usersavedaddress` DISABLE KEYS */;
-/*!40000 ALTER TABLE `usersavedaddress` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -318,10 +292,6 @@ LOCK TABLES `warehouseitem` WRITE;
 INSERT INTO `warehouseitem` VALUES (1,1,1,100,0);
 /*!40000 ALTER TABLE `warehouseitem` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping routines for database 'deliveryapp'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -332,4 +302,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-15  0:30:15
+-- Dump completed on 2020-12-15 16:12:52
