@@ -2,6 +2,7 @@ package businessLogicLayer;
 
 import java.util.ArrayList;
 
+import DTO.IDTO;
 import DTO.Address;
 import DTO.User;
 import Repositories.RepoAddress;
@@ -15,9 +16,18 @@ public class AddressManager {
 			user.setUserAddresses(repoAddress.getAllByUser(user.getId()));
 			return user;
 		}
+
 	
 	public ArrayList<Address> getAllByUser(User user) {
 		return repoAddress.getAllByUser(user.getId());
+	}
+	
+	public void delete(int id) {
+		repoAddress.delete(id);
+	}
+	
+	public void create(Address address) {
+		repoAddress.create(address);
 	}
 	/*
 	 * TODO

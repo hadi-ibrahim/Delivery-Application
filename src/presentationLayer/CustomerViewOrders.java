@@ -24,6 +24,7 @@ import DTO.RouteCheckpoint;
 import DTO.User;
 import DTO.Warehouse;
 import DTO.WarehouseItem;
+import Helpers.SessionHelper;
 import Repositories.RepoItem;
 import businessLogicLayer.InputManager;
 import businessLogicLayer.ItemManager;
@@ -47,7 +48,7 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class AdminViewUserOrders extends JPanel {
+public class CustomerViewOrders extends JPanel {
 
 	/**
 	 * 
@@ -57,7 +58,6 @@ public class AdminViewUserOrders extends JPanel {
 	private JTable tblOrders;
 	private DefaultTableModel model;
 	
-	private User user;
 	private UserManager userManager = new UserManager();
 	private OrderManager orderManager = new OrderManager();
 	private LocationManager locationManager = new LocationManager();
@@ -71,7 +71,7 @@ public class AdminViewUserOrders extends JPanel {
 	private Color tomato = new Color(255, 99, 71);
 	private Color emerald  = new Color(80, 220, 100);
 	
-	private AdminViewUserOrders self = this;
+	private CustomerViewOrders self = this;
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
 	private JLabel notification;
@@ -103,7 +103,7 @@ public class AdminViewUserOrders extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public AdminViewUserOrders(JPanel mainPanel, User user ) {
+	public CustomerViewOrders(JPanel mainPanel) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.PLUS_CIRCLE	, 30, tertiaryPink);
@@ -112,7 +112,6 @@ public class AdminViewUserOrders extends JPanel {
 		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
 		
 		this.mainPanel = mainPanel;
-		this.user = user;
 		
 //		AdminAddWarehouseItem addWarehouseItem = new AdminAddWarehouseItem(mainPanel, this, user);
 //		mainPanel.add(addWarehouseItem, "addWarehouseItem");
@@ -143,27 +142,6 @@ public class AdminViewUserOrders extends JPanel {
 		scrollPane.setViewportView(tblOrders);
 
 		RefreshOrdersTable();
-		
-		JLabel backArrow = new JLabel(backIcon);
-		backArrow.setBounds(680, 20, 40, 40);
-		backArrow.addMouseListener(new MouseAdapter() {
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				setCursor(pointer);
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				setCursor(arrow);
-
-			}
-			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("orders");
-				notification.setText("");
-			}
-		});
-		add(backArrow);
 		
 		notification = new JLabel("");
 		notification.setFont(new Font("Javanese Text", Font.PLAIN, 14));
@@ -244,9 +222,8 @@ public class AdminViewUserOrders extends JPanel {
 					String id = tblOrders.getModel().getValueAt(row, column).toString();
 					Order order= orderManager.get(Integer.parseInt(id));
 					ArrayList<IDTO> cps = orderManager.getAllCheckpointsByOrder(order);
-					new Thread(() -> {
-						locationManager.displayRoute(cps);
-					}).start();
+					locationManager.displayRoute(cps);
+
 					notification.setText("");
 				}
 				else {
@@ -275,7 +252,7 @@ public class AdminViewUserOrders extends JPanel {
 			}
 		};
 		
-		ArrayList<IDTO> orders = orderManager.getAllFinishedByUser(user.getId());
+		ArrayList<IDTO> orders = orderManager.getAllByUser(SessionHelper.isLoggedIn.getId());
 		if(orders.isEmpty()) {
 			model.addRow(new Object[] {"","","","","","","","","","", ""});
 		}

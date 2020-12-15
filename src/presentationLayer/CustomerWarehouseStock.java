@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-public class AdminManageStock extends JPanel {
+public class CustomerWarehouseStock extends JPanel {
 
 	/**
 	 * 
@@ -63,8 +63,6 @@ public class AdminManageStock extends JPanel {
 	
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
-	private JLabel restoreIcon;
-	private JLabel deleteIcon;
 	private JLabel addIcon;
 	private JLabel notification;
 	private JLabel warehouseName;
@@ -93,7 +91,7 @@ public class AdminManageStock extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public AdminManageStock(JPanel mainPanel, AdminManageWarehouses adminManageWarehousePane, Warehouse warehouse) {
+	public CustomerWarehouseStock(JPanel mainPanel, AdminManageWarehouses adminManageWarehousePane, Warehouse warehouse) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.PLUS_CIRCLE	, 30, tertiaryPink);
@@ -103,12 +101,6 @@ public class AdminManageStock extends JPanel {
 		
 		this.mainPanel = mainPanel;
 		this.warehouse = warehouse;
-		
-		AdminAddWarehouseItem addWarehouseItem = new AdminAddWarehouseItem(mainPanel, this, warehouse);
-		mainPanel.add(addWarehouseItem, "addWarehouseItem");
-		
-		AdminRestoreWarehouseItem adminRestoreWarehouseItem = new AdminRestoreWarehouseItem(mainPanel,this);
-		mainPanel.add(adminRestoreWarehouseItem, "restoreWarehouseItems");
 		
 		this.setBounds(100, 100, 780, 670);
 		this.setBackground(Color.WHITE);
@@ -141,66 +133,11 @@ public class AdminManageStock extends JPanel {
 
 			}
 			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("warehouses");
+				switchMainPanel("orderItems");
 				notification.setText("");
 			}
 		});
 		add(backArrow);
-		
-		restoreIcon = new JLabel(refreshIcon);
-		restoreIcon.setBounds(170, 20, 40, 40);
-		restoreIcon.addMouseListener(new MouseAdapter() {
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				setCursor(pointer);
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				setCursor(arrow);
-
-			}
-			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("restoreWarehouseItems");
-				notification.setText("");
-			}
-		});
-		add(restoreIcon);
-		
-		deleteIcon = new JLabel(minusIcon);
-		deleteIcon.setBounds(120, 20, 40, 40);
-		deleteIcon.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				setCursor(pointer);
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				setCursor(arrow);
-
-			}
-			@Override
-			public void mousePressed(MouseEvent e ) {
-				
-				int column = 0;
-				int row = tblItems.getSelectedRow();
-				if (row >= 0) {
-					String id = tblItems.getModel().getValueAt(row, column).toString();
-					System.out.println(Integer.parseInt(id));
-					stockManager.delete(Integer.parseInt(id));
-					RefreshItemTable();
-					adminRestoreWarehouseItem.RefreshItemTable();
-				}
-				else {
-					notification.setText("Select a warehouse item to delete");
-					notification.setForeground(tomato);
-				}
-			}
-
-		});
-		add(deleteIcon);
 		
 		addIcon = new JLabel(plusIcon);
 		addIcon.setBounds(70, 20, 40, 40);
@@ -240,7 +177,7 @@ public class AdminManageStock extends JPanel {
 	}
 
 	public void RefreshItemTable() {
-		boolean isEditable[] = { false, false, false, false, true, false };
+		boolean isEditable[] = { false, false, false, false, false, false };
 		model = new DefaultTableModel(new Object[] { "id", "category", "price", "description", "quantity", "isDeleted" }, 0) {
 
 			/**
@@ -264,29 +201,7 @@ public class AdminManageStock extends JPanel {
 			model.addRow(new Object[] { warehouseItem.getId(), item.getCategory(), item.getPrice(), item.getDescription(),warehouseItem.getQuantity(),
 					warehouseItem.getIsDeleted() });
 		}
-		model.addTableModelListener(new TableModelListener() {
-			@Override
-			public void tableChanged(TableModelEvent e) {
-				
-				int column = 0;
-				int row = tblItems.getSelectedRow();
-				if (row >= 0) {
-					
-					if (!InputManager.verifyPositiveInteger(tblItems.getModel().getValueAt(row, 4).toString())) {
-						RefreshItemTable();
-						notification.setForeground(tomato);
-						notification.setText("Invalid Quantity");
-					} else {
-						notification.setText("");
-						String id = tblItems.getModel().getValueAt(row, column).toString();
-						WarehouseItem warehouseItem = stockManager.get(Integer.parseInt(id));
-						warehouseItem.setQuantity(Integer.parseInt(tblItems.getModel().getValueAt(row, 4).toString()));
-						stockManager.updateWarehouseItem(warehouseItem);
-						RefreshItemTable();
-					}
-				}
-			}
-		});
+		
 		this.tblItems.setModel(model);
 		this.tblItems.getColumnModel().getColumn(0).setWidth(0);
 		this.tblItems.getColumnModel().getColumn(0).setMinWidth(0);

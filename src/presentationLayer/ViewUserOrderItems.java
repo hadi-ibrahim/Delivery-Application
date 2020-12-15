@@ -48,7 +48,7 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class AdminViewUserOrderItems extends JPanel {
+public class ViewUserOrderItems extends JPanel {
 
 	/**
 	 * 
@@ -72,7 +72,7 @@ public class AdminViewUserOrderItems extends JPanel {
 	private Color tomato = new Color(255, 99, 71);
 	private Color emerald  = new Color(80, 220, 100);
 	
-	private AdminViewUserOrderItems self = this;
+	private ViewUserOrderItems self = this;
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
 	private JLabel notification;
@@ -85,7 +85,7 @@ public class AdminViewUserOrderItems extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public AdminViewUserOrderItems(JPanel mainPanel, Order order ) {
+	public ViewUserOrderItems(JPanel mainPanel, Order order ) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.PLUS_CIRCLE	, 30, tertiaryPink);

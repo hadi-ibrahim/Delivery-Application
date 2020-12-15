@@ -90,6 +90,9 @@ public class OrderManager {
 	public ArrayList<IDTO> getAllFinishedByUser(int id){
 		return repoOrder.getAllFinishedByUser(id);
 	}
+	public ArrayList<IDTO> getAllByUser(int id){
+		return repoOrder.getAllByUser(id);
+	}
 	public ArrayList<IDTO> getAllCheckpointsByOrder(Order order) {
 		return repoCheckpoint.getOrderRoute(order.getId());
 	}

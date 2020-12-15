@@ -16,12 +16,10 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-import DTO.Address;
+
 import DTO.IDTO;
 import DTO.Item;
 import DTO.Warehouse;
-import Helpers.SessionHelper;
-import businessLogicLayer.AddressManager;
 import businessLogicLayer.InputManager;
 import businessLogicLayer.WarehouseManager;
 import jiconfont.icons.font_awesome.FontAwesome;
@@ -37,17 +35,17 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.Icon;
 
-public class CustomerManageAddress extends JPanel {
+public class CustomerOrderItems extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel mainPanel;
-	private CustomerManageAddress self= this;
-	private JTable tblAddresses;
+	private CustomerOrderItems self= this;
+	private JTable tblWarehouses;
 	private DefaultTableModel model;
-	private AddressManager addressManager = new AddressManager();
+	private WarehouseManager warehouseManager = new WarehouseManager();
 	private Color watermelon = new Color(254,127,156);
 	private Color lemonade = new Color(253,185,200);
 	private Color pastelPink = new Color(255, 209, 220);
@@ -59,8 +57,7 @@ public class CustomerManageAddress extends JPanel {
 	
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
-	private JLabel addIcon;
-	private JLabel deleteIcon;
+	public JButton viewItems;
 	private JLabel notification;
 
 	/**
@@ -75,7 +72,7 @@ public class CustomerManageAddress extends JPanel {
 			        f.setSize( 780, 670);
 			        f.setTitle("Sometimes Red, Sometimes Blue");
 			        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			        f.getContentPane().add(new CustomerManageAddress(new JPanel()));
+			        f.getContentPane().add(new CustomerOrderItems(new JPanel()));
 			        f.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -87,18 +84,9 @@ public class CustomerManageAddress extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public CustomerManageAddress(JPanel mainPanel) {
+	public CustomerOrderItems(JPanel mainPanel) {
 		super();
 		this.mainPanel = mainPanel;
-		
-		IconFontSwing.register(FontAwesome.getIconFont());
-		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.PLUS_CIRCLE	, 30, tertiaryPink);
-		Icon minusIcon = IconFontSwing.buildIcon(FontAwesome.MINUS_CIRCLE, 30, tertiaryPink);
-
-		JPanel addAddressPanel = new CustomerAddAddress(mainPanel, this);
-		mainPanel.add(addAddressPanel,"addAddress");
-		
-
 		
 		this.setBounds(100, 100, 780, 670);
 		this.setBackground(Color.WHITE);
@@ -111,65 +99,48 @@ public class CustomerManageAddress extends JPanel {
 		scrollPane.setBackground(Color.WHITE);
 		this.add(scrollPane);
 
-		tblAddresses= new PinkTable();
-		scrollPane.setViewportView(tblAddresses);
+		tblWarehouses= new PinkTable();
+		scrollPane.setViewportView(tblWarehouses);
 
-		RefreshAddressTable();
+		RefreshItemTable();
 		
-		addIcon = new JLabel(plusIcon);
-		addIcon.setBounds(70, 11, 40, 40);
-		addIcon.addMouseListener(new MouseAdapter() {
+		viewItems = new JButton("View Items");
+		viewItems.setForeground(Color.WHITE);
+		viewItems.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		viewItems.setBackground(new Color(241, 57, 83));
+		viewItems.setBounds(310, 560, 150, 40);
+		viewItems.addMouseListener(new MouseAdapter() {
+			
 			@Override
 			public void mouseEntered(MouseEvent e) {
+				viewItems.setBackground(tertiaryPink);
 				setCursor(pointer);
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
+				viewItems.setBackground(secondaryPink);
 				setCursor(arrow);
 
 			}
-			@Override
 			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("addAddress");
-				notification.setText("");
-			}
-
-		});
-		add(addIcon);
-		
-		deleteIcon = new JLabel(minusIcon);
-		deleteIcon.setBounds(120, 11, 40, 40);
-		deleteIcon.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				setCursor(pointer);
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				setCursor(arrow);
-
-			}
-			@Override
-			public void mousePressed(MouseEvent e ) {
-				
 				int column = 0;
-				int row = tblAddresses.getSelectedRow();
+				int row = tblWarehouses.getSelectedRow();
 				if (row >= 0) {
-					String id = tblAddresses.getModel().getValueAt(row, column).toString();
-					addressManager.delete(Integer.parseInt(id));
-					
-					RefreshAddressTable();
+					String id = tblWarehouses.getModel().getValueAt(row, column).toString();
+					Warehouse warehouse= warehouseManager.get(Integer.parseInt(id));
+//					JPanel userCheckWarehouseStock = new CustomerWarehouseStock(mainPanel, warehouse);
+//					mainPanel.add(userCheckWarehouseStock,"warehouseStock");
+					switchMainPanel("warehouseStock");
+					notification.setText("");
 				}
 				else {
-					notification.setText("Select a warehouse to delete");
+					notification.setText("Select a warehouse view stock");
 					notification.setForeground(tomato);
 				}
 			}
-
 		});
-		add(deleteIcon);
+		add(viewItems);
 		
 		notification = new JLabel("");
 		notification.setFont(new Font("Javanese Text", Font.PLAIN, 14));
@@ -179,9 +150,9 @@ public class CustomerManageAddress extends JPanel {
 
 	}
 
-	public void RefreshAddressTable() {
-		boolean isEditable[] = { false, true, true, true, true, false, false};
-		model = new DefaultTableModel(new Object[] { "id", "street","city", "building", "floor", "latitude", "longitude" }, 0) {
+	public void RefreshItemTable() {
+		boolean isEditable[] = { false, false,false,false, false };
+		model = new DefaultTableModel(new Object[] { "id", "Warehouses", "latitude", "longitude", "isDeleted" }, 0) {
 
 
 			/**
@@ -195,27 +166,28 @@ public class CustomerManageAddress extends JPanel {
 			}
 		};
 
-		ArrayList<Address> addresses=  addressManager.getAllByUser(SessionHelper.isLoggedIn);
-		if(addresses.isEmpty()) {
-			model.addRow(new Object[] {"", "", "", "", "", "", "" });
+		ArrayList<IDTO > activeWarehouses=  warehouseManager.getAllActiveWarehouses();
+		if(activeWarehouses.isEmpty()) {
+			model.addRow(new Object[] {"", "", "", "", ""});
 		}
-		for (IDTO dto : addresses) {
-			Address address = (Address) dto;
-			model.addRow(new Object[] { address.getId(), address.getStreet(),address.getCity(), address.getBuilding(), address.getFloor(),
-					address.getLocation().getLatitude(),address.getLocation().getLongitude()});
+		for (IDTO dto : activeWarehouses) {
+			Warehouse warehouse = (Warehouse) dto;
+			model.addRow(new Object[] { warehouse.getId(), warehouse.getName(),warehouse.getLatitude(),warehouse.getLongitude(), warehouse.getIsDeleted()});
 		}
 		
-		this.tblAddresses.setModel(model);
-		this.tblAddresses.getColumnModel().getColumn(0).setWidth(0);
-		this.tblAddresses.getColumnModel().getColumn(0).setMinWidth(0);
-		this.tblAddresses.getColumnModel().getColumn(0).setMaxWidth(0);
-		this.tblAddresses.getColumnModel().getColumn(6).setWidth(0);
-		this.tblAddresses.getColumnModel().getColumn(6).setMinWidth(0);
-		this.tblAddresses.getColumnModel().getColumn(6).setMaxWidth(0);
-		this.tblAddresses.getColumnModel().getColumn(5).setWidth(0);
-		this.tblAddresses.getColumnModel().getColumn(5).setMinWidth(0);
-		this.tblAddresses.getColumnModel().getColumn(5).setMaxWidth(0);
-
+		this.tblWarehouses.setModel(model);
+		this.tblWarehouses.getColumnModel().getColumn(0).setWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(0).setMinWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(0).setMaxWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(2).setWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(2).setMinWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(2).setMaxWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(3).setWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(3).setMinWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(3).setMaxWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(4).setWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(4).setMinWidth(0);
+		this.tblWarehouses.getColumnModel().getColumn(4).setMaxWidth(0);
 		
 
 	}
