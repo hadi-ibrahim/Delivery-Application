@@ -54,8 +54,8 @@ public class StockManager {
 	public ArrayList<IDTO> getAllDisabledWarehouses(){
 		return repoWarehouseItem.getAllDisabled();
 	}
-	public ArrayList<IDTO> getAllItemsInWarehouse (Warehouse warehouse) {
-		return repoWarehouseItem.getAllItemsInWarehouse(warehouse);
+	public ArrayList<IDTO> getAllActiveItemsInWarehouse (Warehouse warehouse) {
+		return repoWarehouseItem.getAllActiveItemsInWarehouse(warehouse);
 	}
 	
 	public void delete(int id) {
@@ -73,6 +73,10 @@ public class StockManager {
 	public ArrayList<IDTO> getAllItemsNotInWarehouse(Warehouse warehouse){
 		return repoItem.getAllItemsNotInWarehouse(warehouse);
 	}
+	
+	public void updateWarehouseItem(WarehouseItem warehouseItem) {
+		repoWarehouseItem.update(warehouseItem);
+	}
 	/*
 	 * TRIGGER BEFORE INSERT ON WAREHOUSEITEM
 	 * 	IF new.idWarehouse IN select idWarehouse from warehouseItem where idItem= NEW.idItem
@@ -83,6 +87,8 @@ public class StockManager {
 	 * when e_ItemWarehouseExists then
 	 * dbms_output.put_line("You tried adding an existing item to the same warehouse, therefore the quantity has been added");
 	 */
+
+
 	
 	/*TRIGGER AFTER UPDATE ON ITEM
 	 * IF NEW.isDeleted = 1 AND OLD.isDeleted = 0 THEN

@@ -79,4 +79,11 @@ public class Address implements IDTO {
 	public void setIdUser(int idUser) {
 		this.idUser = idUser;
 	}
+
+	@Override
+	public String toString() {
+		return this.city +", " + this.street + ", " + this.building + ", " + this.floor;
+	}
+	
+	
 }

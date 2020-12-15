@@ -216,8 +216,6 @@ public class CustomerManageAddress extends JPanel {
 		this.tblAddresses.getColumnModel().getColumn(5).setMinWidth(0);
 		this.tblAddresses.getColumnModel().getColumn(5).setMaxWidth(0);
 
-		
-
 	}
 	
 	private void switchMainPanel(String name) {

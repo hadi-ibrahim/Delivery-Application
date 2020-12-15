@@ -29,19 +29,29 @@ public class OrderManager {
 	
 	public void placeOrder(Order order) {
 
-		if (enoughItemsQuantityInWarehouse(order)) {
-			createOrderOrderedWarehouseItems(order);
-
-			order.setOrderStatus(OrderStatus.PENDING);
-			repoOrder.create(order);
+		order.setOrderStatus(OrderStatus.PENDING);
+		order.setDeleted(false);
+		
+		repoOrder.create(order);
+		int lastId= repoOrder.getLastId();
+		for(OrderedWarehouseItem item : order.getOrderedItems()) {
+			item.setIdOrder(lastId);
+			
+			repoOrderedWarehouseItem.create(item);
 		}
+		
 	}
 	
-	public void addItemToShoppingCart(OrderedWarehouseItem item, Order order) {
-		item.setIdOrder(order.getId());
-		stockManager.removeWarehouseItemStock(stockManager.get(item.getIdWarehouseItem()), item.getQuantity());
-		order.addOrderedItems(item);
+	public void addItemToShoppingCart(OrderedWarehouseItem orderedItem, Order order) {
+		stockManager.removeWarehouseItemStock(stockManager.get(orderedItem.getIdWarehouseItem()), orderedItem.getQuantity());
+		order.addOrderedItems(orderedItem);
 	}
+	
+	public void restoreItemsFromShoppingCart(Order order) {
+		for(OrderedWarehouseItem orderedItem : order.getOrderedItems())
+			stockManager.addWarehouseItemStock(stockManager.get(orderedItem.getIdWarehouseItem()), orderedItem.getQuantity());
+	};
+
 	
 	private boolean enoughItemsQuantityInWarehouse(Order order) {
 		for (OrderedWarehouseItem orderedWarehouseItem : order.getOrderedItems())
