@@ -35,14 +35,14 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.Icon;
 
-public class AdminManageWarehousesPane extends JPanel {
+public class AdminManageWarehouses extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel mainPanel;
-	private AdminManageWarehousesPane self= this;
+	private AdminManageWarehouses self= this;
 	private JTable tblWarehouses;
 	private DefaultTableModel model;
 	private WarehouseManager warehouseManager = new WarehouseManager();
@@ -75,7 +75,7 @@ public class AdminManageWarehousesPane extends JPanel {
 			        f.setSize( 780, 670);
 			        f.setTitle("Sometimes Red, Sometimes Blue");
 			        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			        f.getContentPane().add(new AdminManageWarehousesPane(new JPanel()));
+			        f.getContentPane().add(new AdminManageWarehouses(new JPanel()));
 			        f.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -87,7 +87,7 @@ public class AdminManageWarehousesPane extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public AdminManageWarehousesPane(JPanel mainPanel) {
+	public AdminManageWarehouses(JPanel mainPanel) {
 		super();
 		this.mainPanel = mainPanel;
 		
@@ -96,10 +96,10 @@ public class AdminManageWarehousesPane extends JPanel {
 		Icon minusIcon = IconFontSwing.buildIcon(FontAwesome.MINUS_CIRCLE, 30, tertiaryPink);
 		Icon refreshIcon = IconFontSwing.buildIcon(FontAwesome.REFRESH, 30, tertiaryPink);
 
-		JPanel addItemsPanel = new AdminAddWarehousesPane (mainPanel, this);
+		JPanel addItemsPanel = new AdminAddWarehouses (mainPanel, this);
 		mainPanel.add(addItemsPanel,"addWarehouses");
 		
-		AdminRestoreWarehousesPane restoreWarehousesPanel = new AdminRestoreWarehousesPane(mainPanel, this);
+		AdminRestoreWarehouses restoreWarehousesPanel = new AdminRestoreWarehouses(mainPanel, this);
 		mainPanel.add(restoreWarehousesPanel, "restoreWarehouses");
 		
 		
@@ -147,7 +147,7 @@ public class AdminManageWarehousesPane extends JPanel {
 				if (row >= 0) {
 					String id = tblWarehouses.getModel().getValueAt(row, column).toString();
 					Warehouse warehouse= warehouseManager.get(Integer.parseInt(id));
-					JPanel manageStockPanel = new AdminManageStockPane(mainPanel, self, warehouse);
+					JPanel manageStockPanel = new AdminManageStock(mainPanel, self, warehouse);
 					mainPanel.add(manageStockPanel,"manageStock");
 					switchMainPanel("manageStock");
 					notification.setText("");

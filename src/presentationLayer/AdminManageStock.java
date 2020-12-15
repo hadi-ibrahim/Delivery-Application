@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-public class AdminManageStockPane extends JPanel {
+public class AdminManageStock extends JPanel {
 
 	/**
 	 * 
@@ -81,7 +81,7 @@ public class AdminManageStockPane extends JPanel {
 			        f.setSize( 780, 670);
 			        f.setTitle("Sometimes Red, Sometimes Blue");
 			        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			        f.getContentPane().add(new AdminManageItemsPane(new JPanel()));
+			        f.getContentPane().add(new AdminManageItems(new JPanel()));
 			        f.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -93,7 +93,7 @@ public class AdminManageStockPane extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public AdminManageStockPane(JPanel mainPanel, AdminManageWarehousesPane adminManageWarehousePane, Warehouse warehouse) {
+	public AdminManageStock(JPanel mainPanel, AdminManageWarehouses adminManageWarehousePane, Warehouse warehouse) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.PLUS_CIRCLE	, 30, tertiaryPink);

@@ -79,7 +79,7 @@ public class AdminAddWarehouseItem extends JPanel {
 			        f.setSize( 780, 670);
 			        f.setTitle("Sometimes Red, Sometimes Blue");
 			        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			        f.getContentPane().add(new AdminManageItemsPane(new JPanel()));
+			        f.getContentPane().add(new AdminManageItems(new JPanel()));
 			        f.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -91,7 +91,7 @@ public class AdminAddWarehouseItem extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public AdminAddWarehouseItem (JPanel mainPanel, AdminManageStockPane stockPane, Warehouse warehouse) {
+	public AdminAddWarehouseItem (JPanel mainPanel, AdminManageStock stockPane, Warehouse warehouse) {
 		super();
 		this.mainPanel = mainPanel;
 		this.warehouse = warehouse;

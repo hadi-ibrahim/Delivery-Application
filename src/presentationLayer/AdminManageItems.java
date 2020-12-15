@@ -34,7 +34,7 @@ import javax.swing.JLabel;
 import javax.swing.Icon;
 import javax.swing.SwingConstants;
 
-public class AdminManageItemsPane extends JPanel {
+public class AdminManageItems extends JPanel {
 
 	/**
 	 * 
@@ -72,7 +72,7 @@ public class AdminManageItemsPane extends JPanel {
 			        f.setSize( 780, 670);
 			        f.setTitle("Sometimes Red, Sometimes Blue");
 			        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			        f.getContentPane().add(new AdminManageItemsPane(new JPanel()));
+			        f.getContentPane().add(new AdminManageItems(new JPanel()));
 			        f.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -84,7 +84,7 @@ public class AdminManageItemsPane extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public AdminManageItemsPane(JPanel mainPanel) {
+	public AdminManageItems(JPanel mainPanel) {
 		super();
 		this.mainPanel = mainPanel;
 		IconFontSwing.register(FontAwesome.getIconFont());
@@ -93,10 +93,10 @@ public class AdminManageItemsPane extends JPanel {
 		Icon refreshIcon = IconFontSwing.buildIcon(FontAwesome.REFRESH, 30, tertiaryPink);
 
 		
-		JPanel addItemsPanel = new AdminAddItemsPane (mainPanel, this);
+		JPanel addItemsPanel = new AdminAddItems (mainPanel, this);
 		mainPanel.add(addItemsPanel,"addItems");
 		
-		AdminRestoreItemsPane restoreItemsPanel = new AdminRestoreItemsPane(mainPanel, this);
+		AdminRestoreItems restoreItemsPanel = new AdminRestoreItems(mainPanel, this);
 		mainPanel.add(restoreItemsPanel, "restoreItems");
 		
 		this.setBounds(100, 100, 780, 670);

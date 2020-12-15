@@ -71,7 +71,7 @@ public class AdminRestoreWarehouseItem extends JPanel {
 			        f.setUndecorated(true);
 			        f.setSize( 780, 670);
 			        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			        f.getContentPane().add(new AdminManageItemsPane(new JPanel()));
+			        f.getContentPane().add(new AdminManageItems(new JPanel()));
 			        f.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -83,7 +83,7 @@ public class AdminRestoreWarehouseItem extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public AdminRestoreWarehouseItem(JPanel mainPanel, AdminManageStockPane stockPane) {
+	public AdminRestoreWarehouseItem(JPanel mainPanel, AdminManageStock stockPane) {
 		super();
 		this.mainPanel = mainPanel;
 		IconFontSwing.register(FontAwesome.getIconFont());

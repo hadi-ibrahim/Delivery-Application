@@ -25,7 +25,7 @@ import java.awt.Cursor;
 import java.awt.Font;
 import javax.swing.Icon;
 
-public class AdminAddItemsPane extends JPanel {
+public class AdminAddItems extends JPanel {
 
 	
 	private JPanel mainPanel;
@@ -54,7 +54,7 @@ public class AdminAddItemsPane extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public AdminAddItemsPane(JPanel mainPanel, AdminManageItemsPane displayPanel) {
+	public AdminAddItems(JPanel mainPanel, AdminManageItems displayPanel) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);

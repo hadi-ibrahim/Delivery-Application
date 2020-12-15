@@ -109,10 +109,10 @@ public class AdminDashboard extends JFrame {
 		contentPane.add(mainPanel);
 		mainPanel.setLayout(new CardLayout(0, 0));
 		
-		AdminManageItemsPane adminManageItemsPane = new AdminManageItemsPane(mainPanel);
+		AdminManageItems adminManageItemsPane = new AdminManageItems(mainPanel);
 		mainPanel.add(adminManageItemsPane, "items");
 		
-		AdminManageWarehousesPane adminManageWarehousesPane = new AdminManageWarehousesPane(mainPanel);
+		AdminManageWarehouses adminManageWarehousesPane = new AdminManageWarehouses(mainPanel);
 		mainPanel.add(adminManageWarehousesPane, "warehouses");
 		
 		AdminManageUsers adminManageUsers = new AdminManageUsers(mainPanel);

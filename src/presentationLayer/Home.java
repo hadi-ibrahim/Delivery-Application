@@ -9,14 +9,13 @@ import javax.swing.border.EmptyBorder;
 import DTO.Role;
 import DTO.User;
 import Helpers.SessionHelper;
+import businessLogicLayer.InputManager;
 import businessLogicLayer.Registration;
 
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Button;
-import java.awt.SystemColor;
 import javax.swing.JTextField;
-import javax.swing.JSeparator;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.ImageIcon;
@@ -24,13 +23,14 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class Home extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JLabel lblSignUp = new JLabel("Sign Up");
 	private JLabel lblSignIn = new JLabel("Sign In");
 	private JPanel contentPane;
@@ -52,6 +52,12 @@ public class Home extends JFrame {
 	private Color secondaryPink = new Color(241, 57, 83);
 	private Color tertiaryPink = new Color(255, 0 ,51);
 	private Color whiteShade = new Color(240, 248, 255);
+	private Color tomato = new Color(255, 99, 71);
+	private Color emerald  = new Color(80, 220, 100);
+	
+	private JLabel signUpNotification;
+	private JLabel signInNotification;
+	
 
 	/**
 	 * Launch the application.
@@ -223,7 +229,7 @@ public class Home extends JFrame {
 		lblEmailSignIn.setBounds(51, 131, 114, 27);
 		signInPanel.add(lblEmailSignIn);
 		
-		emailFieldSignIn = new JTextField();
+		emailFieldSignIn = new JTextField("");
 		emailFieldSignIn.setColumns(10);
 		emailFieldSignIn.setBounds(51, 169, 283, 36);
 		signInPanel.add(emailFieldSignIn);
@@ -233,7 +239,7 @@ public class Home extends JFrame {
 		lblPasswordSignIn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		signInPanel.add(lblPasswordSignIn);
 		
-		passwordFieldSignIn = new JPasswordField();
+		passwordFieldSignIn = new JPasswordField("");
 		passwordFieldSignIn.setBounds(51, 289, 283, 36);
 		signInPanel.add(passwordFieldSignIn);
 		
@@ -302,6 +308,12 @@ public class Home extends JFrame {
 		signInBtn.setBounds(51, 400, 283, 36);
 		signInPanel.add(signInBtn);
 		
+		signInNotification = new JLabel("");
+		signInNotification.setHorizontalAlignment(SwingConstants.CENTER);
+		signInNotification.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		signInNotification.setBounds(10, 469, 363, 61);
+		signInPanel.add(signInNotification);
+		
 		signUpPanel.setBackground(Color.WHITE);
 		signUpPanel.setBounds(365, 0, 383, 600);
 		contentPane.add(signUpPanel);
@@ -333,7 +345,7 @@ public class Home extends JFrame {
 		signUpBtn.setBounds(51, 554, 283, 36);
 		signUpPanel.add(signUpBtn);
 		
-		firstNameField = new JTextField();
+		firstNameField = new JTextField("");
 		firstNameField.setBounds(51, 130, 283, 36);
 		signUpPanel.add(firstNameField);
 		firstNameField.setColumns(10);
@@ -349,7 +361,7 @@ public class Home extends JFrame {
 		lblEmailSignUp.setBounds(51, 392, 54, 27);
 		signUpPanel.add(lblEmailSignUp);
 		
-		emailFieldSignUp = new JTextField();
+		emailFieldSignUp = new JTextField("");
 		emailFieldSignUp.setColumns(10);
 		emailFieldSignUp.setBounds(51, 419, 283, 36);
 		signUpPanel.add(emailFieldSignUp);
@@ -364,11 +376,11 @@ public class Home extends JFrame {
 		lblLastName.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		signUpPanel.add(lblLastName);
 		
-		passwordFieldSignUp = new JPasswordField();
+		passwordFieldSignUp = new JPasswordField("");
 		passwordFieldSignUp.setBounds(51, 491, 283, 36);
 		signUpPanel.add(passwordFieldSignUp);
 		
-		lastNameField = new JTextField();
+		lastNameField = new JTextField("");
 		lastNameField.setBounds(51, 202, 283, 36);
 		signUpPanel.add(lastNameField);
 		
@@ -382,13 +394,19 @@ public class Home extends JFrame {
 		lblPhoneNumber.setBounds(51, 320, 133, 27);
 		signUpPanel.add(lblPhoneNumber);
 		
-		ageField = new JTextField();
+		ageField = new JTextField("");
 		ageField.setBounds(51, 274, 283, 36);
 		signUpPanel.add(ageField);
 		
-		phoneNumberField = new JTextField();
+		phoneNumberField = new JTextField("");
 		phoneNumberField.setBounds(51, 345, 283, 36);
 		signUpPanel.add(phoneNumberField);
+		
+		signUpNotification = new JLabel("");
+		signUpNotification.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		signUpNotification.setHorizontalAlignment(SwingConstants.CENTER);
+		signUpNotification.setBounds(51, 58, 283, 40);
+		signUpPanel.add(signUpNotification);
 
 	}
 	
@@ -406,41 +424,99 @@ public class Home extends JFrame {
         this.setCursor(cursor);
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void signUp() {
 		User user = new User ();
 		try {
-		user.setFirstname(this.firstNameField.getText());
-		user.setLastname(lastNameField.getText());
-		user.setAge(Integer.parseInt(ageField.getText()));
-		user.setPhone(this.phoneNumberField.getText());
-		user.setEmail(this.emailFieldSignUp.getText());
-		user.setPassword(this.passwordFieldSignUp.getText());
-		user.setRole(Role.CUSTOMER);
-		user= registration.signUp(user);
-		if (user!= null) {
-			System.out.println("signup successful! ");
-		}
-		else System.out.println("unable to signup");
+			user.setFirstname(this.firstNameField.getText());
+			user.setLastname(lastNameField.getText());
+			if(InputManager.verifyStringNotEmpty(ageField.getText()))
+				user.setAge(Integer.parseInt(ageField.getText()));
+			else user.setAge(-1);
+			user.setPhone(this.phoneNumberField.getText());
+			user.setEmail(this.emailFieldSignUp.getText());
+			user.setPassword(String.valueOf(passwordFieldSignUp.getPassword()));
+			user.setRole(Role.CUSTOMER);
+			
+			if(!InputManager.verifyStringNotEmpty(user.getFirstname())) {
+				signUpNotification.setForeground(tomato);
+				signUpNotification.setText("Invalid firstname");
+	
+			}
+			else if(!InputManager.verifyStringNotEmpty(user.getLastname())) {
+				signUpNotification.setForeground(tomato);
+				signUpNotification.setText("Invalid lastname");
+			}
+			else if(!InputManager.verifyPositiveInteger(""+user.getAge())) {
+				signUpNotification.setForeground(tomato);
+				signUpNotification.setText("Invalid age");
+	
+			}
+			else if(!InputManager.verifyPhoneNumber(user.getPhone())) {
+				signUpNotification.setForeground(tomato);
+				signUpNotification.setText("Invalid phone number");
+	
+			}
+			else if(!InputManager.verifyEmail(user.getEmail())) {
+				signUpNotification.setForeground(tomato);
+				signUpNotification.setText("Invalid email");
+			}
+			else if(!InputManager.verifyPassword(user.getPassword())) {
+				signUpNotification.setForeground(tomato);
+				signUpNotification.setText("Invalid password");
+			}
+	
+	
+			else {		
+				user= registration.signUp(user);
+				if (user!= null) {
+					signUpNotification.setForeground(emerald);
+					signUpNotification.setText("Sign up successful!");
+					firstNameField.setText("");
+					lastNameField.setText("");
+					ageField.setText("");
+					phoneNumberField.setText("");
+					emailFieldSignUp.setText("");
+					passwordFieldSignUp.setText("");
+				}
+				else {
+					signUpNotification.setForeground(tomato);
+					signUpNotification.setText("Unable to Signup");
+					}
+			}
 		} catch (Exception e ) {
-			System.out.println("unable to signup. make sure of values");
+			System.out.println(e.getMessage());
 		}
+		
 	}
-	@SuppressWarnings("deprecation")
 	private boolean signIn() {
 		User user ;
 		String password, email;
 		try {
-		email= this.emailFieldSignIn.getText();
-		password= this.passwordFieldSignIn.getText();
-		user= registration.signIn(email, password);
-		if (user!= null) {
-			System.out.println("sign in successful! ");
-			return true;
-		}
-		else System.out.println("unable to sign in");
+			email= this.emailFieldSignIn.getText();
+			password= String.valueOf(passwordFieldSignIn.getPassword());
+			if(!InputManager.verifyStringNotEmpty(email)) {
+				signInNotification.setForeground(tomato);
+				signInNotification.setText("Invalid email");
+			}
+			else if(!InputManager.verifyStringNotEmpty(password)) {
+				signInNotification.setForeground(tomato);
+				signInNotification.setText("Invalid password");
+			}
+			else {
+				user= registration.signIn(email, password);
+				if(user!=null) {
+					signInNotification.setText("");
+					emailFieldSignIn.setText("");
+					passwordFieldSignIn.setText("");
+					return true;
+				}
+				else {
+					signInNotification.setText("Invalid username or password");
+					signInNotification.setForeground(tomato);
+				}
+			}
 		} catch (Exception e ) {
-			System.out.println("unable to sign in. make sure of values");
+			e.printStackTrace();
 		}
 		return false;
 	}

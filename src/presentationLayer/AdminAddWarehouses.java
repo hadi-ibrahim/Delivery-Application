@@ -31,7 +31,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 
-public class AdminAddWarehousesPane extends JPanel {
+public class AdminAddWarehouses extends JPanel {
 
 	
 	private JPanel mainPanel;
@@ -61,7 +61,7 @@ public class AdminAddWarehousesPane extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public AdminAddWarehousesPane(JPanel mainPanel, AdminManageWarehousesPane displayPanel) {
+	public AdminAddWarehouses(JPanel mainPanel, AdminManageWarehouses displayPanel) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
@@ -152,7 +152,7 @@ public class AdminAddWarehousesPane extends JPanel {
 		JLabel basketIconLbl = new JLabel("");
 		basketIconLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		basketIconLbl.setBounds(540, 180, 225, 225);
-		basketIconLbl.setIcon(new ImageIcon(AdminAddWarehousesPane.class.getResource("/presentationLayer/images/warehouse.png")));
+		basketIconLbl.setIcon(new ImageIcon(AdminAddWarehouses.class.getResource("/presentationLayer/images/warehouse.png")));
 
 		add(basketIconLbl);
 		

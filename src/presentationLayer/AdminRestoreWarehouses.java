@@ -20,17 +20,18 @@ import javax.swing.table.DefaultTableModel;
 
 import DTO.IDTO;
 import DTO.Item;
+import DTO.Warehouse;
 import businessLogicLayer.ItemManager;
+import businessLogicLayer.WarehouseManager;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
 import javax.swing.JLabel;
 import javax.swing.Icon;
+import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
-public class AdminRestoreItemsPane extends JPanel {
+public class AdminRestoreWarehouses extends JPanel {
 
 	/**
 	 * 
@@ -40,6 +41,7 @@ public class AdminRestoreItemsPane extends JPanel {
 	private JTable tblItems;
 	private DefaultTableModel model;
 	private ItemManager itemManager = new ItemManager();
+	private WarehouseManager warehouseManager = new WarehouseManager();
 	private Color watermelon = new Color(254,127,156);
 	private Color lemonade = new Color(253,185,200);
 	private Color pastelPink = new Color(255, 209, 220);
@@ -66,9 +68,8 @@ public class AdminRestoreItemsPane extends JPanel {
 			        JFrame f = new JFrame();
 			        f.setUndecorated(true);
 			        f.setSize( 780, 670);
-			        f.setTitle("Sometimes Red, Sometimes Blue");
 			        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			        f.getContentPane().add(new AdminManageItemsPane(new JPanel()));
+			        f.getContentPane().add(new AdminManageItems(new JPanel()));
 			        f.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -80,12 +81,11 @@ public class AdminRestoreItemsPane extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public AdminRestoreItemsPane(JPanel mainPanel, AdminManageItemsPane itemsPane) {
+	public AdminRestoreWarehouses(JPanel mainPanel, AdminManageWarehouses warehousesPane) {
 		super();
 		this.mainPanel = mainPanel;
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
-		
 		
 		this.setBounds(100, 100, 780, 670);
 		this.setBackground(Color.WHITE);
@@ -94,7 +94,7 @@ public class AdminRestoreItemsPane extends JPanel {
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(null);
-		scrollPane.setBounds(50, 70, 680, 450);
+		scrollPane.setBounds(50, 70, 680, 470);
 		scrollPane.setBackground(Color.WHITE);
 		this.add(scrollPane);
 
@@ -104,10 +104,6 @@ public class AdminRestoreItemsPane extends JPanel {
 		RefreshItemTable();
 		
 		restoreItemBtn = new JButton("Restore");
-		restoreItemBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		restoreItemBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -127,12 +123,13 @@ public class AdminRestoreItemsPane extends JPanel {
 			        int row = tblItems.getSelectedRow();
 			        if (row >= 0) {
 			            String id = tblItems.getModel().getValueAt(row, column).toString();
-			            itemManager.restore(Integer.parseInt(id));
+			            warehouseManager.restore(Integer.parseInt(id));
 			            RefreshItemTable();
-			            itemsPane.RefreshItemTable();
+			            warehousesPane.RefreshItemTable();
+			            notification.setText("");
 			        }
 			        else {
-			        	notification.setText("Select item to restore");
+			        	notification.setText("Select a Warehouse to restore");
 			        	notification.setForeground(tomato);
 			        }
 			     }
@@ -142,12 +139,13 @@ public class AdminRestoreItemsPane extends JPanel {
 		restoreItemBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		restoreItemBtn.setForeground(Color.WHITE);
 		restoreItemBtn.setBackground(secondaryPink);
-		restoreItemBtn.setBounds(310, 550, 150, 40);
+		restoreItemBtn.setBounds(310, 560, 150, 40);
 		this.add(restoreItemBtn);
 		
 		backArrow = new JLabel(backIcon);
-		backArrow.setBounds(680, 20, 40, 40);
+		backArrow.setBounds(670, 20, 40, 40);
 		backArrow.addMouseListener(new MouseAdapter() {
+			
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				setCursor(pointer);
@@ -158,12 +156,10 @@ public class AdminRestoreItemsPane extends JPanel {
 				setCursor(arrow);
 
 			}
-			@Override
 			public void mousePressed(MouseEvent e ) {
-				switchMainPanel("items");
-				notification.setText("");
+				switchMainPanel("warehouses");
+	            notification.setText("");
 			}
-
 		});
 		add(backArrow);
 		
@@ -177,7 +173,7 @@ public class AdminRestoreItemsPane extends JPanel {
 
 	public void RefreshItemTable() {
 		boolean isEditable[] = { false, true, true, true, false };
-		model = new DefaultTableModel(new Object[] { "id", "category", "price", "description", "isDeleted" }, 0) {
+		model = new DefaultTableModel(new Object[] { "id", "name", "latitude", "longitude", "isDeleted" }, 0) {
 
 			/**
 			 * 
@@ -189,14 +185,17 @@ public class AdminRestoreItemsPane extends JPanel {
 				return isEditable[column];
 			}
 		};
-		ArrayList<IDTO> disabledItems = itemManager.getAllActiveItems();
-		if(disabledItems.isEmpty()) {
+
+		ArrayList<IDTO> disabledWarehouses = warehouseManager.getAllDisabledWarehouses();
+		if (disabledWarehouses.isEmpty()) {
 			model.addRow(new Object[] {"","","","",""});
 		}
-		for (IDTO dto : itemManager.getAllDisabledItems()) {
-			Item item = (Item) dto;
-			model.addRow(new Object[] { item.getId(), item.getCategory(), item.getPrice(), item.getDescription(),
-					item.getIsDeleted() });
+		else {
+			for (IDTO dto : disabledWarehouses ) {
+				Warehouse warehouse = (Warehouse) dto;
+				model.addRow(new Object[] { warehouse.getId(), warehouse.getName(), warehouse.getLatitude(), warehouse.getLongitude(),
+						warehouse.getIsDeleted() });
+			}
 		}
 		this.tblItems.setModel(model);
 		this.tblItems.getColumnModel().getColumn(0).setWidth(0);
@@ -207,6 +206,7 @@ public class AdminRestoreItemsPane extends JPanel {
 		this.tblItems.getColumnModel().getColumn(4).setMaxWidth(0);
 
 	}
+	
 	private void switchMainPanel(String name) {
 		CardLayout cards =(CardLayout) mainPanel.getLayout();
 		cards.show(mainPanel, name);

@@ -1,5 +1,8 @@
 package businessLogicLayer;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import DTO.Category;
 import DTO.Role;
 
@@ -72,6 +75,28 @@ public class InputManager {
 	            return false;
 	        }
 	        return true;	
+	}
+	
+	public static boolean verifyEmail(String s) {
+        Matcher matcher = Pattern.compile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$", Pattern.CASE_INSENSITIVE).matcher(s);
+        return matcher.find();
+	}
+	
+	public static boolean verifyPassword(String s ) {
+        Matcher matcher = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$", Pattern.CASE_INSENSITIVE).matcher(s);
+        return matcher.find();
+	}
+	
+	public static boolean verifyPhoneNumber(String s ) {
+        Matcher matcher = Pattern.compile("^[0-9]{8}$", Pattern.CASE_INSENSITIVE).matcher(s);
+        return matcher.find();
+	}
+	public static boolean verifyStringNotEmpty(String s) {
+		
+		if(s.isBlank() || s.isEmpty()) {
+			return false;
+		}
+		else return true;
 	}
 	
 }

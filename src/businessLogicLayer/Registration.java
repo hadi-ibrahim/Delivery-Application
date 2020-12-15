@@ -18,9 +18,12 @@ public class Registration {
 	
 	public User signIn(String email, String password) {
 		 User tempUser = repoUser.login(email, password);
-		 if (tempUser.getIsDeleted()==1)
-			 return null;
-		return SessionHelper.isLoggedIn = tempUser;
+		 if(tempUser!= null) {
+			 if (tempUser.getIsDeleted()==1)
+				 return null;
+			return SessionHelper.isLoggedIn = tempUser;
+		 }
+		 return null;
 	}
 
 	public void signOut() {
