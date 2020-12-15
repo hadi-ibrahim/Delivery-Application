@@ -1,5 +1,8 @@
 package businessLogicLayer;
 
+import java.util.ArrayList;
+
+import DTO.IDTO;
 import DTO.User;
 import Repositories.RepoAddress;
 import Repositories.RepoUser;
@@ -14,7 +17,6 @@ public class AddressManager {
 			user.setUserAddresses(repoUserAddress.getAllUserAddresses(user.getId()));
 			return user;
 		}
-
 	/*
 	 * TODO
 	 * TRIGGER AFTER UPDATE ON USER

@@ -16,10 +16,12 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-
+import DTO.Address;
 import DTO.IDTO;
 import DTO.Item;
 import DTO.Warehouse;
+import Helpers.SessionHelper;
+import businessLogicLayer.AddressManager;
 import businessLogicLayer.InputManager;
 import businessLogicLayer.WarehouseManager;
 import jiconfont.icons.font_awesome.FontAwesome;
@@ -45,7 +47,7 @@ public class CustomerManageAddress extends JPanel {
 	private CustomerManageAddress self= this;
 	private JTable tblAddresses;
 	private DefaultTableModel model;
-	private WarehouseManager warehouseManager = new WarehouseManager();
+	private AddressManager addressManager = new AddressManager();
 	private Color watermelon = new Color(254,127,156);
 	private Color lemonade = new Color(253,185,200);
 	private Color pastelPink = new Color(255, 209, 220);
@@ -112,7 +114,7 @@ public class CustomerManageAddress extends JPanel {
 		tblAddresses= new PinkTable();
 		scrollPane.setViewportView(tblAddresses);
 
-		RefreshItemTable();
+		RefreshAddressTable();
 		
 		addIcon = new JLabel(plusIcon);
 		addIcon.setBounds(70, 11, 40, 40);
@@ -166,7 +168,7 @@ public class CustomerManageAddress extends JPanel {
 					
 					
 					
-					RefreshItemTable();
+					RefreshAddressTable();
 				}
 				else {
 					notification.setText("Select a warehouse to delete");
@@ -185,9 +187,9 @@ public class CustomerManageAddress extends JPanel {
 
 	}
 
-	public void RefreshItemTable() {
-		boolean isEditable[] = { false, true, true, true, false };
-		model = new DefaultTableModel(new Object[] { "id", "name", "latitude", "longitude", "isDeleted" }, 0) {
+	public void RefreshAddressTable() {
+		boolean isEditable[] = { false, true, true, true, false, false};
+		model = new DefaultTableModel(new Object[] { "id", "street","city", "building", "latitude", "longitude" }, 0) {
 
 
 			/**
@@ -201,13 +203,14 @@ public class CustomerManageAddress extends JPanel {
 			}
 		};
 
-		ArrayList<IDTO > activeWarehouses=  warehouseManager.getAllActiveWarehouses();
+		ArrayList<IDTO > activeWarehouses=  addressManager.getAllByUser(SessionHelper.isLoggedIn);
 		if(activeWarehouses.isEmpty()) {
-			model.addRow(new Object[] {"", "", "", "", ""});
+			model.addRow(new Object[] {"", "", "", "", "", "" });
 		}
 		for (IDTO dto : activeWarehouses) {
-			Warehouse warehouse = (Warehouse) dto;
-			model.addRow(new Object[] { warehouse.getId(), warehouse.getName(),warehouse.getLatitude(),warehouse.getLongitude(), warehouse.getIsDeleted()});
+			Address address = (Address) dto;
+			model.addRow(new Object[] { address.getId(), address.getStreet(),address.getCity(), address.getBuilding(),
+					address.getLocation().getLatitude(),address.getLocation().getLongitude()});
 		}
 		model.addTableModelListener(new TableModelListener() {
 			@Override
@@ -217,21 +220,21 @@ public class CustomerManageAddress extends JPanel {
 				int row = tblAddresses.getSelectedRow();
 				if (row >= 0) {
 					
-					if (!InputManager.verifyLongitude(tblAddresses.getModel().getValueAt(row, 3).toString())) {
-						RefreshItemTable();
+					if (!InputManager.verifyLongitude(tblAddresses.getModel().getValueAt(row, 5).toString())) {
+						RefreshAddressTable();
 						JOptionPane.showMessageDialog(null, "Error: latitude invalid");
-					} else if (!InputManager.verifyLongitude(tblAddresses.getModel().getValueAt(row, 2).toString())) {
-						RefreshItemTable();
+					} else if (!InputManager.verifyLongitude(tblAddresses.getModel().getValueAt(row, 4).toString())) {
+						RefreshAddressTable();
 						JOptionPane.showMessageDialog(null, "Error: invalid longitude");
 					} else {
 						String id = tblAddresses.getModel().getValueAt(row, column).toString();
-						Warehouse warehouse = warehouseManager.get(Integer.parseInt(id));
+						Warehouse warehouse = addressManager.get(Integer.parseInt(id));
 						warehouse.setName(tblAddresses.getModel().getValueAt(row, 1).toString());
 						warehouse.setLatitude(Double.parseDouble(tblAddresses.getModel().getValueAt(row, 2).toString()));
 						warehouse.setLongitude(Double.parseDouble(tblAddresses.getModel().getValueAt(row, 3).toString()));
 						warehouse.setIsDeleted(Integer.parseInt(tblAddresses.getModel().getValueAt(row, 4).toString()));
-						warehouseManager.update(warehouse);
-						RefreshItemTable();
+						addressManager.update(warehouse);
+						RefreshAddressTable();
 					}
 				}
 			}
@@ -243,6 +246,10 @@ public class CustomerManageAddress extends JPanel {
 		this.tblAddresses.getColumnModel().getColumn(4).setWidth(0);
 		this.tblAddresses.getColumnModel().getColumn(4).setMinWidth(0);
 		this.tblAddresses.getColumnModel().getColumn(4).setMaxWidth(0);
+		this.tblAddresses.getColumnModel().getColumn(5).setWidth(0);
+		this.tblAddresses.getColumnModel().getColumn(5).setMinWidth(0);
+		this.tblAddresses.getColumnModel().getColumn(5).setMaxWidth(0);
+
 		
 
 	}

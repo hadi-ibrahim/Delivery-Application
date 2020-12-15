@@ -120,7 +120,7 @@ public class CustomerAddAddress extends JPanel {
 					txtLongitude.setText("");
 					txtName.setText("");
 					txtLatitude.setText("");
-					displayPanel.RefreshItemTable();
+					displayPanel.RefreshAddressTable();
 					resultLbl.setText("Warhouse added successfully!");
 					resultLbl.setForeground(emerald);
 					}
