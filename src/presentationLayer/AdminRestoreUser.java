@@ -176,7 +176,7 @@ public class AdminRestoreUser extends JPanel {
 	}
 
 	public void RefreshUsersTable() {
-		boolean isEditable[] = { false, true, true, true, true, true, true, false };
+		boolean isEditable[] = { false, false, false, false, false, false, false, false };
 		model = new DefaultTableModel(new Object[] { "id", "firstname", "lastname", "age", "email","phone", "role", "isDeleted","password" }, 0) {
 
 
@@ -199,38 +199,6 @@ public class AdminRestoreUser extends JPanel {
 			model.addRow(new Object[] { user.getId(), user.getFirstname(), user.getLastname(), user.getAge(),
 					user.getEmail(), user.getPhone(), user.getRole(), user.getIsDeleted(), user.getPassword() });
 		}
-		model.addTableModelListener(new TableModelListener() {
-			@Override
-			public void tableChanged(TableModelEvent e) {
-				int column = 0;
-				int row = tblUsers.getSelectedRow();
-				if (row >= 0) {
-					if (!InputManager.verifyPositiveInteger(tblUsers.getModel().getValueAt(row, 3).toString())) {
-						RefreshUsersTable();
-						JOptionPane.showMessageDialog(null, "Age must be a positive integer");
-					}
-					else if(!InputManager.verifyRole(tblUsers.getModel().getValueAt(row, 6).toString())){
-						RefreshUsersTable();
-						JOptionPane.showMessageDialog(null, "Role must be either ADMIN, DRIVER or CUSTOMER.");
-					}
-					else {
-					
-						String id = tblUsers.getModel().getValueAt(row, column).toString();
-						User user = userManager.get(Integer.parseInt(id));
-						user.setFirstname(tblUsers.getModel().getValueAt(row, 1).toString());
-						user.setLastname(tblUsers.getModel().getValueAt(row, 2).toString());
-						user.setAge(Integer.parseInt(tblUsers.getModel().getValueAt(row, 3).toString()));
-						user.setEmail(tblUsers.getModel().getValueAt(row, 4).toString());
-						user.setPhone(tblUsers.getModel().getValueAt(row, 5).toString());
-						user.setRole(tblUsers.getModel().getValueAt(row, 6).toString());
-						user.setIsDeleted(Integer.parseInt(tblUsers.getModel().getValueAt(row, 7).toString()));
-						user.setPassword(tblUsers.getModel().getValueAt(row, 8).toString());
-						userManager.update(user);
-						RefreshUsersTable();
-					}
-				}
-			}
-		});
 		this.tblUsers.setModel(model);
 		this.tblUsers.getColumnModel().getColumn(0).setWidth(0);
 		this.tblUsers.getColumnModel().getColumn(0).setMinWidth(0);
