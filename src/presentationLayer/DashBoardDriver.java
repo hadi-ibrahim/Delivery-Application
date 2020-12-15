@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 
 import Helpers.SessionHelper;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -102,6 +103,13 @@ public class DashBoardDriver extends JFrame {
 		mainPanel.setBackground(Color.WHITE);
 		contentPane.add(mainPanel);
 		
+		DriverViewPendingOrders driverViewOrders = new DriverViewPendingOrders(mainPanel);
+		mainPanel.add(driverViewOrders, "driverPendingOrders");
+		
+		DriverManageOrders driverManageOrders = new DriverManageOrders();
+		mainPanel.add(driverManageOrders, "driverManageOrders");
+		
+		switchMainPanel("driverPendingOrders");
 		JLabel hamburgerLbl = new JLabel(hamburgerIcon);
 		hamburgerLbl.addMouseListener(new MouseAdapter() {
 			@Override
@@ -173,7 +181,7 @@ public class DashBoardDriver extends JFrame {
 						checkPendingOrdersPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
+								switchMainPanel("driverPendingOrders");
 							}
 						});		
 						checkPendingOrdersPanel.setBounds(0, 320, 300, 70);
@@ -197,7 +205,7 @@ public class DashBoardDriver extends JFrame {
 						trackOrderPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
+								switchMainPanel("driverManageOrders");
 							}
 						});		
 						addPanelEffects(trackOrderPanel);
@@ -210,12 +218,12 @@ public class DashBoardDriver extends JFrame {
 						trackOrderIconLbl.setBounds(40, 10, 50, 50);
 						trackOrderPanel.add(trackOrderIconLbl);
 						
-						JLabel trackOrderLbl = new JLabel("Track Order");
-						trackOrderLbl.setBounds(100, 10, 170, 50);
-						trackOrderPanel.add(trackOrderLbl);
-						trackOrderLbl.setForeground(whiteShade);
-						trackOrderLbl.setHorizontalAlignment(SwingConstants.CENTER);
-						trackOrderLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+						JLabel manageOrderLbl = new JLabel("Manage Orders");
+						manageOrderLbl.setBounds(100, 10, 170, 50);
+						trackOrderPanel.add(manageOrderLbl);
+						manageOrderLbl.setForeground(whiteShade);
+						manageOrderLbl.setHorizontalAlignment(SwingConstants.CENTER);
+						manageOrderLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 						
 						JPanel logoutPanel = new JPanel();
 						logoutPanel.setBounds(150, 620, 150, 70);
@@ -361,6 +369,10 @@ public class DashBoardDriver extends JFrame {
 	
 	private void disposeFrame() {
 		this.dispose();
+	}
+	private void switchMainPanel(String name) {
+		CardLayout cards =(CardLayout) mainPanel.getLayout();
+		cards.show(mainPanel, name);
 	}
 }
 

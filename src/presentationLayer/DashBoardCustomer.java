@@ -119,6 +119,9 @@ public class DashBoardCustomer extends JFrame {
 		
 		CustomerViewOrders customerViewOrders = new CustomerViewOrders(mainPanel);
 		mainPanel.add(customerViewOrders, "viewOrders");
+		
+		CustomerTrackOrders customerTrackOrders = new CustomerTrackOrders(mainPanel);
+		mainPanel.add(customerTrackOrders, "trackOrders");
 
 		switchMainPanel("orderItems");
 		
@@ -265,7 +268,8 @@ public class DashBoardCustomer extends JFrame {
 						trackOrdersPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								switchMainPanel("viewOrders");
+								
+								switchMainPanel("trackOrders");
 							}
 						});		
 						addPanelEffects(trackOrdersPanel);

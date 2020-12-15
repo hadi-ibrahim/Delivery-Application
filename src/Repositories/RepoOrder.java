@@ -69,6 +69,37 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 
 	}
 	
+	public ArrayList<IDTO> getAllPending() {
+		ArrayList<IDTO> orders = new ArrayList<IDTO>();
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("Select * From `order` WHERE STATUS LIKE 'PENDING'");
+			while (rs.next()) {
+				orders.add(extractOrderFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return orders;
+
+	}
+	
+	public ArrayList<IDTO> getActive(int idDriver) {
+		ArrayList<IDTO> orders = new ArrayList<IDTO>();
+		try {
+			ps = con.prepareStatement("Select * From `order` WHERE idDriver =? AND (STATUS LIKE 'ACCEPTED' OR STATUS LIKE 'DELIVERING' )");
+			ps.setInt(1, idDriver);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				orders.add(extractOrderFromResultSet(rs));
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return orders;
+
+	}
+	
 	public ArrayList<IDTO> getAllFinishedByUser(int id){
 		ArrayList<IDTO> orders = new ArrayList<IDTO>();
 		try {

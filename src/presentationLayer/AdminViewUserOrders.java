@@ -112,19 +112,7 @@ public class AdminViewUserOrders extends JPanel {
 		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
 		
 		this.mainPanel = mainPanel;
-		this.user = user;
-		
-//		AdminAddWarehouseItem addWarehouseItem = new AdminAddWarehouseItem(mainPanel, this, user);
-//		mainPanel.add(addWarehouseItem, "addWarehouseItem");
-		
-		
-		
-		
-		
-//		AdminViewUserOrderItems adminViewUserOrderItems = new AdminViewUserOrderItems(mainPanel,this,order);
-//		mainPanel.add(adminViewUserOrderItems, "viewOrderItems");
-
-		
+		this.user = user;		
 		
 		
 		
@@ -204,7 +192,7 @@ public class AdminViewUserOrders extends JPanel {
 					String id = tblOrders.getModel().getValueAt(row, column).toString();
 					Order order= orderManager.get(Integer.parseInt(id));
 					
-					JPanel viewUserOrdersItems = new ViewUserOrderItems(mainPanel, order);
+					JPanel viewUserOrdersItems = new AdminViewUserOrderItems(mainPanel, order);
 					mainPanel.add(viewUserOrdersItems,"viewUserOrdersItems");
 					
 					switchMainPanel("viewUserOrdersItems");

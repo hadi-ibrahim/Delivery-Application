@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import DTO.IDTO;
+import DTO.Item;
 import DTO.OrderedWarehouseItem;
 import Helpers.ConnectionManager;
 
@@ -76,18 +77,15 @@ public class RepoOrderedWarehouseItem implements IRepo {
 			ps.setInt(2, warehouse.getIdOrder());
 			ps.setInt(3, warehouse.getQuantity());
 			ps.setDouble(4, warehouse.getPricePerUnit());
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				warehouse = extractOrderedWarehouseItemFromResultSet(rs);
-				return true;
-			}
+			System.out.println(ps.executeUpdate() + " record(s) created");
 		} catch (SQLException ex) {
 			System.out.println(ex);
 			return false;
 		}
-		return false;
-	}
+		return true;
 
+	}
+	
 	@Override
 	public boolean update(IDTO dto) {
 		OrderedWarehouseItem warehouse = (OrderedWarehouseItem) dto;

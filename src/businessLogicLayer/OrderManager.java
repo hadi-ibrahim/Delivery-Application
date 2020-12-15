@@ -36,7 +36,6 @@ public class OrderManager {
 		int lastId= repoOrder.getLastId();
 		for(OrderedWarehouseItem item : order.getOrderedItems()) {
 			item.setIdOrder(lastId);
-			
 			repoOrderedWarehouseItem.create(item);
 		}
 		
@@ -51,41 +50,6 @@ public class OrderManager {
 		for(OrderedWarehouseItem orderedItem : order.getOrderedItems())
 			stockManager.addWarehouseItemStock(stockManager.get(orderedItem.getIdWarehouseItem()), orderedItem.getQuantity());
 	};
-
-	
-	private boolean enoughItemsQuantityInWarehouse(Order order) {
-		for (OrderedWarehouseItem orderedWarehouseItem : order.getOrderedItems())
-			if (!enoughItemQuantityInWarehouse(orderedWarehouseItem.getIdWarehouseItem(),
-					orderedWarehouseItem.getQuantity()))
-				return false;
-		return true;
-	}
-
-	public boolean enoughItemQuantityInWarehouse(int idWarehouseItem, int quantity) {
-		WarehouseItem warehouseItem = repoWarehouseItem.get(idWarehouseItem);
-		return warehouseItem.getQuantity() < quantity;
-	}
-
-	private void createOrderOrderedWarehouseItems(Order order) {
-		for (OrderedWarehouseItem orderedWarehouseItem : order.getOrderedItems()) {
-			repoOrderedWarehouseItem.create(orderedWarehouseItem);
-		}
-	}
-
-	public void cancelOrder(Order order) {
-		User driver;
-		order.setOrderStatus(OrderStatus.CANCELED);
-		if (order.getIdDriver() > 0) {
-			driver = repoUser.get(order.getIdDriver());
-			driver.setDriverStatus(DriverStatus.AVAILABLE);
-			repoUser.update(driver);
-		}
-		for (OrderedWarehouseItem orderedWarehouseItem : order.getOrderedItems()) {
-			stockManager.addWarehouseItemStock(repoWarehouseItem.get(orderedWarehouseItem.getId()),
-					orderedWarehouseItem.getQuantity());
-		}
-		repoOrder.update(order);
-	}
 
 	public void takeOrder(Order order, User driver) {
 		order.setOrderStatus(OrderStatus.DELIVERING);
@@ -112,6 +76,13 @@ public class OrderManager {
 	public ArrayList<IDTO> getAllCheckpointsByOrder(Order order) {
 		return repoCheckpoint.getOrderRoute(order.getId());
 	}
+	public ArrayList<IDTO> getAllPending() {
+		return repoOrder.getAllPending();
+	}
+	public ArrayList<IDTO> getActive(User driver) {
+		return repoOrder.getActive(driver.getId());
+	}
+	
 	
 	
 	// TODO

@@ -20,6 +20,8 @@ import javax.swing.table.DefaultTableModel;
 import DTO.IDTO;
 import DTO.Item;
 import DTO.Order;
+import DTO.OrderStatus;
+import DTO.OrderedWarehouseItem;
 import DTO.RouteCheckpoint;
 import DTO.User;
 import DTO.Warehouse;
@@ -31,6 +33,7 @@ import businessLogicLayer.ItemManager;
 import businessLogicLayer.OrderManager;
 import businessLogicLayer.StockManager;
 import businessLogicLayer.UserManager;
+import businessLogicLayer.WarehouseManager;
 import businessLogicLayer.LocationManager.LocationManager;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.icons.google_material_design_icons.GoogleMaterialDesignIcons;
@@ -48,7 +51,7 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class CustomerViewOrders extends JPanel {
+public class CustomerTrackOrders extends JPanel {
 
 	/**
 	 * 
@@ -61,6 +64,10 @@ public class CustomerViewOrders extends JPanel {
 	private UserManager userManager = new UserManager();
 	private OrderManager orderManager = new OrderManager();
 	private LocationManager locationManager = new LocationManager();
+	private StockManager stockManager = new StockManager();
+	private WarehouseManager warehouseManager = new WarehouseManager();
+
+
 	
 	private Color watermelon = new Color(254,127,156);
 	private Color lemonade = new Color(253,185,200);
@@ -71,7 +78,7 @@ public class CustomerViewOrders extends JPanel {
 	private Color tomato = new Color(255, 99, 71);
 	private Color emerald  = new Color(80, 220, 100);
 	
-	private CustomerViewOrders self = this;
+	private CustomerTrackOrders self = this;
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
 	private JLabel notification;
@@ -103,7 +110,7 @@ public class CustomerViewOrders extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public CustomerViewOrders(JPanel mainPanel) {
+	public CustomerTrackOrders(JPanel mainPanel) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.PLUS_CIRCLE	, 30, tertiaryPink);
@@ -182,7 +189,7 @@ public class CustomerViewOrders extends JPanel {
 					String id = tblOrders.getModel().getValueAt(row, column).toString();
 					Order order= orderManager.get(Integer.parseInt(id));
 					
-					JPanel viewOrderItems = new CustomerViewOrderItems(mainPanel, order, "viewOrders");
+					JPanel viewOrderItems = new CustomerViewOrderItems(mainPanel, order, "trackOrders");
 					mainPanel.add(viewOrderItems,"customerViewOrderItems");
 					
 					switchMainPanel("customerViewOrderItems");
@@ -196,7 +203,7 @@ public class CustomerViewOrders extends JPanel {
 		});
 		add(viewItemsBtn);
 		
-		viewRouteBtn = new JButton("View Route");
+		viewRouteBtn = new JButton("Track");
 		viewRouteBtn.setForeground(Color.WHITE);
 		viewRouteBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 		viewRouteBtn.setBackground(new Color(241, 57, 83));
@@ -221,15 +228,19 @@ public class CustomerViewOrders extends JPanel {
 				if (row >= 0) {
 					String id = tblOrders.getModel().getValueAt(row, column).toString();
 					Order order= orderManager.get(Integer.parseInt(id));
-					ArrayList<IDTO> cps = orderManager.getAllCheckpointsByOrder(order);
-					new Thread(() -> {
-						locationManager.displayRoute(cps);
-					}).start();
-					notification.setText("");
-				}
-				else {
-					notification.setText("Select order to view route");
-					notification.setForeground(tomato);
+					if (order.getStatus()!= OrderStatus.PENDING) {
+						OrderedWarehouseItem item = order.getOrderedItems().get(0);
+						WarehouseItem warehouseItem = stockManager.get(item.getIdWarehouseItem());
+						
+						new Thread(() -> {
+							locationManager.trackOrderDriver(userManager.get(order.getIdDriver()), order, warehouseManager.get(warehouseItem.getIdWarehouse()));
+						}).start();
+						notification.setText("");
+					}
+					else {
+						notification.setText("Select accepted order to track");
+						notification.setForeground(tomato);
+					}
 				}
 			}
 		});
@@ -253,7 +264,7 @@ public class CustomerViewOrders extends JPanel {
 			}
 		};
 		
-		ArrayList<IDTO> orders = orderManager.getAllFinishedByUser(SessionHelper.isLoggedIn.getId());
+		ArrayList<IDTO> orders = orderManager.getAllByUser(SessionHelper.isLoggedIn.getId());
 		if(orders.isEmpty()) {
 			model.addRow(new Object[] {"","","","","","","","","",""});
 		}

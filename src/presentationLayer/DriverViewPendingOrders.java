@@ -48,7 +48,7 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class CustomerViewOrders extends JPanel {
+public class DriverViewPendingOrders extends JPanel {
 
 	/**
 	 * 
@@ -71,13 +71,12 @@ public class CustomerViewOrders extends JPanel {
 	private Color tomato = new Color(255, 99, 71);
 	private Color emerald  = new Color(80, 220, 100);
 	
-	private CustomerViewOrders self = this;
+	private DriverViewPendingOrders self = this;
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
 	private Cursor arrow = new Cursor(Cursor.DEFAULT_CURSOR);
 	private JLabel notification;
 	private JLabel tooltip;
-	private JButton viewItemsBtn;
-	private JButton viewRouteBtn;
+	private JButton acceptBtn;
 
 	/**
 	 * Launch the application.
@@ -103,7 +102,7 @@ public class CustomerViewOrders extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public CustomerViewOrders(JPanel mainPanel) {
+	public DriverViewPendingOrders(JPanel mainPanel) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.PLUS_CIRCLE	, 30, tertiaryPink);
@@ -112,19 +111,6 @@ public class CustomerViewOrders extends JPanel {
 		Icon backIcon = IconFontSwing.buildIcon(FontAwesome.ARROW_CIRCLE_LEFT, 30, tertiaryPink);
 		
 		this.mainPanel = mainPanel;
-		
-//		AdminAddWarehouseItem addWarehouseItem = new AdminAddWarehouseItem(mainPanel, this, user);
-//		mainPanel.add(addWarehouseItem, "addWarehouseItem");
-		
-		
-		
-		
-		
-//		AdminViewUserOrderItems adminViewUserOrderItems = new AdminViewUserOrderItems(mainPanel,this,order);
-//		mainPanel.add(adminViewUserOrderItems, "viewOrderItems");
-
-		
-		
 		
 		
 		this.setBounds(100, 100, 780, 670);
@@ -156,84 +142,52 @@ public class CustomerViewOrders extends JPanel {
 		tooltip.setBounds(50, 20, 680, 40);
 		add(tooltip);
 		
-		viewItemsBtn = new JButton("View Items");
-		viewItemsBtn.setForeground(Color.WHITE);
-		viewItemsBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		viewItemsBtn.setBackground(new Color(241, 57, 83));
-		viewItemsBtn.setBounds(160, 550, 150, 40);
-		viewItemsBtn.addMouseListener(new MouseAdapter() {
+		acceptBtn = new JButton("Accept");
+		acceptBtn.setForeground(Color.WHITE);
+		acceptBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		acceptBtn.setBackground(new Color(241, 57, 83));
+		acceptBtn.setBounds(310, 560, 150, 40);
+		acceptBtn.addMouseListener(new MouseAdapter() {
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				viewItemsBtn.setBackground(tertiaryPink);
+				acceptBtn.setBackground(tertiaryPink);
 				setCursor(pointer);
 
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				viewItemsBtn.setBackground(secondaryPink);
+				acceptBtn.setBackground(secondaryPink);
 				setCursor(arrow);
 
 			}
 			public void mousePressed(MouseEvent e ) {
-				int column = 0;
-				int row = tblOrders.getSelectedRow();
-				if (row >= 0) {
-					String id = tblOrders.getModel().getValueAt(row, column).toString();
-					Order order= orderManager.get(Integer.parseInt(id));
-					
-					JPanel viewOrderItems = new CustomerViewOrderItems(mainPanel, order, "viewOrders");
-					mainPanel.add(viewOrderItems,"customerViewOrderItems");
-					
-					switchMainPanel("customerViewOrderItems");
-					notification.setText("");
+				if(SessionHelper.isLoggedIn.getDriverStatus().toString()== "AVAILABLE") {
+				
+					int column = 0;
+					int row = tblOrders.getSelectedRow();
+					if (row >= 0) {
+						String id = tblOrders.getModel().getValueAt(row, column).toString();
+						Order order= orderManager.get(Integer.parseInt(id));
+						orderManager.takeOrder(order, SessionHelper.isLoggedIn);
+						
+						notification.setText("Successfully accepted, be safe :)");
+						notification.setForeground(emerald);
+
+					}
+					else {
+						notification.setText("Select order to accept");
+						notification.setForeground(tomato);
+					}
 				}
 				else {
-					notification.setText("Select a order to view items");
+					notification.setText("Cannot accept more than 1 order at a time");
 					notification.setForeground(tomato);
-				}
+				}	
+				
 			}
 		});
-		add(viewItemsBtn);
-		
-		viewRouteBtn = new JButton("View Route");
-		viewRouteBtn.setForeground(Color.WHITE);
-		viewRouteBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-		viewRouteBtn.setBackground(new Color(241, 57, 83));
-		viewRouteBtn.setBounds(440, 550, 150, 40);
-		viewRouteBtn.addMouseListener(new MouseAdapter() {
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				viewRouteBtn.setBackground(tertiaryPink);
-				setCursor(pointer);
-
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				viewRouteBtn.setBackground(secondaryPink);
-				setCursor(arrow);
-
-			}
-			public void mousePressed(MouseEvent e ) {
-				int column = 0;
-				int row = tblOrders.getSelectedRow();
-				if (row >= 0) {
-					String id = tblOrders.getModel().getValueAt(row, column).toString();
-					Order order= orderManager.get(Integer.parseInt(id));
-					ArrayList<IDTO> cps = orderManager.getAllCheckpointsByOrder(order);
-					new Thread(() -> {
-						locationManager.displayRoute(cps);
-					}).start();
-					notification.setText("");
-				}
-				else {
-					notification.setText("Select order to view route");
-					notification.setForeground(tomato);
-				}
-			}
-		});
-		add(viewRouteBtn);
+		add(acceptBtn);
 
 	}
 
@@ -252,8 +206,7 @@ public class CustomerViewOrders extends JPanel {
 				return isEditable[column];
 			}
 		};
-		
-		ArrayList<IDTO> orders = orderManager.getAllFinishedByUser(SessionHelper.isLoggedIn.getId());
+		ArrayList<IDTO> orders = orderManager.getAllPending();
 		if(orders.isEmpty()) {
 			model.addRow(new Object[] {"","","","","","","","","",""});
 		}
