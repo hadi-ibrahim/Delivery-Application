@@ -12,6 +12,7 @@ import Helpers.SessionHelper;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.Icon;
@@ -26,8 +27,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.JSeparator;
+import java.awt.CardLayout;
 
-public class CustomerDashboard extends JFrame {
+public class DashBoardAdmin extends JFrame {
 
 	/**
 	 * 
@@ -41,9 +43,9 @@ public class CustomerDashboard extends JFrame {
 	
 	private Color watermelon = new Color(254,127,156);
 	private Color lemonade = new Color(253,185,200);
-//	private Color pastelPink = new Color(255, 209, 220);
+	private Color pastelPink = new Color(255, 209, 220);
 	private Color secondaryPink = new Color(241, 57, 83);
-//	private Color tertiaryPink = new Color(255, 0 ,51);
+	private Color tertiaryPink = new Color(255, 0 ,51);
 	private Color whiteShade = new Color(240, 248, 255);
 	
 	private Cursor pointer = new Cursor(Cursor.HAND_CURSOR);
@@ -62,7 +64,7 @@ public class CustomerDashboard extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					CustomerDashboard frame = new CustomerDashboard(100,100);
+					DashBoardCustomer frame = new DashBoardCustomer(100,100);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -74,7 +76,7 @@ public class CustomerDashboard extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public CustomerDashboard(int x, int y ) {
+	public DashBoardAdmin(int x, int y) {
 		this.setLocationByPlatform(true);
 		this.setUndecorated(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -86,12 +88,12 @@ public class CustomerDashboard extends JFrame {
 		IconFontSwing.register(FontAwesome.getIconFont());
 		IconFontSwing.register(GoogleMaterialDesignIcons.getIconFont());
 		
-		Icon addressIcon = IconFontSwing.buildIcon(FontAwesome.ADDRESS_BOOK, 30, whiteShade);
-		Icon itemsIcon = IconFontSwing.buildIcon(FontAwesome.SHOPPING_CART, 30, whiteShade);
-		Icon orderIcon = IconFontSwing.buildIcon(GoogleMaterialDesignIcons.RECEIPT, 30, whiteShade);
-		Icon trackIcon = IconFontSwing.buildIcon(GoogleMaterialDesignIcons.LOCATION_ON, 30, whiteShade);
+		Icon usersIcon = IconFontSwing.buildIcon(FontAwesome.USER_PLUS, 30, whiteShade);
+		Icon itemsIcon = IconFontSwing.buildIcon(FontAwesome.CART_PLUS, 30, whiteShade);
+		Icon ordersIcon = IconFontSwing.buildIcon(GoogleMaterialDesignIcons.RECEIPT, 30, whiteShade);
+		Icon warehouseIcon = IconFontSwing.buildIcon(FontAwesome.BUILDING, 30, whiteShade);
 		Icon logoutIcon = IconFontSwing.buildIcon(FontAwesome.SIGN_OUT, 30, whiteShade);
-		Icon roleIcon = IconFontSwing.buildIcon(FontAwesome.USER, 30, whiteShade);
+		Icon roleIcon = IconFontSwing.buildIcon(FontAwesome.WRENCH, 30, whiteShade);
 		Icon closeIcon = IconFontSwing.buildIcon(GoogleMaterialDesignIcons.CLOSE, 30, whiteShade);
 		Icon hamburgerIcon = IconFontSwing.buildIcon(GoogleMaterialDesignIcons.MENU, 30, whiteShade);
 		
@@ -105,6 +107,21 @@ public class CustomerDashboard extends JFrame {
 		mainPanel.setBounds(300, 50, 780, 670);
 		mainPanel.setBackground(Color.WHITE);
 		contentPane.add(mainPanel);
+		mainPanel.setLayout(new CardLayout(0, 0));
+		
+		AdminManageItems adminManageItemsPane = new AdminManageItems(mainPanel);
+		mainPanel.add(adminManageItemsPane, "items");
+		
+		AdminManageWarehouses adminManageWarehousesPane = new AdminManageWarehouses(mainPanel);
+		mainPanel.add(adminManageWarehousesPane, "warehouses");
+		
+		AdminManageUsers adminManageUsers = new AdminManageUsers(mainPanel);
+		mainPanel.add(adminManageUsers, "users");
+		
+		AdminViewOrders adminViewOrders = new AdminViewOrders(mainPanel);
+		mainPanel.add(adminViewOrders,"orders");
+
+		switchMainPanel("items");
 		
 		JLabel hamburgerLbl = new JLabel(hamburgerIcon);
 		hamburgerLbl.addMouseListener(new MouseAdapter() {
@@ -136,7 +153,6 @@ public class CustomerDashboard extends JFrame {
 		topBar.add(activePaneLbl);
 		
 		sidePanel = new JPanel();
-		//		sidePanel.setBackground(Color.PINK);
 				sidePanel.setBackground(Color.PINK);
 				contentPane.addMouseMotionListener(new MouseMotionListener() {
 		            int lastX, lastY;
@@ -164,7 +180,7 @@ public class CustomerDashboard extends JFrame {
 						
 						JLabel roadLbl = new JLabel("");
 						roadLbl.setBounds(0, 579, 180, 130);
-						roadLbl.setIcon(new ImageIcon(CustomerDashboard.class.getResource("images/road.png")));
+						roadLbl.setIcon(new ImageIcon(DashBoardCustomer.class.getResource("images/road.png")));
 						sidePanel.add(roadLbl);						
 						JLabel lblTitle = new JLabel("Delivery App");
 						lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
@@ -173,104 +189,104 @@ public class CustomerDashboard extends JFrame {
 						lblTitle.setBounds(25, 10, 250, 52);
 						sidePanel.add(lblTitle);
 						
-						JPanel orderItemsPanel = new JPanel();
-						orderItemsPanel.addMouseListener(new MouseAdapter() {
+						JPanel manageItemsPanel = new JPanel();
+						manageItemsPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
+								switchMainPanel("items");								 
 							}
 						});		
-						orderItemsPanel.setBounds(0, 250, 300, 70);
-						sidePanel.add(orderItemsPanel);
-						orderItemsPanel.setLayout(null);
+						manageItemsPanel.setBounds(0, 250, 300, 70);
+						sidePanel.add(manageItemsPanel);
+						manageItemsPanel.setLayout(null);
 						
 						JLabel ItemsIconLbl = new JLabel(itemsIcon);
 						ItemsIconLbl.setBounds(50, 10, 50, 50);
-						orderItemsPanel.add(ItemsIconLbl);
+						manageItemsPanel.add(ItemsIconLbl);
 						
-						JLabel OrderItemsLbl = new JLabel("Order Items ");
-						OrderItemsLbl.setBounds(100, 10, 150, 50);
-						orderItemsPanel.add(OrderItemsLbl);
-						OrderItemsLbl.setForeground(whiteShade);
-						OrderItemsLbl.setHorizontalAlignment(SwingConstants.CENTER);
-						OrderItemsLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-						setActivePanel(orderItemsPanel);
-						addPanelEffects(orderItemsPanel);
+						JLabel ManageItemsLbl = new JLabel("Manage Items ");
+						ManageItemsLbl.setBounds(100, 10, 150, 50);
+						manageItemsPanel.add(ManageItemsLbl);
+						ManageItemsLbl.setForeground(whiteShade);
+						ManageItemsLbl.setHorizontalAlignment(SwingConstants.CENTER);
+						ManageItemsLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+						setActivePanel(manageItemsPanel);
+						addPanelEffects(manageItemsPanel);
 						
-						JPanel myAddressesPanel = new JPanel();
-						myAddressesPanel.addMouseListener(new MouseAdapter() {
+						JPanel manageWarehousePanel = new JPanel();
+						manageWarehousePanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
+								switchMainPanel("warehouses");
 							}
 						});		
-						addPanelEffects(myAddressesPanel);
-						myAddressesPanel.setLayout(null);
-						myAddressesPanel.setBackground(Color.PINK);
-						myAddressesPanel.setBounds(0, 320, 300, 70);
-						sidePanel.add(myAddressesPanel);
+						addPanelEffects(manageWarehousePanel);
+						manageWarehousePanel.setLayout(null);
+						manageWarehousePanel.setBackground(Color.PINK);
+						manageWarehousePanel.setBounds(0, 320, 300, 70);
+						sidePanel.add(manageWarehousePanel);
 						
-						JLabel addressIconLbl = new JLabel(addressIcon);
-						addressIconLbl.setBounds(50, 10, 50, 50);
-						myAddressesPanel.add(addressIconLbl);
+						JLabel ManageWarehouseIconLbl = new JLabel(warehouseIcon);
+						ManageWarehouseIconLbl.setBounds(50, 10, 50, 50);
+						manageWarehousePanel.add(ManageWarehouseIconLbl);
 						
-						JLabel myAddressesLbl = new JLabel("My Addresses");
-						myAddressesLbl.setBounds(100, 10, 150, 50);
-						myAddressesPanel.add(myAddressesLbl);
-						myAddressesLbl.setForeground(whiteShade);
-						myAddressesLbl.setHorizontalAlignment(SwingConstants.CENTER);
-						myAddressesLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+						JLabel manageWarehouseLbl = new JLabel("Manage Warehouses");
+						manageWarehouseLbl.setBounds(100, 10, 150, 50);
+						manageWarehousePanel.add(manageWarehouseLbl);
+						manageWarehouseLbl.setForeground(whiteShade);
+						manageWarehouseLbl.setHorizontalAlignment(SwingConstants.CENTER);
+						manageWarehouseLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+						
+						JPanel ManageUsersPanel = new JPanel();
+						ManageUsersPanel.addMouseListener(new MouseAdapter() {
+							@Override
+							public void mousePressed(MouseEvent e) {
+								switchMainPanel("users");
+							}
+						});		
+						addPanelEffects(ManageUsersPanel);
+						ManageUsersPanel.setLayout(null);
+						ManageUsersPanel.setBackground(Color.PINK);
+						ManageUsersPanel.setBounds(0, 390, 300, 70);
+						sidePanel.add(ManageUsersPanel);
+						
+						JLabel ManageUsersIcon = new JLabel(usersIcon);
+						ManageUsersIcon.setBounds(50, 10, 50, 50);
+						ManageUsersPanel.add(ManageUsersIcon);
+						
+						JLabel ManageUsersLbl = new JLabel("ManageUsers");
+						ManageUsersLbl.setBounds(100, 10, 150, 50);
+						ManageUsersPanel.add(ManageUsersLbl);
+						ManageUsersLbl.setForeground(whiteShade);
+						ManageUsersLbl.setHorizontalAlignment(SwingConstants.CENTER);
+						ManageUsersLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 						
 						JPanel viewOrdersPanel = new JPanel();
 						viewOrdersPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
+								switchMainPanel("orders");
 							}
 						});		
 						addPanelEffects(viewOrdersPanel);
 						viewOrdersPanel.setLayout(null);
 						viewOrdersPanel.setBackground(Color.PINK);
-						viewOrdersPanel.setBounds(0, 390, 300, 70);
+						viewOrdersPanel.setBounds(0, 460, 300, 70);
 						sidePanel.add(viewOrdersPanel);
 						
-						JLabel viewOrdersIconLbl = new JLabel(orderIcon);
+						JLabel viewOrdersIconLbl = new JLabel(ordersIcon);
 						viewOrdersIconLbl.setBounds(50, 10, 50, 50);
 						viewOrdersPanel.add(viewOrdersIconLbl);
 						
-						JLabel viewOrdersLbl = new JLabel("View Orders");
-						viewOrdersLbl.setBounds(100, 10, 150, 50);
-						viewOrdersPanel.add(viewOrdersLbl);
-						viewOrdersLbl.setForeground(whiteShade);
-						viewOrdersLbl.setHorizontalAlignment(SwingConstants.CENTER);
-						viewOrdersLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-						
-						JPanel trackOrdersPanel = new JPanel();
-						trackOrdersPanel.addMouseListener(new MouseAdapter() {
-							@Override
-							public void mousePressed(MouseEvent e) {
-								// this.mainPanel = new ItemsPanel() ;
-							}
-						});		
-						addPanelEffects(trackOrdersPanel);
-						trackOrdersPanel.setLayout(null);
-						trackOrdersPanel.setBackground(Color.PINK);
-						trackOrdersPanel.setBounds(0, 460, 300, 70);
-						sidePanel.add(trackOrdersPanel);
-						
-						JLabel trackOrderIconLbl = new JLabel(trackIcon);
-						trackOrderIconLbl.setBounds(50, 10, 50, 50);
-						trackOrdersPanel.add(trackOrderIconLbl);
-						
-						JLabel trackOrderLbl = new JLabel("Track Order");
-						trackOrderLbl.setBounds(100, 10, 150, 50);
-						trackOrdersPanel.add(trackOrderLbl);
-						trackOrderLbl.setHorizontalAlignment(SwingConstants.CENTER);
-						trackOrderLbl.setForeground(whiteShade);
-						trackOrderLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-						trackOrderLbl.setHorizontalAlignment(SwingConstants.CENTER);
-						trackOrderLbl.setForeground(whiteShade);
-						trackOrderLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+						JLabel viewOrderLbl = new JLabel("View Orders");
+						viewOrderLbl.setBounds(100, 10, 150, 50);
+						viewOrdersPanel.add(viewOrderLbl);
+						viewOrderLbl.setHorizontalAlignment(SwingConstants.CENTER);
+						viewOrderLbl.setForeground(whiteShade);
+						viewOrderLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+						viewOrderLbl.setHorizontalAlignment(SwingConstants.CENTER);
+						viewOrderLbl.setForeground(whiteShade);
+						viewOrderLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 						
 						JPanel logoutPanel = new JPanel();
 						logoutPanel.setBounds(150, 620, 150, 70);
@@ -316,13 +332,13 @@ public class CustomerDashboard extends JFrame {
 						separator_1.setForeground(whiteShade);
 						
 						JPanel userInfoPanel = new JPanel();
-						userInfoPanel.setBounds(40, 90, 220, 70);
+						userInfoPanel.setBounds(40, 90, 260, 70);
 						userInfoPanel.setBackground(Color.PINK);
 						sidePanel.add(userInfoPanel);
 						userInfoPanel.setLayout(null);
 						
-						JLabel usernameLbl = new JLabel("Welcome, " + SessionHelper.isLoggedIn.getFirstname());
-						usernameLbl.setBounds(60, 10, 120, 50);
+						JLabel usernameLbl = new JLabel(SessionHelper.isLoggedIn.getFirstname());
+						usernameLbl.setBounds(60, 0, 200, 70);
 						userInfoPanel.add(usernameLbl);
 						setLblFont(usernameLbl);
 						
@@ -419,6 +435,13 @@ public class CustomerDashboard extends JFrame {
 	private void disposeFrame() {
 		this.dispose();
 	}
+	
+	private void switchMainPanel(String name) {
+		CardLayout cards =(CardLayout) mainPanel.getLayout();
+		cards.show(mainPanel, name);
+	}
+	
+
 }
 
 

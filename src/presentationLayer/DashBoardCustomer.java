@@ -27,7 +27,7 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JSeparator;
 
-public class DriverDashboard extends JFrame {
+public class DashBoardCustomer extends JFrame {
 
 	/**
 	 * 
@@ -62,7 +62,7 @@ public class DriverDashboard extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					CustomerDashboard frame = new CustomerDashboard(100,100);
+					DashBoardCustomer frame = new DashBoardCustomer(100,100);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -74,7 +74,7 @@ public class DriverDashboard extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public DriverDashboard(int x , int y) {
+	public DashBoardCustomer(int x, int y ) {
 		this.setLocationByPlatform(true);
 		this.setUndecorated(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -86,10 +86,12 @@ public class DriverDashboard extends JFrame {
 		IconFontSwing.register(FontAwesome.getIconFont());
 		IconFontSwing.register(GoogleMaterialDesignIcons.getIconFont());
 		
+		Icon addressIcon = IconFontSwing.buildIcon(FontAwesome.ADDRESS_BOOK, 30, whiteShade);
+		Icon itemsIcon = IconFontSwing.buildIcon(FontAwesome.SHOPPING_CART, 30, whiteShade);
 		Icon orderIcon = IconFontSwing.buildIcon(GoogleMaterialDesignIcons.RECEIPT, 30, whiteShade);
 		Icon trackIcon = IconFontSwing.buildIcon(GoogleMaterialDesignIcons.LOCATION_ON, 30, whiteShade);
 		Icon logoutIcon = IconFontSwing.buildIcon(FontAwesome.SIGN_OUT, 30, whiteShade);
-		Icon roleIcon = IconFontSwing.buildIcon(FontAwesome.MOTORCYCLE, 30, whiteShade);
+		Icon roleIcon = IconFontSwing.buildIcon(FontAwesome.USER, 30, whiteShade);
 		Icon closeIcon = IconFontSwing.buildIcon(GoogleMaterialDesignIcons.CLOSE, 30, whiteShade);
 		Icon hamburgerIcon = IconFontSwing.buildIcon(GoogleMaterialDesignIcons.MENU, 30, whiteShade);
 		
@@ -126,7 +128,7 @@ public class DriverDashboard extends JFrame {
 		topBar.add(CloseBtnLbl);
 		setHoverable(CloseBtnLbl);
 		
-		activePaneLbl = new JLabel("Pending Orders");
+		activePaneLbl = new JLabel("Order Items ");
 		activePaneLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		activePaneLbl.setForeground(new Color(240, 248, 255));
 		activePaneLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
@@ -162,7 +164,7 @@ public class DriverDashboard extends JFrame {
 						
 						JLabel roadLbl = new JLabel("");
 						roadLbl.setBounds(0, 579, 180, 130);
-						roadLbl.setIcon(new ImageIcon(CustomerDashboard.class.getResource("images/road.png")));
+						roadLbl.setIcon(new ImageIcon(DashBoardCustomer.class.getResource("images/road.png")));
 						sidePanel.add(roadLbl);						
 						JLabel lblTitle = new JLabel("Delivery App");
 						lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
@@ -171,52 +173,103 @@ public class DriverDashboard extends JFrame {
 						lblTitle.setBounds(25, 10, 250, 52);
 						sidePanel.add(lblTitle);
 						
-						JPanel checkPendingOrdersPanel = new JPanel();
-						checkPendingOrdersPanel.addMouseListener(new MouseAdapter() {
+						JPanel orderItemsPanel = new JPanel();
+						orderItemsPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
 								// this.mainPanel = new ItemsPanel() ;
 							}
 						});		
-						checkPendingOrdersPanel.setBounds(0, 320, 300, 70);
-						sidePanel.add(checkPendingOrdersPanel);
-						checkPendingOrdersPanel.setLayout(null);
+						orderItemsPanel.setBounds(0, 250, 300, 70);
+						sidePanel.add(orderItemsPanel);
+						orderItemsPanel.setLayout(null);
 						
-						JLabel pendingOrdersIcon = new JLabel(orderIcon);
-						pendingOrdersIcon.setBounds(40, 10, 50, 50);
-						checkPendingOrdersPanel.add(pendingOrdersIcon);
+						JLabel ItemsIconLbl = new JLabel(itemsIcon);
+						ItemsIconLbl.setBounds(50, 10, 50, 50);
+						orderItemsPanel.add(ItemsIconLbl);
 						
-						JLabel pendingOrdersLbl = new JLabel("Pending Orders");
-						pendingOrdersLbl.setBounds(100, 10, 170, 50);
-						checkPendingOrdersPanel.add(pendingOrdersLbl);
-						pendingOrdersLbl.setForeground(whiteShade);
-						pendingOrdersLbl.setHorizontalAlignment(SwingConstants.CENTER);
-						pendingOrdersLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
-						setActivePanel(checkPendingOrdersPanel);
-						addPanelEffects(checkPendingOrdersPanel);
+						JLabel OrderItemsLbl = new JLabel("Order Items ");
+						OrderItemsLbl.setBounds(100, 10, 150, 50);
+						orderItemsPanel.add(OrderItemsLbl);
+						OrderItemsLbl.setForeground(whiteShade);
+						OrderItemsLbl.setHorizontalAlignment(SwingConstants.CENTER);
+						OrderItemsLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+						setActivePanel(orderItemsPanel);
+						addPanelEffects(orderItemsPanel);
 						
-						JPanel trackOrderPanel = new JPanel();
-						trackOrderPanel.addMouseListener(new MouseAdapter() {
+						JPanel myAddressesPanel = new JPanel();
+						myAddressesPanel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent e) {
 								// this.mainPanel = new ItemsPanel() ;
 							}
 						});		
-						addPanelEffects(trackOrderPanel);
-						trackOrderPanel.setLayout(null);
-						trackOrderPanel.setBackground(Color.PINK);
-						trackOrderPanel.setBounds(0, 390, 300, 70);
-						sidePanel.add(trackOrderPanel);
+						addPanelEffects(myAddressesPanel);
+						myAddressesPanel.setLayout(null);
+						myAddressesPanel.setBackground(Color.PINK);
+						myAddressesPanel.setBounds(0, 320, 300, 70);
+						sidePanel.add(myAddressesPanel);
+						
+						JLabel addressIconLbl = new JLabel(addressIcon);
+						addressIconLbl.setBounds(50, 10, 50, 50);
+						myAddressesPanel.add(addressIconLbl);
+						
+						JLabel myAddressesLbl = new JLabel("My Addresses");
+						myAddressesLbl.setBounds(100, 10, 150, 50);
+						myAddressesPanel.add(myAddressesLbl);
+						myAddressesLbl.setForeground(whiteShade);
+						myAddressesLbl.setHorizontalAlignment(SwingConstants.CENTER);
+						myAddressesLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+						
+						JPanel viewOrdersPanel = new JPanel();
+						viewOrdersPanel.addMouseListener(new MouseAdapter() {
+							@Override
+							public void mousePressed(MouseEvent e) {
+								// this.mainPanel = new ItemsPanel() ;
+							}
+						});		
+						addPanelEffects(viewOrdersPanel);
+						viewOrdersPanel.setLayout(null);
+						viewOrdersPanel.setBackground(Color.PINK);
+						viewOrdersPanel.setBounds(0, 390, 300, 70);
+						sidePanel.add(viewOrdersPanel);
+						
+						JLabel viewOrdersIconLbl = new JLabel(orderIcon);
+						viewOrdersIconLbl.setBounds(50, 10, 50, 50);
+						viewOrdersPanel.add(viewOrdersIconLbl);
+						
+						JLabel viewOrdersLbl = new JLabel("View Orders");
+						viewOrdersLbl.setBounds(100, 10, 150, 50);
+						viewOrdersPanel.add(viewOrdersLbl);
+						viewOrdersLbl.setForeground(whiteShade);
+						viewOrdersLbl.setHorizontalAlignment(SwingConstants.CENTER);
+						viewOrdersLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+						
+						JPanel trackOrdersPanel = new JPanel();
+						trackOrdersPanel.addMouseListener(new MouseAdapter() {
+							@Override
+							public void mousePressed(MouseEvent e) {
+								// this.mainPanel = new ItemsPanel() ;
+							}
+						});		
+						addPanelEffects(trackOrdersPanel);
+						trackOrdersPanel.setLayout(null);
+						trackOrdersPanel.setBackground(Color.PINK);
+						trackOrdersPanel.setBounds(0, 460, 300, 70);
+						sidePanel.add(trackOrdersPanel);
 						
 						JLabel trackOrderIconLbl = new JLabel(trackIcon);
-						trackOrderIconLbl.setBounds(40, 10, 50, 50);
-						trackOrderPanel.add(trackOrderIconLbl);
+						trackOrderIconLbl.setBounds(50, 10, 50, 50);
+						trackOrdersPanel.add(trackOrderIconLbl);
 						
 						JLabel trackOrderLbl = new JLabel("Track Order");
-						trackOrderLbl.setBounds(100, 10, 170, 50);
-						trackOrderPanel.add(trackOrderLbl);
-						trackOrderLbl.setForeground(whiteShade);
+						trackOrderLbl.setBounds(100, 10, 150, 50);
+						trackOrdersPanel.add(trackOrderLbl);
 						trackOrderLbl.setHorizontalAlignment(SwingConstants.CENTER);
+						trackOrderLbl.setForeground(whiteShade);
+						trackOrderLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+						trackOrderLbl.setHorizontalAlignment(SwingConstants.CENTER);
+						trackOrderLbl.setForeground(whiteShade);
 						trackOrderLbl.setFont(new Font("Javanese Text", Font.PLAIN, 16));
 						
 						JPanel logoutPanel = new JPanel();
@@ -254,27 +307,27 @@ public class DriverDashboard extends JFrame {
 						
 						JSeparator separator = new JSeparator();
 						separator.setForeground(whiteShade);
-						separator.setBounds(50, 490, 200, 17);
+						separator.setBounds(50, 560, 200, 17);
 						sidePanel.add(separator);
 						
 						JSeparator separator_1 = new JSeparator();
-						separator_1.setBounds(50, 290, 200, 17);
+						separator_1.setBounds(50, 220, 200, 17);
 						sidePanel.add(separator_1);
 						separator_1.setForeground(whiteShade);
 						
 						JPanel userInfoPanel = new JPanel();
-						userInfoPanel.setBounds(0, 90, 300, 70);
+						userInfoPanel.setBounds(40, 90, 260, 70);
 						userInfoPanel.setBackground(Color.PINK);
 						sidePanel.add(userInfoPanel);
 						userInfoPanel.setLayout(null);
 						
-						JLabel usernameLbl = new JLabel("Welcome, " + SessionHelper.isLoggedIn.getFirstname());
-						usernameLbl.setBounds(60, 10, 230, 50);
+						JLabel usernameLbl = new JLabel(SessionHelper.isLoggedIn.getFirstname());
+						usernameLbl.setBounds(60, 10, 200, 50);
 						userInfoPanel.add(usernameLbl);
 						setLblFont(usernameLbl);
 						
 						roleIconLbl = new JLabel(roleIcon);
-						roleIconLbl.setBounds(40, 10, 40, 40);
+						roleIconLbl.setBounds(0, 10, 40, 40);
 						userInfoPanel.add(roleIconLbl);
 						
 						
@@ -338,14 +391,13 @@ public class DriverDashboard extends JFrame {
 	}
 	
 	private void setLblFont(JLabel lbl) {
-		lbl.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl.setForeground(whiteShade);
 		lbl.setFont(new Font("Javanese Text", Font.PLAIN, 18));
 	}
 	
 	private void toggleSideNav( ) {
 		this.sideNavActive = ! this.sideNavActive;
-		sidePanel.setVisible(sideNavActive);	
+		sidePanel.setVisible(sideNavActive);
 		recalculatePanelsWidth();
 	}
 	

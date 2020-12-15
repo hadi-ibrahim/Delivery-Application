@@ -265,7 +265,7 @@ public class Home extends JFrame {
 			public void mousePressed(MouseEvent e) {
 				if(signIn()) {
 					if(SessionHelper.isLoggedIn.getRole() == Role.CUSTOMER) {
-						CustomerDashboard frame = new CustomerDashboard(self.getX(),self.getY());
+						DashBoardCustomer frame = new DashBoardCustomer(self.getX(),self.getY());
 						frame.setVisible(true);
 						 frame.addWindowListener(new java.awt.event.WindowAdapter() {
 					            @Override
@@ -276,7 +276,7 @@ public class Home extends JFrame {
 					        });
 					}
 					else if (SessionHelper.isLoggedIn.getRole() == Role.DRIVER) {
-						DriverDashboard frame = new DriverDashboard(self.getX(),self.getY());
+						DashBoardDriver frame = new DashBoardDriver(self.getX(),self.getY());
 						frame.setVisible(true);
 						 frame.addWindowListener(new java.awt.event.WindowAdapter() {
 					            @Override
@@ -287,7 +287,7 @@ public class Home extends JFrame {
 					        });
 					}
 					else if (SessionHelper.isLoggedIn.getRole()== Role.ADMIN) {
-						AdminDashboard frame = new AdminDashboard(self.getX(),self.getY());
+						DashBoardAdmin frame = new DashBoardAdmin(self.getX(),self.getY());
 						frame.setVisible(true);
 						 frame.addWindowListener(new java.awt.event.WindowAdapter() {
 					            @Override
