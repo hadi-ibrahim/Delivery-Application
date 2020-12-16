@@ -201,9 +201,11 @@ public class DriverManageOrders extends JPanel {
 						userManager.update(SessionHelper.isLoggedIn);
 						isActive=false;
 						RefreshManageOrderPane();
+						notification.setForeground(emerald);
 						notification.setText("Order Delivery Completed!");
 					}
 					else {
+						notification.setForeground(tomato);
 						notification.setText("You cannot complete the order before confirming items pickup.");
 					}
 				}
@@ -244,9 +246,14 @@ public class DriverManageOrders extends JPanel {
 					orderManager.addRouteCheckpoint(routeCheckpoint);
 					orderManager.update(order);
 					userManager.update(SessionHelper.isLoggedIn);
+					notification.setForeground(emerald);
 					notification.setText("Driver location updated");
 				}
-				else notification.setText("You must accept an order first");
+				
+				else {
+					notification.setForeground(tomato);
+					notification.setText("You must accept an order first");
+				}
 			}
 		});
 		add(updateBtn);
@@ -266,6 +273,7 @@ public class DriverManageOrders extends JPanel {
 	public void RefreshManageOrderPane() {
 
 		if (SessionHelper.isLoggedIn.getDriverStatus() != DriverStatus.BUSY || isActive==false) {
+			notification.setForeground(tomato);
 			notification.setText("You did not accept an order yet");
 			txtCustName.setText("No order");
 			txtPhoneNumber.setText("No Order");
