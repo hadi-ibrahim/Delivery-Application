@@ -77,7 +77,7 @@ public class DriverManageOrders extends JPanel {
 	private JLabel txtPhoneNumber;
 
 	private Order order = new Order();
-	private boolean isActive = false;
+	public boolean isActive = false;
 	private StockManager stockManager = new StockManager();
 	private OrderManager orderManager = new OrderManager();
 	private UserManager userManager = new UserManager();
@@ -199,12 +199,13 @@ public class DriverManageOrders extends JPanel {
 						orderManager.addRouteCheckpoint(routeCheckpoint);
 						orderManager.finish(order);
 						userManager.update(SessionHelper.isLoggedIn);
+						isActive=false;
 						RefreshManageOrderPane();
 						notification.setText("Order Delivery Completed!");
 					}
-				}
-				else {
-					notification.setText("You cannot complete the order before confirming items pickup.");
+					else {
+						notification.setText("You cannot complete the order before confirming items pickup.");
+					}
 				}
 			}
 		});
@@ -264,11 +265,13 @@ public class DriverManageOrders extends JPanel {
 
 	public void RefreshManageOrderPane() {
 
-		if (SessionHelper.isLoggedIn.getDriverStatus() != DriverStatus.BUSY) {
+		if (SessionHelper.isLoggedIn.getDriverStatus() != DriverStatus.BUSY || isActive==false) {
 			notification.setText("You did not accept an order yet");
+			txtCustName.setText("No order");
+			txtPhoneNumber.setText("No Order");
 		} else {
-			notification.setText("");
 			isActive = true;
+			notification.setText("");
 			order = (Order) orderManager.getActive(SessionHelper.isLoggedIn);
 			ArrayList<IDTO> orderedItems = orderManager.getOrderOrderedItems(order);
 			ArrayList<OrderedWarehouseItem> temp = new ArrayList<OrderedWarehouseItem>();

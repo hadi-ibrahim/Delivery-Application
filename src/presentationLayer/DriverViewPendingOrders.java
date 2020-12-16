@@ -157,6 +157,7 @@ public class DriverViewPendingOrders extends JPanel {
 						notification.setText("Successfully accepted, be safe :)");
 						notification.setForeground(emerald);
 						RefreshOrdersTable();
+						driverManageOrders.isActive=true;
 						driverManageOrders.RefreshManageOrderPane();
 
 					}
