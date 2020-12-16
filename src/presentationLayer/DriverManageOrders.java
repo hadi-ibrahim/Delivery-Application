@@ -200,7 +200,7 @@ public class DriverManageOrders extends JPanel {
 						orderManager.finish(order);
 						userManager.update(SessionHelper.isLoggedIn);
 						RefreshManageOrderPane();
-						notification.setText("");
+						notification.setText("Order Delivery Completed!");
 					}
 				}
 				else {
@@ -243,7 +243,9 @@ public class DriverManageOrders extends JPanel {
 					orderManager.addRouteCheckpoint(routeCheckpoint);
 					orderManager.update(order);
 					userManager.update(SessionHelper.isLoggedIn);
+					notification.setText("Driver location updated");
 				}
+				else notification.setText("You must accept an order first");
 			}
 		});
 		add(updateBtn);
