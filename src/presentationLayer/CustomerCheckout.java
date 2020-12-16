@@ -40,6 +40,7 @@ import jiconfont.swing.IconFontSwing;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -211,6 +212,13 @@ public class CustomerCheckout extends JPanel {
 		totalTxt.setFont(new Font("Javanese Text", Font.PLAIN, 14));
 		totalTxt.setBounds(400, 450, 90, 40);
 		add(totalTxt);
+		
+		JLabel invoiceIconLbl = new JLabel("");
+		invoiceIconLbl.setHorizontalAlignment(SwingConstants.CENTER);
+		invoiceIconLbl.setBounds(451, 101, 225, 225);
+		invoiceIconLbl.setIcon(new ImageIcon(AdminAddWarehouses.class.getResource("/presentationLayer/images/invoice.png")));
+
+		add(invoiceIconLbl);
 		
 
 

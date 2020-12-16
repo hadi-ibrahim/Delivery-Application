@@ -42,6 +42,7 @@ import jiconfont.swing.IconFontSwing;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -103,25 +104,46 @@ public class DriverManageOrders extends JPanel {
 		notification.setBounds(50, 610, 680, 50);
 		add(notification);
 		
-		JLabel lblCustName = new JLabel("New label");
-		lblCustName.setBounds(114, 149, 42, 13);
+		JLabel lblCustName = new JLabel("Customer Name");
+		lblCustName.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		lblCustName.setBounds(100, 149, 100, 40);
 		add(lblCustName);
 
-		JLabel lblPhoneNumber = new JLabel("New label");
-		lblPhoneNumber.setBounds(114, 200, 42, 13);
+		JLabel lblPhoneNumber = new JLabel("Phone Number");
+		lblPhoneNumber.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		lblPhoneNumber.setBounds(100, 200, 100, 40);
 		add(lblPhoneNumber);
 
-		txtCustName = new JLabel("New label");
-		txtCustName.setBounds(264, 149, 42, 13);
+		txtCustName = new JLabel("-");
+		txtCustName.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		txtCustName.setBounds(250, 147, 150, 40);
 		add(txtCustName);
 
-		txtPhoneNumber = new JLabel("New label");
-		txtPhoneNumber.setBounds(264, 200, 42, 13);
+		txtPhoneNumber = new JLabel("-");
+		txtPhoneNumber.setFont(new Font("Javanese Text", Font.PLAIN, 14));
+		txtPhoneNumber.setBounds(250, 198, 154, 40);
 		add(txtPhoneNumber);
 		
-		JButton pickupBtn = new JButton("New button");
+		JButton pickupBtn = new JButton("Pickup");
+		pickupBtn.setForeground(Color.WHITE);
+		pickupBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		pickupBtn.setBackground(new Color(241, 57, 83));
+		pickupBtn.setBounds(100, 431, 150, 40);
 		pickupBtn.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				pickupBtn.setBackground(tertiaryPink);
+				setCursor(pointer);
+
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				pickupBtn.setBackground(secondaryPink);
+				setCursor(arrow);
+
+			}
+			@Override
+			public void mousePressed(MouseEvent e ) {
 				if (isActive) {
 					OrderedWarehouseItem orderedItem = order.getOrderedItems().get(0);
 					WarehouseItem warehouseItem = stockManager.get(orderedItem.getIdWarehouseItem());
@@ -136,44 +158,78 @@ public class DriverManageOrders extends JPanel {
 					orderManager.addRouteCheckpoint(routeCheckpoint);
 					orderManager.update(order);
 					userManager.update(SessionHelper.isLoggedIn);
+					notification.setText("Order picked up!");
+					notification.setForeground(emerald);
 
 				}
 			}
 		});
-		pickupBtn.setBounds(95, 399, 83, 21);
 		add(pickupBtn);
-
-		JButton finishBtn = new JButton("New button");
+		
+		JButton finishBtn = new JButton("Finish");
+		finishBtn.setForeground(Color.WHITE);
+		finishBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		finishBtn.setBackground(new Color(241, 57, 83));
+		finishBtn.setBounds(300, 431, 150, 40);
 		finishBtn.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				finishBtn.setBackground(tertiaryPink);
+				setCursor(pointer);
+
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				finishBtn.setBackground(secondaryPink);
+				setCursor(arrow);
+
+			}
+			@Override
+			public void mousePressed(MouseEvent e ) {
 				if (isActive) {
 					if(order.getStatus()==OrderStatus.DELIVERING) {
-					SessionHelper.isLoggedIn.setLocation(order.getLocationDestination());
-					RouteCheckpoint routeCheckpoint = new RouteCheckpoint();
-					routeCheckpoint.setIdOrder(order.getId());
-					routeCheckpoint.setIsDeleted(0);
-					SessionHelper.isLoggedIn.setDriverStatus(DriverStatus.AVAILABLE);
-					SessionHelper.isLoggedIn.setLocation(order.getLocationDestination());
-					routeCheckpoint.setLocation(SessionHelper.isLoggedIn.getLocation());
-					order.setOrderStatus(OrderStatus.COMPLETED);
-					orderManager.addRouteCheckpoint(routeCheckpoint);
-					orderManager.finish(order);
-					userManager.update(SessionHelper.isLoggedIn);
-					RefreshManageOrderPane();
-					notification.setText("");
+						SessionHelper.isLoggedIn.setLocation(order.getLocationDestination());
+						RouteCheckpoint routeCheckpoint = new RouteCheckpoint();
+						routeCheckpoint.setIdOrder(order.getId());
+						routeCheckpoint.setIsDeleted(0);
+						SessionHelper.isLoggedIn.setDriverStatus(DriverStatus.AVAILABLE);
+						SessionHelper.isLoggedIn.setLocation(order.getLocationDestination());
+						routeCheckpoint.setLocation(SessionHelper.isLoggedIn.getLocation());
+						order.setOrderStatus(OrderStatus.COMPLETED);
+						orderManager.addRouteCheckpoint(routeCheckpoint);
+						orderManager.finish(order);
+						userManager.update(SessionHelper.isLoggedIn);
+						RefreshManageOrderPane();
+						notification.setText("");
+					}
 				}
-				}else {
+				else {
 					notification.setText("You cannot complete the order before confirming items pickup.");
 				}
 			}
 		});
-		finishBtn.setBounds(264, 399, 83, 21);
-
 		add(finishBtn);
-
-		JButton updateBtn = new JButton("New button");
+		
+		JButton updateBtn = new JButton("Update");
+		updateBtn.setForeground(Color.WHITE);
+		updateBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
+		updateBtn.setBackground(new Color(241, 57, 83));
+		updateBtn.setBounds(500, 431, 150, 40);
 		updateBtn.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				updateBtn.setBackground(tertiaryPink);
+				setCursor(pointer);
+
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				updateBtn.setBackground(secondaryPink);
+				setCursor(arrow);
+
+			}
+			@Override
+			public void mousePressed(MouseEvent e ) {
 				if (isActive) {
 					OrderedWarehouseItem orderedItem = order.getOrderedItems().get(0);
 					WarehouseItem warehouseItem = stockManager.get(orderedItem.getIdWarehouseItem());
@@ -190,8 +246,14 @@ public class DriverManageOrders extends JPanel {
 				}
 			}
 		});
-		updateBtn.setBounds(429, 399, 83, 21);
 		add(updateBtn);
+		
+		JLabel driverIconLbl = new JLabel("");
+		driverIconLbl.setHorizontalAlignment(SwingConstants.CENTER);
+		driverIconLbl.setBounds(450, 35, 300, 300);
+		driverIconLbl.setIcon(new ImageIcon(AdminAddWarehouses.class.getResource("/presentationLayer/images/food-restaurant.png")));
+
+		add(driverIconLbl);
 
 
 		RefreshManageOrderPane();
