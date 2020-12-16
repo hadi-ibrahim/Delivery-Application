@@ -185,6 +185,20 @@ public class RepoUser implements IRepo,ISoftDeletable {
 		}
 		return true;
 	}
+	
+	public boolean emailExists(String email) {
+		try {
+			ps = con.prepareStatement("SELECT * FROM user WHERE email LIKE ?");
+			ps.setString(1, email);
+			rs = ps.executeQuery();
+			if(rs.next())
+				return true;
+		} catch (SQLException ex) {
+			System.out.println(ex);
+		}
+		return false;
+	}
+
 
 	@SuppressWarnings("deprecation")
 	@Override

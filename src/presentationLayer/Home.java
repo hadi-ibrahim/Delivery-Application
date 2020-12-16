@@ -11,6 +11,7 @@ import DTO.User;
 import Helpers.SessionHelper;
 import businessLogicLayer.InputManager;
 import businessLogicLayer.Registration;
+import businessLogicLayer.UserManager;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -44,6 +45,7 @@ public class Home extends JFrame {
 	private JPanel signInPanel = new JPanel();
 	private Registration registration = new Registration();
 	private JFrame self = this;
+	private UserManager userManager = new UserManager();
 
 	private JTextField ageField;
 	private JTextField phoneNumberField;
@@ -464,7 +466,10 @@ public class Home extends JFrame {
 				signUpNotification.setForeground(tomato);
 				signUpNotification.setText("Invalid password");
 			}
-	
+			else if(userManager.emailExists(user.getEmail())) {
+				signUpNotification.setForeground(tomato);
+				signUpNotification.setText("Email already exists");
+			}
 	
 			else {		
 				user= registration.signUp(user);
