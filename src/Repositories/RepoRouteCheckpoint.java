@@ -96,11 +96,10 @@ public class RepoRouteCheckpoint implements IRepo, ISoftDeletable {
 		RouteCheckpoint routeCheckpoint = (RouteCheckpoint) dto;
 		try {
 			ps = con.prepareStatement(
-					"Insert into routeCheckpoint(id, idOrder, time, longitude, latitude , isDeleted) VALUES(NULL,?,NOW(),?,?,0");
+					"Insert into routeCheckpoint(idOrder, time, longitude, latitude , isDeleted) VALUES(?,NOW(),?,?,0)");
 			ps.setInt(1, routeCheckpoint.getIdOrder());
-			ps.setTimestamp(2, routeCheckpoint.getTime());
-			ps.setDouble(3,routeCheckpoint.getLocation().getLongitude());
-			ps.setDouble(4, routeCheckpoint.getLocation().getLatitude());
+			ps.setDouble(2,routeCheckpoint.getLocation().getLongitude());
+			ps.setDouble(3, routeCheckpoint.getLocation().getLatitude());
 			System.out.println(ps.executeUpdate() + " record(s) created");
 			return true;
 		} catch (SQLException e) {

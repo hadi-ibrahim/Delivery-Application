@@ -123,6 +123,7 @@ public class AdminAddWarehouses extends JPanel {
 					displayPanel.RefreshItemTable();
 					resultLbl.setText("Warhouse added successfully!");
 					resultLbl.setForeground(emerald);
+					lblVerified.setVisible(false);
 					}
 				}
 		});
@@ -228,14 +229,8 @@ public class AdminAddWarehouses extends JPanel {
 		cards.show(mainPanel, name);
 	}
 	
-//	private double strToDouble(String str) {
-//		DecimalFormat formatter = new DecimalFormat("#000.00000000");
-//		Double dble = new Double(str.valueOf(str));
-//		System.out.println(formatter.format(dble));
-//	}
 	private Warehouse createWarehouseFromFields() {
 		Warehouse warehouse = new Warehouse(txtName.getText(),Double.valueOf(txtLongitude.getText()),Double.valueOf(txtLatitude.getText()));
-		System.out.println(warehouse.getLongitude());
 		return warehouse;
 	}
 }

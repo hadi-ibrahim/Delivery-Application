@@ -89,23 +89,6 @@ public class CustomerTrackOrders extends JPanel {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-			        JFrame f = new JFrame();
-			        f.setUndecorated(true);
-			        f.setSize( 780, 670);
-			        f.setTitle("Sometimes Red, Sometimes Blue");
-			        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			        f.getContentPane().add(new AdminManageItems(new JPanel()));
-			        f.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
@@ -228,6 +211,13 @@ public class CustomerTrackOrders extends JPanel {
 				if (row >= 0) {
 					String id = tblOrders.getModel().getValueAt(row, column).toString();
 					Order order= orderManager.get(Integer.parseInt(id));
+					ArrayList<IDTO> orderedItems = orderManager.getOrderOrderedItems(order);
+					ArrayList<OrderedWarehouseItem> temp = new ArrayList<OrderedWarehouseItem>();
+					for(IDTO dto : orderedItems) {
+						OrderedWarehouseItem orderedItem = (OrderedWarehouseItem) dto;
+						temp.add(orderedItem);
+					}
+					order.setOrderedItems(temp);
 					if (order.getStatus()!= OrderStatus.PENDING) {
 						OrderedWarehouseItem item = order.getOrderedItems().get(0);
 						WarehouseItem warehouseItem = stockManager.get(item.getIdWarehouseItem());
@@ -264,7 +254,7 @@ public class CustomerTrackOrders extends JPanel {
 			}
 		};
 		
-		ArrayList<IDTO> orders = orderManager.getAllByUser(SessionHelper.isLoggedIn.getId());
+		ArrayList<IDTO> orders = orderManager.getAllNotFinishedByUser(SessionHelper.isLoggedIn.getId());
 		if(orders.isEmpty()) {
 			model.addRow(new Object[] {"","","","","","","","","",""});
 		}

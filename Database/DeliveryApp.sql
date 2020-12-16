@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `deliveryapp` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `deliveryapp`;
 -- MySQL dump 10.13  Distrib 8.0.21, for Win64 (x86_64)
 --
 -- Host: localhost    Database: deliveryapp
@@ -36,7 +34,7 @@ CREATE TABLE `address` (
   PRIMARY KEY (`id`),
   KEY `fkUser_idx` (`idUser`),
   CONSTRAINT `fkUserAddress` FOREIGN KEY (`idUser`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,38 +43,8 @@ CREATE TABLE `address` (
 
 LOCK TABLES `address` WRITE;
 /*!40000 ALTER TABLE `address` DISABLE KEYS */;
-INSERT INTO `address` VALUES (1,1,NULL,NULL,'UA',NULL,22.44000000,23.66600000),(2,1,'Elias al Herawi','Furn al chebbek','Residence de la ville','2nd floor',55.12312400,180.24242000),(3,1,NULL,NULL,NULL,NULL,22.44000000,23.66600000),(4,1,'Elias al Herawi','Furn al chebbek','Residence de la ville','2nd floor',55.12312400,180.24242000),(5,1,NULL,NULL,NULL,NULL,22.44000000,23.66600000),(6,1,'Elias al Herawi','Furn al chebbek','Residence de la ville','2nd floor',55.12312400,180.24242000),(7,1,NULL,NULL,NULL,NULL,22.44000000,23.66600000),(8,1,'Elias al Herawi','Furn al chebbek','Residence de la ville','2nd floor',55.12312400,180.24242000);
+INSERT INTO `address` VALUES (9,1,'Main Rd','Nabay','Emile Ghoul Bldg','Floor 1',35.61736390,33.89799255),(10,1,'Hadath','Hadath','','',35.53621070,33.83463376);
 /*!40000 ALTER TABLE `address` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `feedback`
---
-
-DROP TABLE IF EXISTS `feedback`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `feedback` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `idUser` int NOT NULL,
-  `idOrder` int NOT NULL,
-  `description` varchar(300) NOT NULL,
-  `isDeleted` tinyint NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_user_has_order_order1_idx` (`idOrder`),
-  KEY `fk_user_has_order_user1_idx` (`idUser`),
-  CONSTRAINT `fk_user_has_order_order1` FOREIGN KEY (`idOrder`) REFERENCES `order` (`id`),
-  CONSTRAINT `fk_user_has_order_user1` FOREIGN KEY (`idUser`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `feedback`
---
-
-LOCK TABLES `feedback` WRITE;
-/*!40000 ALTER TABLE `feedback` DISABLE KEYS */;
-/*!40000 ALTER TABLE `feedback` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -93,7 +61,7 @@ CREATE TABLE `item` (
   `description` varchar(100) NOT NULL,
   `isDeleted` tinyint NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +70,7 @@ CREATE TABLE `item` (
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
-INSERT INTO `item` VALUES (1,'GROCERY',12.00,'2',0),(2,'WEAPON',23.00,'212',1),(3,'GROCERY',4.00,'3',0),(4,'WEAPON',231.00,'313',1),(5,'FOOD',2.00,'3',0),(6,'FOOD',142.00,'342',1),(7,'GROCERY',231.00,'test',1),(8,'FOOD',12.00,'test',0),(9,'FOOD',231.00,'214',1),(10,'FOOD',12.00,'12',0),(11,'FOOD',15.30,'Heart attack burger',1),(12,'FOOD',15.30,'Heart attack burger',0),(13,'FOOD',15.30,'Heart attack burger',1),(14,'FOOD',15.30,'Heart attack burger',0),(15,'GROCERY',85.00,'15',0);
+INSERT INTO `item` VALUES (18,'FOOD',7.50,'Labneh Box 500G',0),(19,'FOOD',20.00,'Chicken Breasts 1KG',0),(20,'GROCERY',25.00,'Persil 20KG',0),(21,'GROCERY',5.00,'Toothbrush Colgate',0),(22,'WEAPON',30.00,'Shovel',0),(23,'WEAPON',25.00,'Razor',0);
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,13 +91,13 @@ CREATE TABLE `order` (
   `dateEnd` timestamp NULL DEFAULT NULL,
   `orderStatus` varchar(45) NOT NULL,
   `totalAmount` decimal(9,2) NOT NULL,
-  `isDeleted` tinyint NOT NULL,
+  `isDeleted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `fk_order_user2_idx` (`idCustomer`),
   KEY `fk_order_driver_idx` (`idDriver`),
   CONSTRAINT `fk_order_customer` FOREIGN KEY (`idCustomer`) REFERENCES `user` (`id`),
   CONSTRAINT `fk_order_driver` FOREIGN KEY (`idDriver`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,6 +106,7 @@ CREATE TABLE `order` (
 
 LOCK TABLES `order` WRITE;
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
+INSERT INTO `order` VALUES (3,1,2,35.61736390,33.89799255,'2020-12-16 00:36:08',NULL,'COMPLETED',37.50,0),(4,1,2,35.53621070,33.83463376,'2020-12-16 00:38:57','2020-12-16 00:58:36','COMPLETED',140.00,0),(5,1,2,35.61736390,33.89799255,'2020-12-16 01:05:44','2020-12-16 01:08:15','COMPLETED',37.50,0),(6,1,2,35.53621070,33.83463376,'2020-12-16 01:08:08',NULL,'ACCEPTED',7.50,0);
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -159,7 +128,7 @@ CREATE TABLE `orderedwarehouseitem` (
   KEY `fk_orderedWarehouseItem_warehouseItem1_idx` (`idWarehouseItem`),
   CONSTRAINT `fk_order_has_warehouseItem_order1` FOREIGN KEY (`idOrder`) REFERENCES `order` (`id`),
   CONSTRAINT `fk_orderedWarehouseItem_warehouseItem1` FOREIGN KEY (`idWarehouseItem`) REFERENCES `warehouseitem` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -168,6 +137,7 @@ CREATE TABLE `orderedwarehouseitem` (
 
 LOCK TABLES `orderedwarehouseitem` WRITE;
 /*!40000 ALTER TABLE `orderedwarehouseitem` DISABLE KEYS */;
+INSERT INTO `orderedwarehouseitem` VALUES (6,8,3,5,7.50),(7,15,4,2,25.00),(8,16,4,3,30.00),(9,17,5,5,7.50),(10,8,6,1,7.50);
 /*!40000 ALTER TABLE `orderedwarehouseitem` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,13 +152,13 @@ CREATE TABLE `routecheckpoint` (
   `id` int NOT NULL AUTO_INCREMENT,
   `idOrder` int NOT NULL,
   `time` timestamp NOT NULL,
-  `longitutde` decimal(11,8) NOT NULL,
+  `longitude` decimal(11,8) NOT NULL,
   `latitude` decimal(11,8) NOT NULL,
   `isDeleted` tinyint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_routePointsTaken_order1_idx` (`idOrder`),
   CONSTRAINT `fk_routePointsTaken_order1` FOREIGN KEY (`idOrder`) REFERENCES `order` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -197,6 +167,7 @@ CREATE TABLE `routecheckpoint` (
 
 LOCK TABLES `routecheckpoint` WRITE;
 /*!40000 ALTER TABLE `routecheckpoint` DISABLE KEYS */;
+INSERT INTO `routecheckpoint` VALUES (9,3,'2020-12-16 00:47:20',35.25450830,33.32428194,0),(10,3,'2020-12-16 00:47:42',35.27899190,33.39534137,0),(11,3,'2020-12-16 00:47:59',35.31822900,33.46160672,0),(12,3,'2020-12-16 00:48:20',35.44825260,33.70254359,0),(13,3,'2020-12-16 00:48:22',35.53976250,33.88893967,0),(14,3,'2020-12-16 00:48:42',35.54843930,33.88555131,0),(15,3,'2020-12-16 00:48:57',35.56663920,33.89663320,0),(16,3,'2020-12-16 00:48:58',35.61736390,33.89799255,0),(18,4,'2020-12-16 00:58:35',35.68166740,33.92058059,0),(19,4,'2020-12-16 00:58:36',35.53621070,33.83463376,0),(20,5,'2020-12-16 01:05:56',35.82286810,34.44422900,0),(21,5,'2020-12-16 01:08:15',35.61736390,33.89799255,0);
 /*!40000 ALTER TABLE `routecheckpoint` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -222,7 +193,7 @@ CREATE TABLE `user` (
   `isDeleted` tinyint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `eMail_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -231,7 +202,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'1','1','1','1','$2a$12$rmMNEOL5alPKOm6CNjTslOBJWZmro5k1KR2NZH88X.K.cWtOsZdXu','11',NULL,NULL,'CUSTOMER',NULL,0),(2,'Courier','Swindler','2','2','$2a$12$.V1cpHQ70B3Y5G28uE4N8.MkwaJRvReu4KtGYltG3Np0Uf07zL5yG','2',23.23234240,130.23310000,'DRIVER','AVAILABLE',0),(3,'3','3','3','3','$2a$12$nXs1PpymlGJNdmmx4L2fX.fg69A1RRY7YrvVOL2LvMUZDqP6P9d/i','3',NULL,NULL,'ADMIN',NULL,0),(4,'Fatima','Ibrahim','31','toutydroid@gmail.com','$2a$12$HVbFoqsxx8F8AKhQ7HEpf.4wCVp4SumxPR/9WzVZ5EvBWmyOQcCYi','76805019',NULL,NULL,'CUSTOMER',NULL,0);
+INSERT INTO `user` VALUES (1,'Customer','Ghoul','21','1','$2a$12$rmMNEOL5alPKOm6CNjTslOBJWZmro5k1KR2NZH88X.K.cWtOsZdXu','11',NULL,NULL,'CUSTOMER',NULL,0),(2,'Courier','Swindler','2','2','$2a$12$.V1cpHQ70B3Y5G28uE4N8.MkwaJRvReu4KtGYltG3Np0Uf07zL5yG','2',35.61736390,33.89799255,'DRIVER','BUSY',0),(3,'ADMIN','ADMIN','3','3','$2a$12$nXs1PpymlGJNdmmx4L2fX.fg69A1RRY7YrvVOL2LvMUZDqP6P9d/i','3',NULL,NULL,'ADMIN',NULL,0),(4,'Fatima','Ibrahim','31','toutydroid@gmail.com','$2a$12$HVbFoqsxx8F8AKhQ7HEpf.4wCVp4SumxPR/9WzVZ5EvBWmyOQcCYi','70123768',NULL,NULL,'CUSTOMER',NULL,0),(6,'david','ghoul','21','david_ghoul@hotmail.com','$2a$12$kVARRY68sedlHRpMPWFzg.JPyChWD2HdxYbA1uoPqH6PtdwIRFj1O','12345678',NULL,NULL,'CUSTOMER',NULL,0),(7,'David','Test321','21','test123@gmail.com','$2a$12$Q2fj82SH9vkRfAm9.LT/.ulFLU/CKl.nBsNfAmyrOT4hQ1rjRSgSC','70123456',NULL,NULL,'CUSTOMER',NULL,0),(9,'Courier','Driver2','25','driver2@gmail.com','$2a$12$hY4Vi3LUSWEfzhEq/uMQjuE0Zb34ZN.bW2VDho11q0TAB..Ob4Ory','12345679',NULL,NULL,'DRIVER',NULL,0),(10,'Driver 3 ','Courrier','35','driver3@gmail.com','$2a$12$6STKAAb9hulyLh.P7y3daO2mntNu7.FL4TEQJa5oZccqBveTrGRKW','14235768',NULL,NULL,'DRIVER',NULL,0),(11,'Driver 4','Courrier','21','Driver4@gmail.com','$2a$12$glCj42ISUcRx4M4KcKJzKuzR6h7Syum1wIP7gIxMD.Z3KKaiGTk72','15643728',NULL,NULL,'DRIVER',NULL,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -249,7 +220,7 @@ CREATE TABLE `warehouse` (
   `longitude` decimal(11,8) NOT NULL,
   `latitude` decimal(11,8) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -258,7 +229,7 @@ CREATE TABLE `warehouse` (
 
 LOCK TABLES `warehouse` WRITE;
 /*!40000 ALTER TABLE `warehouse` DISABLE KEYS */;
-INSERT INTO `warehouse` VALUES (1,'Carrefour',0,123.00000000,12.00000000),(2,'Junkies',1,123.23000000,12.00000000),(4,'Home',0,35.52240095,33.87492245),(5,'21',0,35.53292774,33.87255912),(6,'213',0,35.88723682,33.91188747),(7,'132',1,35.49996876,33.81781125),(8,'jounieh',0,35.65309070,33.94208389),(9,'matar beirut',0,35.49267060,33.81902263),(10,'tewifewfe',1,35.53361430,33.85716482),(11,'Beriut Airport',0,35.49450700,33.81924747);
+INSERT INTO `warehouse` VALUES (13,'Burj Hammoud',0,35.53976250,33.88893967),(14,'Bikfaya',0,35.68166740,33.92058059),(15,'Tripolo',0,35.82286810,34.44422900);
 /*!40000 ALTER TABLE `warehouse` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -280,7 +251,7 @@ CREATE TABLE `warehouseitem` (
   KEY `fk_warehouse_has_item_warehouse1_idx` (`idWarehouse`),
   CONSTRAINT `fk_warehouse_has_item_item1` FOREIGN KEY (`idItem`) REFERENCES `item` (`id`),
   CONSTRAINT `fk_warehouse_has_item_warehouse1` FOREIGN KEY (`idWarehouse`) REFERENCES `warehouse` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -289,7 +260,7 @@ CREATE TABLE `warehouseitem` (
 
 LOCK TABLES `warehouseitem` WRITE;
 /*!40000 ALTER TABLE `warehouseitem` DISABLE KEYS */;
-INSERT INTO `warehouseitem` VALUES (1,1,1,100,0);
+INSERT INTO `warehouseitem` VALUES (8,13,18,99,0),(9,13,19,50,0),(10,13,20,20,0),(11,13,21,250,0),(12,13,22,10,0),(13,13,23,35,0),(14,14,18,10,0),(15,14,20,10,0),(16,14,22,5,0),(17,15,18,350,0);
 /*!40000 ALTER TABLE `warehouseitem` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -302,4 +273,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-15 16:12:52
+-- Dump completed on 2020-12-16  3:09:23

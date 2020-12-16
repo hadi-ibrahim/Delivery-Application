@@ -102,11 +102,13 @@ public class DashBoardDriver extends JFrame {
 		mainPanel.setBounds(300, 50, 780, 670);
 		mainPanel.setBackground(Color.WHITE);
 		contentPane.add(mainPanel);
+		mainPanel.setLayout(new CardLayout(0, 0));
+		DriverManageOrders driverManageOrders = new DriverManageOrders();
 		
-		DriverViewPendingOrders driverViewOrders = new DriverViewPendingOrders(mainPanel);
+		DriverViewPendingOrders driverViewOrders = new DriverViewPendingOrders(mainPanel,driverManageOrders);
 		mainPanel.add(driverViewOrders, "driverPendingOrders");
 		
-		DriverManageOrders driverManageOrders = new DriverManageOrders();
+		
 		mainPanel.add(driverManageOrders, "driverManageOrders");
 		
 		switchMainPanel("driverPendingOrders");

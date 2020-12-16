@@ -33,7 +33,8 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		order.setEndDate(resultSet.getTimestamp("dateEnd"));
 		order.setOrderStatus(resultSet.getString("orderStatus"));
 		order.setTotalAmount(resultSet.getDouble("totalAmount"));
-		order.setLocationDestination(new Location(resultSet.getDouble("destinationLongitude"), resultSet.getDouble("destinationLatitude")));
+		order.setLocationDestination(
+				new Location(resultSet.getDouble("destinationLongitude"), resultSet.getDouble("destinationLatitude")));
 		return order;
 
 	}
@@ -41,7 +42,7 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 	@Override
 	public Order get(int id) {
 		try {
-			ps = con.prepareStatement("Select * From `order` where id= ? " );
+			ps = con.prepareStatement("Select * From `order` where id= ? ");
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			if (rs.next())
@@ -68,12 +69,12 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		return orders;
 
 	}
-	
+
 	public ArrayList<IDTO> getAllPending() {
 		ArrayList<IDTO> orders = new ArrayList<IDTO>();
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("Select * From `order` WHERE STATUS LIKE 'PENDING'");
+			rs = stmt.executeQuery("Select * From `order` WHERE orderStatus LIKE 'PENDING'");
 			while (rs.next()) {
 				orders.add(extractOrderFromResultSet(rs));
 			}
@@ -83,24 +84,24 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		return orders;
 
 	}
-	
-	public ArrayList<IDTO> getActive(int idDriver) {
-		ArrayList<IDTO> orders = new ArrayList<IDTO>();
+
+	public IDTO getActive(int idDriver) {
 		try {
-			ps = con.prepareStatement("Select * From `order` WHERE idDriver =? AND (STATUS LIKE 'ACCEPTED' OR STATUS LIKE 'DELIVERING' )");
+			ps = con.prepareStatement(
+					"Select * From `order` WHERE idDriver =? AND (orderStatus LIKE 'ACCEPTED' OR orderStatus LIKE 'DELIVERING' )");
 			ps.setInt(1, idDriver);
 			rs = ps.executeQuery();
-			while (rs.next()) {
-				orders.add(extractOrderFromResultSet(rs));
+			if (rs.next()) {
+				return extractOrderFromResultSet(rs);
 			}
 		} catch (SQLException ex) {
 			System.out.println(ex);
-		}
-		return orders;
 
+		}
+		return null;
 	}
-	
-	public ArrayList<IDTO> getAllFinishedByUser(int id){
+
+	public ArrayList<IDTO> getAllFinishedByUser(int id) {
 		ArrayList<IDTO> orders = new ArrayList<IDTO>();
 		try {
 			ps = con.prepareStatement("Select * From `order` where idCustomer=? AND orderStatus LIKE ? ");
@@ -115,8 +116,8 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		}
 		return orders;
 	}
-	
-	public ArrayList<IDTO> getAllByUser(int id){
+
+	public ArrayList<IDTO> getAllByUser(int id) {
 		ArrayList<IDTO> orders = new ArrayList<IDTO>();
 		try {
 			ps = con.prepareStatement("Select * From `order` where idCustomer=? ");
@@ -130,7 +131,7 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		}
 		return orders;
 	}
-	
+
 	@Override
 	public ArrayList<IDTO> getAllActive() {
 		ArrayList<IDTO> orders = new ArrayList<IDTO>();
@@ -162,7 +163,20 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		return orders;
 
 	}
-	
+
+public ArrayList<IDTO> getAllNotFinishedByUser(int id) {
+	ArrayList<IDTO> orders = new ArrayList<IDTO>();
+	try {
+		stmt = con.createStatement();
+		rs = stmt.executeQuery("Select * From `order` where idCustomer="+id+" AND isDeleted=0 AND orderStatus NOT LIKE 'COMPLETED'");
+		while (rs.next()) {
+			orders.add(extractOrderFromResultSet(rs));
+		}
+	} catch (SQLException ex) {
+		System.out.println(ex);
+	}
+	return orders;
+	}
 	@Override
 	public boolean create(IDTO dto) {
 		Order order = (Order) dto;
@@ -182,11 +196,12 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		}
 
 	}
+
 	public int getLastId() {
 		try {
-			stmt= con.createStatement();
+			stmt = con.createStatement();
 			rs = stmt.executeQuery("select distinct last_insert_id() as lastId from `order`");
-			if(rs.next())
+			if (rs.next())
 				return Integer.parseInt(rs.getString("lastId"));
 
 		} catch (SQLException e) {
@@ -208,7 +223,7 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 			ps.setString(4, order.getStatus().name());
 			ps.setDouble(5, order.getTotalAmount());
 			ps.setInt(6, order.getId());
-			System.out.println(ps.executeUpdate() + " record(s) created");
+			System.out.println(ps.executeUpdate() + " record(s) updated");
 			return true;
 		} catch (SQLException e) {
 			System.out.println(e);
@@ -243,6 +258,21 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		}
 		return true;
 
+	}
+
+	public boolean finish(IDTO dto) {
+		Order order = (Order) dto;
+		try {
+			ps = con.prepareStatement(
+					"UPDATE `order` SET  dateEnd=NOW(),orderStatus = ? WHERE id =?");
+			ps.setString(1,OrderStatus.COMPLETED.toString());
+			ps.setDouble(2, order.getId());
+			System.out.println(ps.executeUpdate() + " record(s) updated");
+			return true;
+		} catch (SQLException e) {
+			System.out.println(e);
+			return false;
+		}
 	}
 
 	@SuppressWarnings("deprecation")
@@ -284,5 +314,5 @@ public class RepoOrder implements IRepo, ISoftDeletable {
 		}
 	}
 
-	
+
 }

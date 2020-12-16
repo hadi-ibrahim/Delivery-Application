@@ -113,7 +113,7 @@ public class RepoUser implements IRepo,ISoftDeletable {
 			ps.setInt(3, user.getAge());
 			ps.setString(4, user.getEmail());
 			ps.setString(5, BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray()));
-			ps.setString(6, Role.CUSTOMER.name());
+			ps.setString(6, user.getRole().name());
 			ps.setString(7, user.getPhone());
 
 			System.out.println(ps.executeUpdate() + " record(s) created");

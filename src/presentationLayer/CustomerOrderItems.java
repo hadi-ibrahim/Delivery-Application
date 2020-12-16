@@ -63,28 +63,11 @@ public class CustomerOrderItems extends JPanel {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-			        JFrame f = new JFrame();
-			        f.setUndecorated(true);
-			        f.setSize( 780, 670);
-			        f.setTitle("Sometimes Red, Sometimes Blue");
-			        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			        f.getContentPane().add(new CustomerOrderItems(new JPanel()));
-			        f.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
-	public CustomerOrderItems(JPanel mainPanel) {
+	public CustomerOrderItems(JPanel mainPanel,CustomerTrackOrders customerTrackOrders) {
 		super();
 		this.mainPanel = mainPanel;
 		
@@ -129,7 +112,7 @@ public class CustomerOrderItems extends JPanel {
 				if (row >= 0) {
 					String id = tblWarehouses.getModel().getValueAt(row, column).toString();
 					Warehouse warehouse= warehouseManager.get(Integer.parseInt(id));
-					JPanel userCheckWarehouseStock = new CustomerWarehouseStock(mainPanel, warehouse);
+					JPanel userCheckWarehouseStock = new CustomerWarehouseStock(mainPanel, warehouse,customerTrackOrders);
 					mainPanel.add(userCheckWarehouseStock,"warehouseStock");
 					switchMainPanel("warehouseStock");
 					notification.setText("");

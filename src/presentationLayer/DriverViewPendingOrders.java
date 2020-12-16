@@ -81,28 +81,11 @@ public class DriverViewPendingOrders extends JPanel {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-			        JFrame f = new JFrame();
-			        f.setUndecorated(true);
-			        f.setSize( 780, 670);
-			        f.setTitle("Sometimes Red, Sometimes Blue");
-			        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			        f.getContentPane().add(new AdminManageItems(new JPanel()));
-			        f.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
-	public DriverViewPendingOrders(JPanel mainPanel) {
+	public DriverViewPendingOrders(JPanel mainPanel,DriverManageOrders driverManageOrders) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.PLUS_CIRCLE	, 30, tertiaryPink);
@@ -173,6 +156,8 @@ public class DriverViewPendingOrders extends JPanel {
 						
 						notification.setText("Successfully accepted, be safe :)");
 						notification.setForeground(emerald);
+						RefreshOrdersTable();
+						driverManageOrders.RefreshManageOrderPane();
 
 					}
 					else {

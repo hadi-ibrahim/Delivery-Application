@@ -77,7 +77,7 @@ public class CustomerWarehouseStock extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public CustomerWarehouseStock(JPanel mainPanel,Warehouse warehouse) {
+	public CustomerWarehouseStock(JPanel mainPanel,Warehouse warehouse, CustomerTrackOrders customerTrackOrders) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.CART_PLUS	, 30, tertiaryPink);
@@ -144,7 +144,7 @@ public class CustomerWarehouseStock extends JPanel {
 			        int row = tblItems.getSelectedRow();
 			        if (row >= 0) {
 			            String id = tblItems.getModel().getValueAt(row, column).toString();
-			            Item item = itemManager.get(Integer.parseInt(id));
+			            Item item = itemManager.get(stockManager.get(Integer.parseInt(id)).getIdItem());
 			            String quantity = tblItems.getModel().getValueAt(row, 5).toString();
 
 			            if(InputManager.verifyPositiveInteger(quantity)) {
@@ -214,7 +214,7 @@ public class CustomerWarehouseStock extends JPanel {
 			}
 			@Override
 			public void mousePressed(MouseEvent e ) {
-					JPanel checkoutPanel = new CustomerCheckout(mainPanel, order);
+					JPanel checkoutPanel = new CustomerCheckout(mainPanel, order,customerTrackOrders);
 					mainPanel.add(checkoutPanel,"checkout");
 					switchMainPanel("checkout");
 					notification.setText("");

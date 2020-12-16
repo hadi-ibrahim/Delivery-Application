@@ -33,7 +33,7 @@ public class LocationManager {
 
 	public Location pickAddress() {
 		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
-		String HTMLPath = new File("src/businessLogicLayer/locationManager/AddressPicker.html").getAbsolutePath();
+		String HTMLPath = new File("src/businessLogicLayer/LocationManager/AddressPicker.html").getAbsolutePath();
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("window-size=1920,1080", "--app=" + HTMLPath);
 		WebDriver driver = new ChromeDriver(options);
@@ -122,7 +122,7 @@ public class LocationManager {
 		String driverLat = Double.toString(driverCar.getLocation().getLatitude());
 		String destinationLong = null;
 		String destinationLat = null;
-		if (order.getStatus() == OrderStatus.PENDING) {
+		if (order.getStatus() == OrderStatus.ACCEPTED) {
 			destinationLong = Double.toString(warehouse.getLongitude());
 			destinationLat = Double.toString(warehouse.getLatitude());
 		} else if (order.getStatus() == OrderStatus.DELIVERING) {
@@ -130,7 +130,7 @@ public class LocationManager {
 			destinationLat = Double.toString(order.getLocationDestination().getLatitude());
 		}
 		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
-		String HTMLPath = new File("src/businessLogicLayer/DriverTracking.html").getAbsolutePath();
+		String HTMLPath = new File("src/businessLogicLayer/LocationManager/DriverTracking.html").getAbsolutePath();
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("window-size=1920,1080", "--app=" + HTMLPath);
 		WebDriver driver = new ChromeDriver(options);
@@ -161,16 +161,18 @@ public class LocationManager {
 		String driverLat = Double.toString(driverCar.getLocation().getLatitude());
 		String destinationLong = null;
 		String destinationLat = null;
-		if (order.getStatus() == OrderStatus.PENDING) {
+		if (order.getStatus() == OrderStatus.ACCEPTED) {
 			destinationLong = Double.toString(warehouse.getLongitude());
 			destinationLat = Double.toString(warehouse.getLatitude());
+		
 
 		} else if (order.getStatus() == OrderStatus.DELIVERING) {
 			destinationLong = Double.toString(order.getLocationDestination().getLongitude());
 			destinationLat = Double.toString(order.getLocationDestination().getLatitude());
+			
 		}
 		System.setProperty("webdriver.chrome.driver", "src/Drivers/chromedriver.exe");
-		String HTMLPath = new File("src/businessLogicLayer/DriverLocationUpdater.html").getAbsolutePath();
+		String HTMLPath = new File("src/businessLogicLayer/LocationManager/DriverLocationUpdater.html").getAbsolutePath();
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("window-size=1920,1080", "--app=" + HTMLPath);
 		WebDriver driver = new ChromeDriver(options);
@@ -199,6 +201,7 @@ public class LocationManager {
 			}
 		}
 		driver.quit();
+		
 		return new Location(Double.parseDouble(driverLong), Double.parseDouble(driverLat));
 	}
 

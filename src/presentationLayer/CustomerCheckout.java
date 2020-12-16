@@ -85,7 +85,7 @@ public class CustomerCheckout extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public CustomerCheckout(JPanel mainPanel,Order order) {
+	public CustomerCheckout(JPanel mainPanel,Order order, CustomerTrackOrders customerTrackOrders) {
 		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
 		Icon plusIcon = IconFontSwing.buildIcon(FontAwesome.CART_PLUS	, 30, tertiaryPink);
@@ -181,6 +181,7 @@ public class CustomerCheckout extends JPanel {
 			            orderManager.placeOrder(order);
 			            notification.setText("Order placed successfully");
 			            notification.setForeground(emerald);
+			            customerTrackOrders.RefreshOrdersTable();
 			        }
 			        else {
 			        	notification.setText("Choose address to complete order.");

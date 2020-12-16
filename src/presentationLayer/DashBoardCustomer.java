@@ -111,7 +111,9 @@ public class DashBoardCustomer extends JFrame {
 		contentPane.add(mainPanel);
 		mainPanel.setLayout(new CardLayout(0, 0));
 
-		CustomerOrderItems customerOrderItemsPane = new CustomerOrderItems(mainPanel);
+		CustomerTrackOrders customerTrackOrders = new CustomerTrackOrders(mainPanel);
+		
+		CustomerOrderItems customerOrderItemsPane = new CustomerOrderItems(mainPanel,customerTrackOrders);
 		mainPanel.add(customerOrderItemsPane, "orderItems");
 		
 		CustomerManageAddress customerManageAddresses = new CustomerManageAddress(mainPanel);
@@ -120,7 +122,6 @@ public class DashBoardCustomer extends JFrame {
 		CustomerViewOrders customerViewOrders = new CustomerViewOrders(mainPanel);
 		mainPanel.add(customerViewOrders, "viewOrders");
 		
-		CustomerTrackOrders customerTrackOrders = new CustomerTrackOrders(mainPanel);
 		mainPanel.add(customerTrackOrders, "trackOrders");
 
 		switchMainPanel("orderItems");

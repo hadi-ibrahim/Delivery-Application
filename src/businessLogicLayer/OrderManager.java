@@ -7,6 +7,7 @@ import DTO.IDTO;
 import DTO.Order;
 import DTO.OrderStatus;
 import DTO.OrderedWarehouseItem;
+import DTO.RouteCheckpoint;
 import DTO.User;
 import DTO.WarehouseItem;
 import Repositories.RepoOrder;
@@ -52,7 +53,7 @@ public class OrderManager {
 	};
 
 	public void takeOrder(Order order, User driver) {
-		order.setOrderStatus(OrderStatus.DELIVERING);
+		order.setOrderStatus(OrderStatus.ACCEPTED);
 		driver.setDriverStatus(DriverStatus.BUSY);
 		order.setIdDriver(driver.getId());
 		repoOrder.update(order);
@@ -76,13 +77,29 @@ public class OrderManager {
 	public ArrayList<IDTO> getAllCheckpointsByOrder(Order order) {
 		return repoCheckpoint.getOrderRoute(order.getId());
 	}
+	
+	public void addRouteCheckpoint(RouteCheckpoint routeCheckpoint) {
+		repoCheckpoint.create(routeCheckpoint);
+	}
 	public ArrayList<IDTO> getAllPending() {
 		return repoOrder.getAllPending();
 	}
-	public ArrayList<IDTO> getActive(User driver) {
+	public IDTO getActive(User driver) {
 		return repoOrder.getActive(driver.getId());
 	}
 	
+	public void update(Order order) {
+		repoOrder.update(order);
+	}
+
+	public void finish(Order order) {
+		repoOrder.finish(order);
+	}
+
+	public ArrayList<IDTO> getAllNotFinishedByUser(int id) {
+		
+		return repoOrder.getAllNotFinishedByUser(id);
+	}
 	
 	
 	// TODO

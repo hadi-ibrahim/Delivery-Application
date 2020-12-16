@@ -130,6 +130,7 @@ public class CustomerAddAddress extends JPanel {
 					displayPanel.RefreshAddressTable();
 					resultLbl.setText("Address saved successfully!");
 					resultLbl.setForeground(emerald);
+					lblVerified.setVisible(false);
 					}
 				}
 		});
