@@ -44,4 +44,8 @@ public class UserManager {
 	public void restore(int id) {
 		repoUser.restore(id);
 	}
+	
+	public boolean emailExists(String email) {
+		return repoUser.emailExists(email);
+	}
 }

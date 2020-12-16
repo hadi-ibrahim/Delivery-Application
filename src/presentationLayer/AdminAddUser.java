@@ -131,6 +131,10 @@ public class AdminAddUser extends JPanel {
 					notification.setForeground(tomato);
 					notification.setText("Invalid password");
 				}
+				else if(userManager.emailExists(user.getEmail())) {
+					notification.setForeground(tomato);
+					notification.setText("Email already exists");
+				}
 				else {
 					userManager.create(user);
 					firstNameTxt.setText("");
