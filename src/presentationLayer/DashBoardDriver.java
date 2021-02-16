@@ -57,18 +57,6 @@ public class DashBoardDriver extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					DashBoardCustomer frame = new DashBoardCustomer(100,100);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
@@ -104,7 +92,6 @@ public class DashBoardDriver extends JFrame {
 		contentPane.add(mainPanel);
 		mainPanel.setLayout(new CardLayout(0, 0));
 		DriverManageOrders driverManageOrders = new DriverManageOrders();
-		
 		DriverViewPendingOrders driverViewOrders = new DriverViewPendingOrders(mainPanel,driverManageOrders);
 		mainPanel.add(driverViewOrders, "driverPendingOrders");
 		

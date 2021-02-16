@@ -77,7 +77,7 @@ public class DriverManageOrders extends JPanel {
 	private JLabel txtPhoneNumber;
 
 	private Order order = new Order();
-	public boolean isActive = false;
+	public boolean isActive;
 	private StockManager stockManager = new StockManager();
 	private OrderManager orderManager = new OrderManager();
 	private UserManager userManager = new UserManager();
@@ -92,7 +92,6 @@ public class DriverManageOrders extends JPanel {
 	 * Create the frame.
 	 */
 	public DriverManageOrders() {
-		super();
 		IconFontSwing.register(FontAwesome.getIconFont());
 		this.setBounds(100, 100, 780, 670);
 		this.setBackground(Color.WHITE);
@@ -124,6 +123,8 @@ public class DriverManageOrders extends JPanel {
 		txtPhoneNumber.setBounds(250, 198, 154, 40);
 		add(txtPhoneNumber);
 		
+		RefreshManageOrderPane();
+		
 		JButton pickupBtn = new JButton("Pickup");
 		pickupBtn.setForeground(Color.WHITE);
 		pickupBtn.setFont(new Font("Javanese Text", Font.PLAIN, 16));
@@ -144,7 +145,9 @@ public class DriverManageOrders extends JPanel {
 			}
 			@Override
 			public void mousePressed(MouseEvent e ) {
+				RefreshManageOrderPane();
 				if (isActive) {
+					if(order.getStatus()==OrderStatus.ACCEPTED) {
 					OrderedWarehouseItem orderedItem = order.getOrderedItems().get(0);
 					WarehouseItem warehouseItem = stockManager.get(orderedItem.getIdWarehouseItem());
 					Warehouse warehouse = warehouseManager.get(warehouseItem.getIdWarehouse());
@@ -160,7 +163,15 @@ public class DriverManageOrders extends JPanel {
 					userManager.update(SessionHelper.isLoggedIn);
 					notification.setText("Order picked up!");
 					notification.setForeground(emerald);
-
+					}
+					else {
+						notification.setForeground(tomato);
+						notification.setText("Order already picked up.");
+					}
+				}
+				else {
+					notification.setForeground(tomato);
+					notification.setText("Accept an order first before confirming pickup");
 				}
 			}
 		});
@@ -186,6 +197,7 @@ public class DriverManageOrders extends JPanel {
 			}
 			@Override
 			public void mousePressed(MouseEvent e ) {
+				RefreshManageOrderPane();
 				if (isActive) {
 					if(order.getStatus()==OrderStatus.DELIVERING) {
 						SessionHelper.isLoggedIn.setLocation(order.getLocationDestination());
@@ -208,6 +220,10 @@ public class DriverManageOrders extends JPanel {
 						notification.setForeground(tomato);
 						notification.setText("You cannot complete the order before confirming items pickup.");
 					}
+				}
+				else {
+					notification.setForeground(tomato);
+					notification.setText("Accept an order first before having the ability to finish an order");
 				}
 			}
 		});
@@ -233,6 +249,7 @@ public class DriverManageOrders extends JPanel {
 			}
 			@Override
 			public void mousePressed(MouseEvent e ) {
+				RefreshManageOrderPane();
 				if (isActive) {
 					OrderedWarehouseItem orderedItem = order.getOrderedItems().get(0);
 					WarehouseItem warehouseItem = stockManager.get(orderedItem.getIdWarehouseItem());
@@ -264,18 +281,14 @@ public class DriverManageOrders extends JPanel {
 		driverIconLbl.setIcon(new ImageIcon(AdminAddWarehouses.class.getResource("/presentationLayer/images/food-restaurant.png")));
 
 		add(driverIconLbl);
-
-
-		RefreshManageOrderPane();
-
 	}
 
 	public void RefreshManageOrderPane() {
-
-		if (SessionHelper.isLoggedIn.getDriverStatus() != DriverStatus.BUSY || isActive==false) {
+		if (SessionHelper.isLoggedIn.getDriverStatus() != DriverStatus.BUSY) {
+			isActive= false;
 			notification.setForeground(tomato);
 			notification.setText("You did not accept an order yet");
-			txtCustName.setText("No order");
+			txtCustName.setText("No Order");
 			txtPhoneNumber.setText("No Order");
 		} else {
 			isActive = true;
